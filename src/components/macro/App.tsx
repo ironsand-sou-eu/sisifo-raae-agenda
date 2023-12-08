@@ -1,8 +1,8 @@
 import "./styles.css";
-import TarefasSmallCard from "./components/micro/TarefaSmallCard";
+import TarefasSmallCard from "./TarefaSmallCard";
 import { useState } from "react";
-import TarefaDetailedCard, { TarefaRenderingDetails } from "./components/micro/TarefaDetailedCard";
-import tarefasMock from "./mocks/app-mocks";
+import TarefaDetailedCard, { TarefaRenderingDetails } from "./TarefaDetailedCard";
+import tarefasMock from "../../mocks/app-mocks";
 
 function App() {
   const [tarefas, setTarefas] = useState(tarefasMock);

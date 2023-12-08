@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import Cancel from "./Cancel";
-import Edit from "./Edit";
-import Conclude from "./Conclude";
+import Cancel from "../micro/Cancel";
+import Edit from "../micro/Edit";
+import Conclude from "../micro/Conclude";
 import { projurisAppBase } from "../../hardcoded";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import { TarefaRenderingDetails } from "./TarefaDetailedCard";

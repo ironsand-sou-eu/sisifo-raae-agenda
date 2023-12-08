@@ -1,13 +1,13 @@
 import { Dispatch, FunctionComponent, SetStateAction, useEffect, useState } from "react";
 import useProjurisConnector from "../hooks/useProjurisConnector";
-import Select from "./Select";
+import Select from "../micro/Select";
 import { TarefaDetails } from "../hooks/useProjurisConnector";
 import { codigoUsuario } from "../../hardcoded";
-import Textarea from "./Textarea";
-import ProcessoInfo from "./ProcessoInfo";
-import TarefaDetailedHeader from "./TarefaDetailedHeader";
-import PrazosCard from "./PrazosCard";
-import Button from "./Button";
+import Textarea from "../micro/Textarea";
+import ProcessoInfo from "../micro/ProcessoInfo";
+import TarefaDetailedHeader from "../micro/TarefaDetailedHeader";
+import PrazosCard from "../micro/PrazosCard";
+import Button from "../micro/Button";
 import tarefaDetailsMock from "../../mocks/tarefa-details-mock";
 
 export type TarefaRenderingDetails = {

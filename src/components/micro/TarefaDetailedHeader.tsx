@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import Cancel from "./Cancel";
 import Conclude from "./Conclude";
 import Edit from "./Edit";
-import { TarefaRenderingDetails } from "./TarefaDetailedCard";
+import { TarefaRenderingDetails } from "../macro/TarefaDetailedCard";
 
 type TarefaDetailedHeaderProps = {
   setRenderDetails: Dispatch<SetStateAction<TarefaRenderingDetails | undefined>>;
