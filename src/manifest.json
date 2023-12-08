@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+
+  "name": "Sísifo Ruy Andrade - Agenda",
+  "description": "Esta extensão cria uma agenda para o escritório Ruy Andrade Advogados Associados",
+  "author": "César Rodriguez",
+  "version": "1.0.0",
+
+  "action": {
+    "default_icon": {
+      "16": "images/sisifo-ico-16.png",
+      "32": "images/sisifo-ico-32.png",
+      "192": "images/sisifo-ico-192.png",
+      "256": "images/sisifo-ico-256.png"
+    },
+    "default_title": "Sísifo Ruy Andrade",
+    "default_popup": "popup.html"
+  },
+
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+
+  "icons": {
+    "16": "images/sisifo-ico-16.png",
+    "32": "images/sisifo-ico-32.png",
+    "192": "images/sisifo-ico-192.png",
+    "256": "images/sisifo-ico-256.png"
+  },
+
+  "permissions": ["storage"],
+
+  "background": {
+    "service_worker": "worker.js"
+  }
+}
