@@ -1,0 +1,269 @@
+:root {
+  font-size: 15px;
+  box-sizing: inherit;
+  --fields-bg-color: rgba(255, 255, 255, 0.45);
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+p {
+  margin: 0;
+}
+
+p:not(:last-child) {
+  margin-bottom: 0.5em;
+}
+
+body {
+  font: 1em/1.618 Inter, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 30px;
+  color: #224;
+  background: url(https://source.unsplash.com/E8Ufcyxz514/2400x1823) center / cover no-repeat fixed;
+}
+
+.tarefa-card {
+  --small-gap: 0.3rem;
+  width: 90dvw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  background-color: var(--fields-bg-color);
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+  margin-bottom: 1rem;
+}
+
+.tarefa-card:not(.tarefa-detailed-card) {
+  padding: 0.5rem;
+}
+
+.tarefa-card .tarefa-card-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tarefa-card .tarefa-card-titulo > h2 {
+  margin: 0;
+  padding-block: 0.5rem;
+  padding-left: var(--small-gap);
+  cursor: pointer;
+}
+
+.tarefa-card .tarefa-card-titulo > h2:hover {
+  text-decoration: underline;
+}
+
+.tarefa-card .tarefa-card-titulo > h2::before {
+  content: "";
+  background-color: rgb(255, 152, 0);
+  border-radius: 50%;
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  position: relative;
+  left: calc(-1 * var(--small-gap));
+}
+
+.tarefa-card .tarefa-card-titulo > div:has(> .tarefa-card-button) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tarefa-card .tarefa-card-titulo .tarefa-card-button {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  /* top: 0;
+  left: 0.1em; */
+  transition: 200ms ease-in-out;
+}
+
+.tarefa-card .tarefa-card-titulo .tarefa-card-button:active,
+.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover {
+  box-shadow: 0 0em 0em 1px hsl(223deg 10% 55% / 60%) inset;
+  opacity: 1;
+  transform: scale(1.2);
+  background-color: #f5f5f563;
+}
+
+.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover {
+  outline: transparent;
+}
+
+.tarefa-card .tarefa-card-titulo .tarefa-card-button > svg > path {
+  fill: rgba(0, 0, 0, 0.75);
+}
+
+.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover > svg > path {
+  --fill-color-edit: #0954bde6;
+  --fill-color-cancel: #c80a0ae6;
+  --fill-color-conclude: #099302e6;
+}
+
+.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover > svg > path.edit {
+  fill: var(--fill-color-edit);
+}
+
+.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover > svg > path.cancel {
+  fill: var(--fill-color-cancel);
+}
+
+.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover > svg > path.conclude {
+  fill: var(--fill-color-conclude);
+}
+
+.tarefa-card processo-info {
+  font-size: 0.9rem;
+}
+
+.tarefa-card-footer {
+  font-size: 0.8rem;
+  color: #446;
+  align-self: flex-end;
+}
+
+.prazo {
+  font-size: 0.9rem;
+  color: whitesmoke;
+  border-radius: 0.3rem;
+  padding-inline: 0.5rem;
+  align-self: center;
+}
+
+.lost {
+  background-color: rgba(18, 16, 16, 0.702);
+}
+
+.danger {
+  background-color: rgba(255, 0, 0, 0.702);
+}
+
+.warning {
+  background-color: rgba(229, 163, 39, 0.7);
+}
+
+.normal {
+  background-color: rgba(83, 207, 11, 0.702);
+}
+
+.tarefa-detailed-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 85dvw;
+  padding: 2rem 1rem;
+  --small-gap: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(15px);
+  margin-bottom: 1rem;
+}
+
+.tarefa-detailed-card .tarefa-card-titulo > h2 {
+  cursor: text;
+}
+
+.tarefa-detailed-card .processo-info,
+.tarefa-detailed-card textarea,
+.tarefa-detailed-card .select-control {
+  background-color: var(--fields-bg-color);
+  border: 0.5px solid rgba(9, 8, 8, 0.3);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  box-shadow: none;
+}
+
+.tarefa-detailed-card textarea:focus,
+.tarefa-detailed-card textarea:hover,
+.tarefa-detailed-card .select-control:has(:focus),
+.tarefa-detailed-card .select-control:hover {
+  outline: none;
+  border: 1px solid rgb(3, 140, 23, 0.62);
+}
+
+.tarefa-detailed-card .processo-info,
+.tarefa-detailed-card textarea {
+  padding: 1rem;
+  resize: vertical;
+  width: -webkit-fill-available;
+  font: 1rem Inter, sans-serif;
+}
+
+.tarefa-detailed-card .select-control {
+  padding: 0.3rem;
+}
+
+.sisifo-label {
+  display: block;
+  padding-inline-end: 0.2rem;
+  font-size: 0.9rem;
+  text-align: end;
+  user-select: none;
+}
+
+.close-btn {
+  position: fixed;
+  height: 1.5rem;
+  aspect-ratio: 1;
+  line-height: 1.7rem;
+  top: 0rem;
+  right: 1rem;
+  font-size: 2rem;
+  text-align: center;
+  transform: rotate(45deg);
+  user-select: none;
+  opacity: 0.5;
+  margin-top: 0.5rem;
+  transition: 200ms ease-in;
+}
+
+.close-btn:hover {
+  opacity: 1;
+  color: whitesmoke;
+  border-radius: 50%;
+  background-color: rgba(255, 0, 0, 0.5);
+  cursor: pointer;
+}
+
+.save-btn {
+  width: fit-content;
+  align-self: center;
+  background: rgb(23, 96, 0);
+  background: linear-gradient(
+    135deg,
+    hsl(106deg 100% 24% / 70%) 0%,
+    rgb(9 121 20 / 30%) 50%,
+    hsl(159 100% 44% / 1) 100%
+  );
+  color: #551c00;
+  border: 1px solid #0fc10b;
+  transition: 200ms ease-in;
+}
+
+.save-btn:hover {
+  box-shadow: inset 0px 0px 9px 1px #00800057;
+}
