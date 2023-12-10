@@ -2,11 +2,12 @@
   font-size: 15px;
   box-sizing: inherit;
   --fields-bg-color: rgba(255, 255, 255, 0.45);
+  --header-height: 4rem;
 }
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
@@ -23,10 +24,26 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
   min-height: 100vh;
-  padding: 30px;
   color: #224;
   background: url(https://source.unsplash.com/E8Ufcyxz514/2400x1823) center / cover no-repeat fixed;
+}
+
+div#root {
+  width: 100%;
+  width: -webkit-fill-available;
+  position: fixed;
+  top: 0;
+}
+
+main {
+  margin-block-start: var(--header-height);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .tarefa-card {
@@ -53,41 +70,61 @@ body {
   justify-content: space-between;
 }
 
-.tarefa-card .tarefa-card-titulo > h2 {
+.tarefa-card .tarefa-card-titulo h2 {
   margin: 0;
   padding-block: 0.5rem;
   padding-left: var(--small-gap);
-  cursor: pointer;
 }
 
-.tarefa-card .tarefa-card-titulo > h2:hover {
+.tarefa-card:not(.tarefa-detailed-card) .tarefa-card-titulo h2:hover {
+  cursor: pointer;
   text-decoration: underline;
 }
 
-.tarefa-card .tarefa-card-titulo > h2::before {
-  content: "";
+.circle,
+.tarefa-card-titulo-checkbox {
   background-color: rgb(255, 152, 0);
   border-radius: 50%;
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  position: relative;
-  left: calc(-1 * var(--small-gap));
+  display: grid;
+  place-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
+.tarefa-card-titulo-checkbox {
+  appearance: none;
+  cursor: pointer;
+}
+
+input[type="checkbox"].tarefa-card-titulo-checkbox::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: #3f353596;
+  border: 1px solid #0000003d;
+  transform: scale(0);
+  transition: transform 200ms ease-out;
+}
+
+input[type="checkbox"].tarefa-card-titulo-checkbox:checked::before {
+  transform: scale(1);
+}
+
+div:has(> .circle),
+.tarefa-card .tarefa-card-titulo > div:has(> .tarefa-card-titulo-checkbox),
 .tarefa-card .tarefa-card-titulo > div:has(> .tarefa-card-button) {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.tarefa-card .tarefa-card-titulo .tarefa-card-button {
+.tarefa-card-button {
   width: 1.5rem;
   height: 1.5rem;
   padding: 0.5rem;
   border-radius: 50%;
   cursor: pointer;
-
   -webkit-appearance: none;
   appearance: none;
   position: relative;
@@ -96,38 +133,43 @@ body {
   transition: 200ms ease-in-out;
 }
 
-.tarefa-card .tarefa-card-titulo .tarefa-card-button:active,
-.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover {
+.tarefa-card-button:active,
+.tarefa-card-button:hover {
   box-shadow: 0 0em 0em 1px hsl(223deg 10% 55% / 60%) inset;
   opacity: 1;
   transform: scale(1.2);
   background-color: #f5f5f563;
 }
 
-.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover {
+.tarefa-card-button:hover {
   outline: transparent;
 }
 
-.tarefa-card .tarefa-card-titulo .tarefa-card-button > svg > path {
+.tarefa-card-button > svg > path {
   fill: rgba(0, 0, 0, 0.75);
 }
 
-.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover > svg > path {
-  --fill-color-edit: #0954bde6;
+.tarefa-card-button:hover > svg > path {
   --fill-color-cancel: #c80a0ae6;
+  --fill-color-timesheet: #0954bde6;
   --fill-color-conclude: #099302e6;
+  --fill-color-filter: #099302e6;
 }
 
-.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover > svg > path.edit {
-  fill: var(--fill-color-edit);
-}
-
-.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover > svg > path.cancel {
+.tarefa-card-button:hover > svg > path.cancel {
   fill: var(--fill-color-cancel);
 }
 
-.tarefa-card .tarefa-card-titulo .tarefa-card-button:hover > svg > path.conclude {
+.tarefa-card-button:hover > svg > path.timesheet {
+  fill: var(--fill-color-timesheet);
+}
+
+.tarefa-card-button:hover > svg > path.conclude {
   fill: var(--fill-color-conclude);
+}
+
+.tarefa-card-button:hover > svg > path.filter {
+  fill: var(--fill-color-filter);
 }
 
 .tarefa-card processo-info {
@@ -183,24 +225,34 @@ body {
   margin-bottom: 1rem;
 }
 
-.tarefa-detailed-card .tarefa-card-titulo > h2 {
-  cursor: text;
-}
-
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea,
-.tarefa-detailed-card .select-control {
+div.select-control,
+.datepicker-input {
   background-color: var(--fields-bg-color);
   border: 0.5px solid rgba(9, 8, 8, 0.3);
   border-radius: 0.5rem;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   box-shadow: none;
+}
+
+div.select-control,
+.datepicker-input {
+  padding: 0.3rem;
+}
+
+.datepicker-wrapper,
+.datepicker-input {
+  line-height: 2rem;
+  width: -webkit-fill-available;
 }
 
 .tarefa-detailed-card textarea:focus,
 .tarefa-detailed-card textarea:hover,
-.tarefa-detailed-card .select-control:has(:focus),
-.tarefa-detailed-card .select-control:hover {
+div.select-control:has(:focus),
+div.select-control:hover,
+.datepicker-input:focus,
+.datepicker-input:hover {
   outline: none;
   border: 1px solid rgb(3, 140, 23, 0.62);
 }
@@ -211,10 +263,6 @@ body {
   resize: vertical;
   width: -webkit-fill-available;
   font: 1rem Inter, sans-serif;
-}
-
-.tarefa-detailed-card .select-control {
-  padding: 0.3rem;
 }
 
 .sisifo-label {
@@ -252,6 +300,9 @@ body {
 .save-btn {
   width: fit-content;
   align-self: center;
+  padding: 1rem;
+  margin-block-start: 1rem;
+  border-radius: 0.5rem;
   background: rgb(23, 96, 0);
   background: linear-gradient(
     135deg,
@@ -266,4 +317,50 @@ body {
 
 .save-btn:hover {
   box-shadow: inset 0px 0px 9px 1px #00800057;
+}
+
+.filter-header,
+.filter-body {
+  width: -webkit-fill-available;
+  --filter-hsl-background-color: hsl(129, 35%, 74%);
+}
+
+.filter-header {
+  z-index: 10;
+  position: fixed;
+  height: var(--header-height);
+  padding-inline: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--filter-hsl-background-color);
+  opacity: 0.85;
+}
+
+.filter-body {
+  position: absolute;
+  z-index: 5;
+  background-color: var(--filter-hsl-background-color);
+  margin-block-start: var(--header-height);
+  padding: 1rem;
+  opacity: 1;
+  box-shadow: 0px 6px 20px 0px #589750;
+}
+
+@keyframes drop-filter {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pickup-filter {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
 }

@@ -1,17 +1,24 @@
-import { SelectValue } from "../micro/Select";
-import { Marcador, SimpleDocument } from "./useProjurisConnector";
+import { SelectValue } from "../micro/FetchingSelect";
+import { Marcador, SimpleDocument, SituacaoTarefa } from "./useProjurisConnector";
+
+export type InsertValueLabelParams = SimpleDocument | Marcador | SituacaoTarefa;
 
 export default function useProjurisAdapter() {
-  type InsertValueLabelParams = SimpleDocument | SimpleDocument[] | Marcador | Marcador[];
-
-  function insertValueLabel(projurisSimpleDocument?: InsertValueLabelParams): SelectValue[] {
-    if (!projurisSimpleDocument) return [];
-    const projurisSimpleDocumentArray = Array.isArray(projurisSimpleDocument)
-      ? projurisSimpleDocument
-      : [projurisSimpleDocument];
-    return projurisSimpleDocumentArray.map(obj => {
-      const label = "codigoMarcador" in obj ? obj.nomeMarcador : obj.valor;
-      const value = "codigoMarcador" in obj ? obj.codigoMarcador : obj.chave;
+  function insertValueLabel(projurisEntities?: InsertValueLabelParams | InsertValueLabelParams[]): SelectValue[] {
+    if (!projurisEntities) return [];
+    const projurisEntitiesArray = Array.isArray(projurisEntities) ? projurisEntities : [projurisEntities];
+    return projurisEntitiesArray.map(obj => {
+      let value, label;
+      if ("codigoMarcador" in obj) {
+        label = obj.nomeMarcador;
+        value = obj.codigoMarcador;
+      } else if ("codigoTarefaTipo" in obj) {
+        label = obj.nomeTipoTarefa;
+        value = obj.codigoTarefaTipo;
+      } else {
+        label = obj.valor;
+        value = obj.chave;
+      }
       return {
         ...obj,
         value,
