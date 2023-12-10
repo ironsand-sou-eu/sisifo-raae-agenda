@@ -1,10 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
-import Cancel from "../micro/Cancel";
-import Edit from "../micro/Edit";
-import Conclude from "../micro/Conclude";
+import CancelButton from "../micro/CancelButton";
+import TimesheetButton from "../micro/TimesheetButton";
+import ConcludeButton from "../micro/ConcludeButton";
 import { projurisAppBase } from "../../hardcoded";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import { TarefaRenderingDetails } from "./TarefaDetailedCard";
+import TarefaSmallCardHeader from "./TarefaSmallCardHeader";
 
 type TarefaSmallCardProps = {
   setRenderDetails: Dispatch<SetStateAction<TarefaRenderingDetails | undefined>>;
@@ -53,42 +54,33 @@ function getPrazoStyle(prazo: Date): string {
 }
 
 export default function TarefaSmallCard({ tarefaInfo, setRenderDetails }: TarefaSmallCardProps): JSX.Element {
+  const {
+    nomeTarefaTipo,
+    codigoTarefaEvento,
+    modulo: { chave: codigoProcesso },
+    numeroProcesso,
+    parteAtiva,
+    partePassiva,
+    corTarefaTipo: tarefaColor,
+  } = tarefaInfo;
+
   const { endpoints } = useProjurisConnector();
   const prazo = new Date(tarefaInfo.dataLimite);
   const prazoString = prazo.toLocaleDateString("pt-BR");
   const processoUrl = projurisAppBase + endpoints.processoVisaoCompleta + tarefaInfo.modulo.chave;
 
-  function renderDetails() {
-    const { parteAtiva, partePassiva, numeroProcesso } = tarefaInfo;
-    const {
-      codigoTarefaEvento,
-      modulo: { chave: codigoProcesso },
-    } = tarefaInfo;
-    setRenderDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento });
-  }
-
   return (
     <section className="tarefa-card">
-      <header className="tarefa-card-titulo">
-        <h2 onClick={renderDetails}>{tarefaInfo.nomeTarefaTipo}</h2>
-        <div>
-          <Cancel
-            onClick={e => {
-              console.log(e);
-            }}
-          />
-          <Edit
-            onClick={e => {
-              console.log(e);
-            }}
-          />
-          <Conclude
-            onClick={e => {
-              console.log(e);
-            }}
-          />
-        </div>
-      </header>
+      <TarefaSmallCardHeader
+        setRenderDetails={setRenderDetails}
+        nomeTarefaTipo={nomeTarefaTipo}
+        codigoTarefaEvento={codigoTarefaEvento}
+        codigoProcesso={codigoProcesso}
+        numeroProcesso={numeroProcesso}
+        parteAtiva={parteAtiva}
+        partePassiva={partePassiva}
+        tarefaColor={tarefaColor}
+      />
       <p className={`prazo ${getPrazoStyle(prazo)}`}>{`Prazo: ${prazoString} - Situação: ${tarefaInfo.situacao}`}</p>
       <div className="processo-info">
         {`${tarefaInfo.parteAtiva} x ${tarefaInfo.partePassiva} - `}
