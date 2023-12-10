@@ -1,11 +1,11 @@
 import { Dispatch, FunctionComponent, SetStateAction, useEffect, useState } from "react";
 import useProjurisConnector from "../hooks/useProjurisConnector";
-import Select from "../micro/Select";
+import FetchingSelect from "../micro/FetchingSelect";
 import { TarefaDetails } from "../hooks/useProjurisConnector";
 import { codigoUsuario } from "../../hardcoded";
 import Textarea from "../micro/Textarea";
-import ProcessoInfo from "../micro/ProcessoInfo";
-import TarefaDetailedHeader from "../micro/TarefaDetailedHeader";
+import ProcessoInfo from "../micro/ProcessoInfoCard";
+import TarefaDetailedCardHeader from "./TarefaDetailedCardHeader";
 import PrazosCard from "../micro/PrazosCard";
 import Button from "../micro/Button";
 import tarefaDetailsMock from "../../mocks/tarefa-details-mock";
@@ -16,6 +16,7 @@ export type TarefaRenderingDetails = {
   parteAtiva: string;
   partePassiva: string;
   numeroProcesso: string;
+  tarefaColor: string;
 };
 
 export type TarefaDetailedCardProps = TarefaRenderingDetails & {
@@ -37,6 +38,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   parteAtiva,
   partePassiva,
   numeroProcesso,
+  tarefaColor,
   setRenderDetails,
 }: TarefaDetailedCardProps) => {
   const [tarefaDetails, setTarefaDetails] = useState<TarefaDetails | undefined>(tarefaDetailsMock);
@@ -67,7 +69,12 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
 
   return (
     <section className="tarefa-card tarefa-detailed-card">
-      <TarefaDetailedHeader titulo={titulo} tipoTarefa={tipoTarefa?.valor} setRenderDetails={setRenderDetails} />
+      <TarefaDetailedCardHeader
+        titulo={titulo}
+        tipoTarefa={tipoTarefa?.valor}
+        setRenderDetails={setRenderDetails}
+        tarefaColor={tarefaColor}
+      />
       <PrazosCard
         situacao={tarefaEventoSituacaoWs?.situacao}
         dataConclusao={dataConclusao}
@@ -81,7 +88,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         codigoProcessoProjuris={tarefaDetails?.modulos[0].codigoRegistroVinculo}
       />
       <Textarea nameAndId="descricao" label="Descrição" content={descricaoTarefa} />
-      <Select
+      <FetchingSelect
         optionsEndpoint={endpoints.responsaveis}
         hasMultiLevelSource={false}
         values={usuariosResponsaveis}
@@ -89,7 +96,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         label="Responsáveis"
         isMulti={true}
       />
-      <Select
+      <FetchingSelect
         optionsEndpoint={endpoints.gruposTrabalho}
         hasMultiLevelSource={false}
         values={gruposResponsaveis}
@@ -97,7 +104,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         label="Grupos de trabalho"
         isMulti={true}
       />
-      <Select
+      <FetchingSelect
         optionsEndpoint={endpoints.marcadores}
         hasMultiLevelSource={false}
         values={marcadorWs}
@@ -105,7 +112,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         label="Marcadores"
         isMulti={true}
       />
-      <Select
+      <FetchingSelect
         optionsEndpoint={endpoints.quadrosKanban(quadroKanban?.chave)}
         hasMultiLevelSource={false}
         values={quadroKanban ? [quadroKanban] : undefined}
@@ -113,7 +120,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         label="Quadro kanban"
         isMulti={false}
       />
-      <Select
+      <FetchingSelect
         optionsEndpoint={endpoints.colunasKanban(codigoUsuario)}
         hasMultiLevelSource={false}
         values={colunaKanban ? [colunaKanban] : undefined}
