@@ -11,6 +11,11 @@ export type Marcador = {
   nomeMarcador: string;
 };
 
+export type SituacaoTarefa = {
+  codigoTarefaTipo: number;
+  nomeTipoTarefa: string;
+};
+
 export type TarefaDetails = {
   modulos: [
     {
@@ -85,6 +90,7 @@ export default function useProjurisConnector() {
     // camposDinamicos: "/campo-dinamico/3/13",
     // tiposParticipacao: "/processo/participacao-tipo/obter-arvore-completa/",
     tiposTarefa: "/tarefa-tipo/consulta",
+    situacoesTarefa: "/tipo?chave-tipo=tarefa-evento-situacao(chaveModulo:null)",
     tiposAndamento: "/andamento-tipo/consulta?",
     // pedidos: "/processo/pedido/consultar-por-nome?nome-pedido=",
     // bancos: "/financeiro/conta/consulta",
@@ -99,13 +105,13 @@ export default function useProjurisConnector() {
     tarefaDetails: (codigoTarefaEvento: number, codigoProcesso: number) => {
       return `processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
     },
-    quadrosKanban: (codigoKanbanTarefa?: number) => {
-      if (!codigoKanbanTarefa) return;
-      return `tipo?chave-tipo=kanbanTarefaColunaVinculoSituacao(codigoKanbanTarefa:${codigoKanbanTarefa})`;
-    },
-    colunasKanban: (codigoUsuario?: number) => {
+    quadrosKanban: (codigoUsuario?: number) => {
       if (!codigoUsuario) return;
       return `tipo?chave-tipo=kanbanTarefa(codigoUsuario:${codigoUsuario})`;
+    },
+    colunasKanban: (codigoQuadroKanban?: number) => {
+      if (!codigoQuadroKanban) return;
+      return `kanban/tarefa/${codigoQuadroKanban}`;
     },
   };
 
