@@ -1,29 +1,34 @@
 import AsyncSelect from "react-select/async";
-import useProjurisConnector, { Marcador, ProjurisOptionsFilter, SimpleDocument } from "../hooks/useProjurisConnector";
+import useProjurisConnector, {
+  Marcador,
+  ProjurisOptionsFilter,
+  SimpleDocument,
+  SituacaoTarefa,
+} from "../hooks/useProjurisConnector";
 import useProjurisAdapter from "../hooks/useProjurisAdapter";
 
 export type SelectValue = {
   value: number;
   label: string;
-} & (Partial<SimpleDocument> | Partial<Marcador>);
+} & (Partial<SimpleDocument> | Partial<Marcador> | Partial<SituacaoTarefa>);
 
-type SelectProps = {
+type FetchingSelectProps = {
   hasMultiLevelSource: boolean;
   name: string;
   label: string;
   isMulti: boolean;
   optionsEndpoint?: string;
-  values?: SimpleDocument[] | Marcador[];
+  values?: SimpleDocument[] | Marcador[] | SituacaoTarefa[];
 };
 
-export default function Select({
+export default function FetchingSelect({
   optionsEndpoint,
   hasMultiLevelSource,
   name,
   label,
   values,
   isMulti,
-}: SelectProps): JSX.Element {
+}: FetchingSelectProps): JSX.Element {
   const { loadSimpleOptions } = useProjurisConnector();
   const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
 
