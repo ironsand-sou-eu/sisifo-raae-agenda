@@ -1,12 +1,12 @@
 import { MouseEventHandler, useRef } from "react";
 
-type ConcludeProps = {
+type ConcludeButtonProps = {
   label?: string;
   rgbaColor?: string;
   onClick: MouseEventHandler<HTMLDivElement>;
 };
 
-export default function Conclude({ label, rgbaColor, onClick }: ConcludeProps): JSX.Element {
+export default function ConcludeButton({ label, rgbaColor, onClick }: ConcludeButtonProps): JSX.Element {
   const divRef = useRef<HTMLDivElement>(null);
   divRef.current?.style.setProperty("--fill-color-conclude", rgbaColor ?? "#099302e6");
 

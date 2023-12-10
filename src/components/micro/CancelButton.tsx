@@ -1,12 +1,12 @@
 import { MouseEventHandler, useRef } from "react";
 
-type CancelProps = {
+type CancelButtonProps = {
   label?: string;
   rgbaColor?: string;
   onClick: MouseEventHandler<HTMLDivElement>;
 };
 
-export default function Cancel({ label, rgbaColor, onClick }: CancelProps): JSX.Element {
+export default function CancelButton({ label, rgbaColor, onClick }: CancelButtonProps): JSX.Element {
   const div = useRef<HTMLDivElement>(null);
   div.current?.style.setProperty("--fill-color-cancel", rgbaColor ?? "#c80a0ae6");
   return (
