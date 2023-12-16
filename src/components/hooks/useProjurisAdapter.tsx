@@ -1,7 +1,7 @@
 import { SelectValue } from "../micro/FetchingSelect";
 import { Marcador, SimpleDocument, SituacaoTarefa } from "./useProjurisConnector";
 
-export type InsertValueLabelParams = SimpleDocument | Marcador | SituacaoTarefa;
+export type InsertValueLabelParams = Prettify<SimpleDocument | Marcador | SituacaoTarefa>;
 
 export default function useProjurisAdapter() {
   function insertValueLabel(projurisEntities?: InsertValueLabelParams | InsertValueLabelParams[]): SelectValue[] {

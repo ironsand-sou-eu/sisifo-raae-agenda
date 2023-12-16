@@ -1,16 +1,13 @@
 import AsyncSelect from "react-select/async";
-import useProjurisConnector, {
-  Marcador,
-  ProjurisOptionsFilter,
-  SimpleDocument,
-  SituacaoTarefa,
-} from "../hooks/useProjurisConnector";
+import useProjurisConnector, { Marcador, SimpleDocument, SituacaoTarefa } from "../hooks/useProjurisConnector";
 import useProjurisAdapter from "../hooks/useProjurisAdapter";
 
-export type SelectValue = {
-  value: number;
-  label: string;
-} & (Partial<SimpleDocument> | Partial<Marcador> | Partial<SituacaoTarefa>);
+export type SelectValue = Prettify<
+  {
+    value: number;
+    label: string;
+  } & (Partial<SimpleDocument> | Partial<Marcador> | Partial<SituacaoTarefa>)
+>;
 
 type FetchingSelectProps = {
   hasMultiLevelSource: boolean;

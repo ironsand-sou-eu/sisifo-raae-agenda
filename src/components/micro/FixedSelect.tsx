@@ -2,17 +2,19 @@ import Select from "react-select";
 import { Marcador, SimpleDocument, SituacaoTarefa } from "../hooks/useProjurisConnector";
 import useProjurisAdapter, { InsertValueLabelParams } from "../hooks/useProjurisAdapter";
 
-export type SelectValue = {
-  value: number;
-  label: string;
-} & (Partial<SimpleDocument> | Partial<Marcador> | Partial<SituacaoTarefa>);
+export type SelectValue = Prettify<
+  {
+    value: number;
+    label: string;
+  } & (Partial<SimpleDocument> | Partial<Marcador> | Partial<SituacaoTarefa>)
+>;
 
 type FixedSelectProps = {
   name: string;
   label?: string;
   placeholder?: string;
-  options?: InsertValueLabelParams[];
-  values?: SimpleDocument[] | Marcador[] | SituacaoTarefa[];
+  options?: Prettify<InsertValueLabelParams>[];
+  values?: Prettify<SimpleDocument | Marcador | SituacaoTarefa>[];
   isMulti: boolean;
 };
 
@@ -26,7 +28,7 @@ export default function FixedSelect({
 }: FixedSelectProps): JSX.Element {
   const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
 
-  const filterFunction = (input: string) => {};
+  // const filterFunction = (input: string) => {};
   // async function changed(newData) {
   //   if (name !== "gruposDeTrabalho" || newData === null)
   //     return onChange(removeValueLabel(newData), name);

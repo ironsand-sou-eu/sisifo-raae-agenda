@@ -1,31 +1,32 @@
-import { useState, useEffect, SetStateAction, Dispatch } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { SimpleDocument, SituacaoTarefa } from "./useProjurisConnector";
 
 export type Filter = {
   categoria: "TAREFA" | "ANDAMENTO" | "TIMESHEET";
   filterName: string;
-  quadroKanban?: SimpleDocument;
-  colunaKanban?: SimpleDocument;
-  tipos?: SimpleDocument[];
-  responsaveis?: SimpleDocument[];
-  gruposTrabalho?: SimpleDocument[];
-  situacoes?: SituacaoTarefa[];
+  quadroKanban?: Prettify<SimpleDocument>;
+  colunaKanban?: Prettify<SimpleDocument>;
+  tipos?: Prettify<SimpleDocument>[];
+  responsaveis?: Prettify<SimpleDocument>[];
+  gruposTrabalho?: Prettify<SimpleDocument>[];
+  situacoes?: Prettify<SituacaoTarefa>[];
   startDate?: Date;
   endDate?: Date;
 };
 
-type SavedFiltersStructure = {
-  currentFilter?: Filter;
-  savedFilters: Filter[];
+type FiltersStructure = {
+  currentFilter?: Prettify<Filter>;
+  savedFilters: Prettify<Filter>[];
 };
 
-const minimalTarefaFilter: SavedFiltersStructure = {
+const minimalTarefaFilter: FiltersStructure = {
   currentFilter: { filterName: "current", categoria: "TAREFA" },
   savedFilters: [],
 };
 
 export default function useFilter() {
-  const [filters, setFilters] = useState<SavedFiltersStructure | undefined>();
+  const [filters, setFilters] = useState<Prettify<FiltersStructure> | undefined>();
+
   useEffect(() => {
     const retrievedString = localStorage.getItem("filters"); //chrome.storage.local.get(currentFilter);
     const retrieved = retrievedString === "undefined" ? undefined : retrievedString;
@@ -54,7 +55,7 @@ export default function useFilter() {
   function deleteSavedFilter(indexToDelete: number) {
     setFilters(currentFilters => {
       const savedFilters = filters?.savedFilters ?? [];
-      const newSavedFilters = savedFilters.filter((f, index) => index !== indexToDelete);
+      const newSavedFilters = savedFilters.filter((_, index) => index !== indexToDelete);
       return { currentFilter: currentFilters?.currentFilter, savedFilters: newSavedFilters };
     });
   }
