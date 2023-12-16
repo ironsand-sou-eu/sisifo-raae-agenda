@@ -22,10 +22,8 @@ export default function ProcessoInfoCard({
 
   return (
     <div className="processo-info">
-      {parteAtiva}
-      <br />
-      {partePassiva}
-      <br />
+      <p>{parteAtiva}</p>
+      <p>{partePassiva}</p>
       <a href={processoUrl}>{numeroProcesso}</a>
     </div>
   );
