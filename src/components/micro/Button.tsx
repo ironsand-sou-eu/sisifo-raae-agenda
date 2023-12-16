@@ -1,7 +1,9 @@
+import { MouseEventHandler } from "react";
+
 type ButtonProps = {
   name: string;
   disabled?: boolean;
-  onClick: () => void;
+  onClick: MouseEventHandler<HTMLButtonElement>;
 };
 
 export default function Button({ name, disabled, onClick }: ButtonProps): JSX.Element {
