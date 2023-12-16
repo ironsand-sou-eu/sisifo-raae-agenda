@@ -1,6 +1,5 @@
 import { Dispatch, RefObject, SetStateAction } from "react";
-import { Filter } from "../hooks/useFilter";
-import FilterButton from "../micro/FilterButton";
+import HeaderButton from "../micro/HeaderButton";
 import FixedSelect from "../micro/FixedSelect";
 
 type TopFilterHeaderProps = {
@@ -32,7 +31,7 @@ export default function TopFilterHeader({ showFilter, setShowFilter, bodyDivRef 
         values={undefined}
         isMulti={false}
       />
-      <FilterButton onClick={toggleFilterVisibility} />
+      <HeaderButton type="filter" title="Exibir filtros..." onClick={toggleFilterVisibility} />
     </header>
   );
 }
