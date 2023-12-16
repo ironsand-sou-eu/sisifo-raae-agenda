@@ -2,10 +2,10 @@ import TarefasSmallCard from "./TarefaSmallCard";
 import { useEffect, useState } from "react";
 import TarefaDetailedCard, { TarefaRenderingDetails } from "./TarefaDetailedCard";
 import tarefasMock, { Tarefa } from "../../mocks/app-mocks";
-import useFilter from "../hooks/useFilter";
 import TopFilter from "./TopFilter";
 import "../../styles.css";
 import "react-datepicker/dist/react-datepicker.min.css";
+import FilterAnimationsProvider from "../hooks/FilterAnimationsProvider";
 
 function App() {
   const [tarefas, setTarefas] = useState<Tarefa[] | undefined>();
@@ -17,7 +17,9 @@ function App() {
 
   return (
     <>
-      <TopFilter />
+      <FilterAnimationsProvider>
+        <TopFilter />
+      </FilterAnimationsProvider>
       <main>
         {tarefas?.map(tarefaInfo => (
           <TarefasSmallCard

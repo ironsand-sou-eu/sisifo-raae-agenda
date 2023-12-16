@@ -1,17 +1,14 @@
-import { useRef, useState } from "react";
 import TopFilterHeader from "./TopFilterHeader";
 import TopFilterBody from "./TopFilterBody";
-
-type TopFilterProps = {};
+import { useFilterAnimations } from "../hooks/FilterAnimationsProvider";
 
 export default function TopFilter(): JSX.Element {
-  const [showFilter, setShowFilter] = useState<boolean>(false);
-  const bodyDivRef = useRef<HTMLDivElement>(null);
+  const { showFilter } = useFilterAnimations();
 
   return (
     <aside className="filter">
-      <TopFilterHeader showFilter={showFilter} setShowFilter={setShowFilter} bodyDivRef={bodyDivRef} />
-      {showFilter && <TopFilterBody bodyDivRef={bodyDivRef} />}
+      <TopFilterHeader />
+      {showFilter && <TopFilterBody />}
     </aside>
   );
 }

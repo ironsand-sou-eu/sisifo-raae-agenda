@@ -1,24 +1,20 @@
-import { RefObject, useEffect } from "react";
+import { useEffect } from "react";
 import useFilter from "../hooks/useFilter";
 import DatePicker from "react-datepicker";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import FetchingSelect from "../micro/FetchingSelect";
 import envVars from "../../envVars";
+import { useFilterAnimations } from "../hooks/FilterAnimationsProvider";
 
-type TopFilterBodyProps = {
-  bodyDivRef: RefObject<HTMLDivElement>;
-};
-
-export default function TopFilterBody({ bodyDivRef }: TopFilterBodyProps): JSX.Element {
+export default function TopFilterBody(): JSX.Element {
   const { filters } = useFilter();
   const { quadroKanban, colunaKanban, tipos, responsaveis, gruposTrabalho, situacoes, startDate, endDate } =
     filters?.currentFilter ?? {};
   const { endpoints } = useProjurisConnector();
+  const { bodyDivRef, setBodyDisplayingAnimation } = useFilterAnimations();
   // SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
 
-  useEffect(() => {
-    bodyDivRef.current?.style.setProperty("animation", "drop-filter 500ms normal ease-in-out");
-  }, []);
+  useEffect(() => setBodyDisplayingAnimation(), []);
 
   return (
     <div ref={bodyDivRef} className="filter-body">

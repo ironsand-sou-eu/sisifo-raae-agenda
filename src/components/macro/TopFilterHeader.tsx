@@ -1,25 +1,9 @@
-import { Dispatch, RefObject, SetStateAction } from "react";
 import HeaderButton from "../micro/HeaderButton";
 import FixedSelect from "../micro/FixedSelect";
+import { useFilterAnimations } from "../hooks/FilterAnimationsProvider";
 
-type TopFilterHeaderProps = {
-  showFilter: boolean;
-  setShowFilter: Dispatch<SetStateAction<boolean>>;
-  bodyDivRef: RefObject<HTMLDivElement>;
-};
-
-export default function TopFilterHeader({ showFilter, setShowFilter, bodyDivRef }: TopFilterHeaderProps): JSX.Element {
-  function toggleFilterVisibility(): void {
-    if (!showFilter) {
-      setShowFilter(current => !current);
-      return;
-    }
-    bodyDivRef.current?.style.setProperty("animation", "pickup-filter 500ms normal ease-in-out");
-    setTimeout(() => {
-      setShowFilter(current => !current);
-    }, 450);
-  }
-
+export default function TopFilterHeader(): JSX.Element {
+  const { toggleFilterVisibility } = useFilterAnimations();
   // SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
   return (
     <header className="filter-header">
