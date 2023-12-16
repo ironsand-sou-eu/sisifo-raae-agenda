@@ -3,6 +3,10 @@
   box-sizing: inherit;
   --fields-bg-color: rgba(255, 255, 255, 0.45);
   --header-height: 4rem;
+  --fill-color-cancel: #c80a0ae6;
+  --fill-color-timesheet: #0954bde6;
+  --fill-color-conclude: #099302e6;
+  --fill-color-filter: #099302e6;
 }
 
 *,
@@ -149,13 +153,6 @@ div:has(> .circle),
   fill: rgba(0, 0, 0, 0.75);
 }
 
-.tarefa-card-button:hover > svg > path {
-  --fill-color-cancel: #c80a0ae6;
-  --fill-color-timesheet: #0954bde6;
-  --fill-color-conclude: #099302e6;
-  --fill-color-filter: #099302e6;
-}
-
 .tarefa-card-button:hover > svg > path.cancel {
   fill: var(--fill-color-cancel);
 }
@@ -234,6 +231,10 @@ div.select-control,
   border-radius: 0.5rem;
   /* margin-bottom: 1rem; */
   box-shadow: none;
+}
+
+.select-control {
+  min-width: 30dvw;
 }
 
 div.select-control,
