@@ -1,7 +1,4 @@
 import { Dispatch, SetStateAction } from "react";
-import CancelButton from "../micro/CancelButton";
-import TimesheetButton from "../micro/TimesheetButton";
-import ConcludeButton from "../micro/ConcludeButton";
 import { projurisAppBase } from "../../hardcoded";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import { TarefaRenderingDetails } from "./TarefaDetailedCard";

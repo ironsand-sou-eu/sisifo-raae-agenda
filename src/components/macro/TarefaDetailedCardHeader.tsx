@@ -1,7 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import CancelButton from "../micro/CancelButton";
-import TimesheetButton from "../micro/TimesheetButton";
-import ConcludeButton from "../micro/ConcludeButton";
+import HeaderButton from "../micro/HeaderButton";
 import { TarefaRenderingDetails } from "./TarefaDetailedCard";
 
 type TarefaDetailedCardHeaderProps = {
@@ -27,9 +25,9 @@ export default function TarefaDetailedCardHeader({
         <h2>{titulo ?? tipoTarefa ?? ""}</h2>
       </div>
       <div>
-        <CancelButton onClick={e => console.log(e)} />
-        <TimesheetButton onClick={e => console.log(e)} />
-        <ConcludeButton onClick={e => console.log(e)} />
+        <HeaderButton type="cancel" onClick={e => console.log(e)} />
+        <HeaderButton type="timesheet" onClick={e => console.log(e)} />
+        <HeaderButton type="conclude" onClick={e => console.log(e)} />
       </div>
     </header>
   );
