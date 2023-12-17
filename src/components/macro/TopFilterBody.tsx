@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import useFilter from "../hooks/useFilter";
 import DatePicker from "react-datepicker";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import FetchingSelect from "../micro/FetchingSelect";
 import envVars from "../../envVars";
 import { useFilterAnimations } from "../hooks/FilterAnimationsProvider";
+import { useFilters } from "../hooks/FiltersProvider";
 
 export default function TopFilterBody(): JSX.Element {
-  const { filters } = useFilter();
+  const { filters } = useFilters();
   const { quadroKanban, colunaKanban, tipos, responsaveis, gruposTrabalho, situacoes, startDate, endDate } =
     filters?.currentFilter ?? {};
   const { endpoints } = useProjurisConnector();

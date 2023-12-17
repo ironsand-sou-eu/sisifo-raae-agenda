@@ -14,34 +14,13 @@ type FixedSelectProps = {
   label?: string;
   placeholder?: string;
   options?: Prettify<InsertValueLabelParams>[];
-  values?: Prettify<SimpleDocument | Marcador | SituacaoTarefa>[];
+  values?: Prettify<InsertValueLabelParams>[];
+  changeHandler: (args: any) => void;
   isMulti: boolean;
 };
 
-export default function FixedSelect({
-  name,
-  label,
-  placeholder,
-  options,
-  values,
-  isMulti,
-}: FixedSelectProps): JSX.Element {
+export default function FixedSelect({ name, label, placeholder, options, values, changeHandler, isMulti }: FixedSelectProps): JSX.Element {
   const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
-
-  // const filterFunction = (input: string) => {};
-  // async function changed(newData) {
-  //   if (name !== "gruposDeTrabalho" || newData === null)
-  //     return onChange(removeValueLabel(newData), name);
-  //   try {
-  //     const gtCrew = await getGtCrew(newData.label, props?.allResponsaveis);
-  //     const responsaveis = gtCrew?.advs;
-  //     onChange(removeValueLabel(responsaveis), "responsaveis");
-  //     onChange(removeValueLabel(newData), name);
-  //   } catch (e) {
-  //     msgSetter.addMsg({ type: "fail", msg: e });
-  //     return onChange(removeValueLabel(newData), name);
-  //   }
-  // }
 
   return (
     <div>
@@ -51,7 +30,7 @@ export default function FixedSelect({
         value={insertValueLabel(values)}
         name={name}
         placeholder={placeholder ?? "Selecione uma opção..."}
-        // onChange={changed}
+        onChange={args => changeHandler(removeValueLabel(args))}
         // isLoading={isLoading.scrapping ?? true}
         isSearchable
         isClearable
