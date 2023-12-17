@@ -7,6 +7,8 @@
   --fill-color-timesheet: #0954bde6;
   --fill-color-conclude: #099302e6;
   --fill-color-filter: #099302e6;
+  --fill-color-save: #0954bde6;
+  --fill-color-delete: #c80a0ae6;
 }
 
 *,
@@ -169,6 +171,14 @@ div:has(> .circle),
   fill: var(--fill-color-filter);
 }
 
+.tarefa-card-button:hover > svg > path.save {
+  fill: var(--fill-color-save);
+}
+
+.tarefa-card-button:hover > svg > path.delete {
+  fill: var(--fill-color-delete);
+}
+
 .tarefa-card processo-info {
   font-size: 0.9rem;
 }
@@ -305,12 +315,7 @@ div.select-control:hover,
   margin-block-start: 1rem;
   border-radius: 0.5rem;
   background: rgb(23, 96, 0);
-  background: linear-gradient(
-    135deg,
-    hsl(106deg 100% 24% / 70%) 0%,
-    rgb(9 121 20 / 30%) 50%,
-    hsl(159 100% 44% / 1) 100%
-  );
+  background: linear-gradient(135deg, hsl(106deg 100% 24% / 70%) 0%, rgb(9 121 20 / 30%) 50%, hsl(159 100% 44% / 1) 100%);
   color: #551c00;
   border: 1px solid #0fc10b;
   transition: 200ms ease-in;
@@ -336,6 +341,16 @@ div.select-control:hover,
   align-items: center;
   background-color: var(--filter-hsl-background-color);
   opacity: 0.85;
+}
+
+.header-filter-container {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.header-filter-container > .tarefa-card-button:nth-child(2) {
+  margin-inline-start: 0.5rem;
 }
 
 .filter-body {

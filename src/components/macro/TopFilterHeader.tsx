@@ -6,20 +6,24 @@ import { useFilters } from "../hooks/FiltersProvider";
 export default function TopFilterHeader(): JSX.Element {
   // TODO: SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
   const { toggleFilterVisibility } = useFilterAnimations();
-  const { filters, applyFilter } = useFilters();
+  const { filters, applyFilter, promptAddingFilter, promptDeletingFilter } = useFilters();
   const currentFilter = filters?.currentFilter ? [filters.currentFilter] : undefined;
 
   return (
     <header className="filter-header">
       <div />
-      <FixedSelect
-        name="saved-filter-select"
-        placeholder="Filtros salvos..."
-        options={filters?.savedFilters}
-        values={currentFilter}
-        changeHandler={applyFilter}
-        isMulti={false}
-      />
+      <div className="header-filter-container">
+        <FixedSelect
+          name="saved-filter-select"
+          placeholder="Filtros salvos..."
+          options={filters?.savedFilters}
+          values={currentFilter}
+          changeHandler={applyFilter}
+          isMulti={false}
+        />
+        <HeaderButton type="save" onClick={promptAddingFilter} />
+        <HeaderButton type="delete" onClick={promptDeletingFilter} />
+      </div>
       <HeaderButton type="filter" title="Exibir filtros..." onClick={toggleFilterVisibility} />
     </header>
   );

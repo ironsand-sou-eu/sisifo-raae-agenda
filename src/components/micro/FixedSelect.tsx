@@ -23,7 +23,7 @@ export default function FixedSelect({ name, label, placeholder, options, values,
   const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
 
   return (
-    <div>
+    <>
       {label && <label className="sisifo-label">{label}</label>}
       <Select
         options={insertValueLabel(options)}
@@ -37,6 +37,6 @@ export default function FixedSelect({ name, label, placeholder, options, values,
         isMulti={isMulti ? true : false}
         classNames={{ control: () => "select-control" }}
       />
-    </div>
+    </>
   );
 }
