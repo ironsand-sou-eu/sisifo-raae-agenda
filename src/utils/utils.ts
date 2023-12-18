@@ -1,12 +1,16 @@
 export function areObjectsEqual(object1: any, object2: any, ignoreProperties: string[] = []): boolean {
-  if (Object.keys(object1).length !== Object.keys(object2).length) return false;
-  Object.keys(object1).forEach(key => {
-    const ignoredProperty = ignoreProperties.some(propToIgnore => key === propToIgnore);
-    if (!ignoredProperty && object1[key] !== object2[key]) return false;
+  const sortedObj1 = deepSortObjectByEntries(object1, ignoreProperties);
+  const sortedObj2 = deepSortObjectByEntries(object2, ignoreProperties);
+  return JSON.stringify(sortedObj1) === JSON.stringify(sortedObj2);
+}
+
+function deepSortObjectByEntries(object: object, ignoreProperties: string[] = []): object {
+  const sortedArrayFromObject = Object.entries(object).toSorted();
+  const ignoredAndSortedArray = sortedArrayFromObject.filter(([key, _]) => !ignoreProperties.includes(key));
+  const deepSortedArrayFromObject = ignoredAndSortedArray.map(([key, value]) => {
+    if (value instanceof Date) return [key, value.getTime()];
+    if (typeof value === "object") return [key, deepSortObjectByEntries(value)];
+    return [key, value];
   });
-  Object.keys(object2).forEach(key => {
-    const ignoredProperty = ignoreProperties.some(propToIgnore => key === propToIgnore);
-    if (!ignoredProperty && object1[key] !== object2[key]) return false;
-  });
-  return true;
+  return Object.fromEntries(deepSortedArrayFromObject);
 }

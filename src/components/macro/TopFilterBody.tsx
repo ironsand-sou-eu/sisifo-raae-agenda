@@ -7,9 +7,8 @@ import { useFilterAnimations } from "../hooks/FilterAnimationsProvider";
 import { useFilters } from "../hooks/FiltersProvider";
 
 export default function TopFilterBody(): JSX.Element {
-  const { filters } = useFilters();
-  const { quadroKanban, colunaKanban, tipos, responsaveis, gruposTrabalho, situacoes, startDate, endDate } =
-    filters?.currentFilter ?? {};
+  const { filters, changeCurrentFilter } = useFilters();
+  const { quadroKanban, colunaKanban, tipos, responsaveis, gruposTrabalho, situacoes, dates } = filters?.currentFilter ?? {};
   const { endpoints } = useProjurisConnector();
   const { bodyDivRef, setBodyDisplayingAnimation } = useFilterAnimations();
   // SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
@@ -24,14 +23,12 @@ export default function TopFilterBody(): JSX.Element {
       <DatePicker
         id="filter-datepicker"
         selectsRange={true}
-        startDate={startDate}
-        endDate={endDate}
-        onChange={() => {}}
+        startDate={dates ? dates[0] : null}
+        endDate={dates ? dates[1] : null}
+        onChange={dates => changeCurrentFilter(dates, "dates")}
         wrapperClassName="datepicker-wrapper"
         className="datepicker-input"
-        // onChange={twoDatesArrayupdate => {
-        //   setDateRange(twoDatesArrayupdate);
-        // }}
+        dateFormat={"dd/MM/yyyy"}
       />
       <FetchingSelect
         optionsEndpoint={endpoints.situacoesTarefa}

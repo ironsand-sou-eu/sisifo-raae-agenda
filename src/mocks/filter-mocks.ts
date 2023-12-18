@@ -15,8 +15,7 @@ const filterMock: Filter[] = [
         nomeTipoTarefa: "Cumprida",
       },
     ],
-    startDate: new Date("2023-12-01"),
-    endDate: new Date("2023-12-10"),
+    dates: [new Date("2023-12-01"), new Date("2023-12-10")],
   },
   {
     categoria: "TAREFA",
@@ -28,8 +27,7 @@ const filterMock: Filter[] = [
         nomeTipoTarefa: "Cumprida",
       },
     ],
-    startDate: new Date(),
-    endDate: new Date(),
+    dates: [new Date(), new Date()],
   },
 ];
 

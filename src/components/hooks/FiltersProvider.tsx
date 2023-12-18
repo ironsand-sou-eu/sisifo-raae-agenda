@@ -13,8 +13,7 @@ export type Filter = {
   responsaveis?: Prettify<SimpleDocument>[];
   gruposTrabalho?: Prettify<SimpleDocument>[];
   situacoes?: Prettify<SituacaoTarefa>[];
-  startDate?: Date;
-  endDate?: Date;
+  dates?: Date[];
 };
 
 type FiltersStructure = {
@@ -22,8 +21,10 @@ type FiltersStructure = {
   savedFilters: Prettify<Filter>[];
 };
 
+const minimalCurrentFilter: Filter = { index: -1, filterName: "", categoria: "TAREFA" };
+
 const minimalTarefaFilter: FiltersStructure = {
-  currentFilter: { index: -1, filterName: "", categoria: "TAREFA" },
+  currentFilter: minimalCurrentFilter,
   savedFilters: [],
 };
 
@@ -31,14 +32,16 @@ type TFiltersContext = {
   filters: FiltersStructure | undefined;
   promptAddingFilter: MouseEventHandler<HTMLDivElement>;
   promptDeletingFilter: MouseEventHandler<HTMLDivElement>;
-  applyFilter: (filter: Filter) => void;
+  applySelectedFilter: (filter: Filter) => void;
+  changeCurrentFilter: (newValue: any, action: keyof Filter) => void;
 };
 
 const FiltersContext = createContext<TFiltersContext>({
   filters: undefined,
   promptAddingFilter: () => {},
   promptDeletingFilter: () => {},
-  applyFilter: () => {},
+  applySelectedFilter: () => {},
+  changeCurrentFilter: () => {},
 });
 
 export function useFilters() {
@@ -57,7 +60,6 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    console.log({ filters });
     localStorage.setItem("filters", JSON.stringify(filters));
     // chrome.storage.local.set({ currentFilter });
   }, [filters]);
@@ -67,7 +69,7 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
       return areObjectsEqual(filters.currentFilter, savedFilter, ["index", "filterName"]);
     });
     if (savedFilterEqualToCurrent) {
-      alert(`O filtro atual já está salvo, com o nome ${savedFilterEqualToCurrent.filterName}.`);
+      alert(`O filtro atual já está salvo, com o nome "${savedFilterEqualToCurrent.filterName}".`);
       return;
     }
     const userResp = prompt("Digite um nome para o novo filtro:");
@@ -76,8 +78,18 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
       return;
     }
     const newFilter: Filter = structuredClone(filters?.currentFilter!);
+    newFilter.index = getFirstAvailableIndex();
     newFilter.filterName = userResp;
     addSavedFilter(newFilter);
+  }
+
+  function getFirstAvailableIndex() {
+    const savedFiltersAmount = filters?.savedFilters.length ?? 0;
+    if (savedFiltersAmount === 0) return 0;
+    for (let i = 0; i < savedFiltersAmount; i++) {
+      if (!filters?.savedFilters.some(savedFilter => savedFilter.index === i)) return i;
+    }
+    return savedFiltersAmount;
   }
 
   function addSavedFilter(filterToAdd: Filter): void {
@@ -87,14 +99,14 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
         minimalFilter.savedFilters.push(filterToAdd);
         return minimalFilter;
       }
+
       currentFilters.savedFilters.push(filterToAdd);
-      return currentFilters;
+      return { ...currentFilters, currentFilter: filterToAdd };
     });
   }
 
   function promptDeletingFilter() {
     const userResp = confirm("Tem certeza de que deseja excluir o filtro?");
-    console.log({ filters });
     if (!userResp) {
       alert(`Operação cancelada.`);
       return;
@@ -110,10 +122,20 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
     });
   }
 
-  function applyFilter(filter: Filter): void {
+  function applySelectedFilter(filter: Filter): void {
     setFilters(previousFiltersValues => {
       if (!previousFiltersValues) return { currentFilter: filter, savedFilters: [] };
       return { ...previousFiltersValues, currentFilter: filter };
+    });
+  }
+
+  function changeCurrentFilter(newValue: any, action: keyof Filter): void {
+    const newFilter: Filter = filters?.currentFilter ? structuredClone(filters?.currentFilter) : minimalCurrentFilter;
+    if (action === "dates") newFilter[action] = newValue;
+
+    setFilters(previousFiltersValues => {
+      if (!previousFiltersValues) return { currentFilter: newFilter, savedFilters: [] };
+      return { ...previousFiltersValues, currentFilter: newFilter };
     });
   }
 
@@ -121,7 +143,8 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
     filters,
     promptAddingFilter,
     promptDeletingFilter,
-    applyFilter,
+    applySelectedFilter,
+    changeCurrentFilter,
   };
 
   return <FiltersContext.Provider value={contextContent}>{children}</FiltersContext.Provider>;
