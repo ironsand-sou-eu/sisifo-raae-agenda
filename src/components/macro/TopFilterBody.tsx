@@ -8,7 +8,7 @@ import { useFilters } from "../hooks/FiltersProvider";
 
 export default function TopFilterBody(): JSX.Element {
   const { filters, changeCurrentFilter } = useFilters();
-  const { quadroKanban, colunaKanban, tipos, responsaveis, gruposTrabalho, situacoes, dates } = filters?.currentFilter ?? {};
+  const { quadroKanban, colunaKanban, tipos, responsaveis, gruposTrabalho, situacoes, dates, nextXDays } = filters?.currentFilter ?? {};
   const { endpoints } = useProjurisConnector();
   const { bodyDivRef, setBodyDisplayingAnimation } = useFilterAnimations();
   // SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
@@ -17,19 +17,36 @@ export default function TopFilterBody(): JSX.Element {
 
   return (
     <div ref={bodyDivRef} className="filter-body">
-      <label className="sisifo-label" htmlFor="filter-datepicker">
-        Datas inicial e final
-      </label>
-      <DatePicker
-        id="filter-datepicker"
-        selectsRange={true}
-        startDate={dates ? dates[0] : null}
-        endDate={dates ? dates[1] : null}
-        onChange={dates => changeCurrentFilter(dates, "dates")}
-        wrapperClassName="datepicker-wrapper"
-        className="datepicker-input"
-        dateFormat={"dd/MM/yyyy"}
-      />
+      <div className="row">
+        <div>
+          <label className="sisifo-label" htmlFor="filter-datepicker">
+            Datas inicial e final
+          </label>
+          <DatePicker
+            id="filter-datepicker"
+            selectsRange={true}
+            startDate={dates ? dates[0] : null}
+            endDate={dates ? dates[1] : null}
+            onChange={dates => changeCurrentFilter(dates, "dates")}
+            wrapperClassName="datepicker-wrapper"
+            className="datepicker-input"
+            dateFormat={"dd/MM/yyyy"}
+          />
+        </div>
+        <div>
+          <label className="sisifo-label" htmlFor="nextXDays">
+            Próximos X dias
+          </label>
+          <input
+            className="datepicker-input"
+            type="number"
+            name="nextXdays"
+            id="nextXdays"
+            value={nextXDays ?? ""}
+            onChange={({ target: { value } }) => changeCurrentFilter(parseInt(value), "nextXDays")}
+          />
+        </div>
+      </div>
       <FetchingSelect
         optionsEndpoint={endpoints.situacoesTarefa}
         hasMultiLevelSource={false}

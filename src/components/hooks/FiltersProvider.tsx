@@ -14,6 +14,7 @@ export type Filter = {
   gruposTrabalho?: Prettify<SimpleDocument>[];
   situacoes?: Prettify<SituacaoTarefa>[];
   dates?: Date[];
+  nextXDays?: number;
 };
 
 type FiltersStructure = {
@@ -55,7 +56,6 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
     // const retrievedString = localStorage.getItem("filters"); //chrome.storage.local.get(currentFilter);
     // const retrieved = retrievedString === "undefined" ? undefined : retrievedString;
     // const retrievedFilters = JSON.parse(retrieved ?? JSON.stringify(minimalTarefaFilter));
-    // console.log("Retrieved from storage: ", retrievedFilters);
     setFilters({ currentFilter: undefined, savedFilters: filterMock });
   }, []);
 
@@ -131,7 +131,16 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
 
   function changeCurrentFilter(newValue: any, action: keyof Filter): void {
     const newFilter: Filter = filters?.currentFilter ? structuredClone(filters?.currentFilter) : minimalCurrentFilter;
-    if (action === "dates") newFilter[action] = newValue;
+    switch (action) {
+      case "dates":
+        delete newFilter.nextXDays;
+        newFilter.dates = newValue;
+        break;
+      case "nextXDays":
+        delete newFilter.dates;
+        newFilter[action] = newValue;
+        break;
+    }
 
     setFilters(previousFiltersValues => {
       if (!previousFiltersValues) return { currentFilter: newFilter, savedFilters: [] };

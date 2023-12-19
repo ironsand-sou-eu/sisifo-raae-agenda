@@ -9,6 +9,9 @@
   --fill-color-filter: #099302e6;
   --fill-color-save: #0954bde6;
   --fill-color-delete: #c80a0ae6;
+  --small-gap: 0.3rem;
+  --medium-gap: 0.5rem;
+  --big-gap: 1rem;
 }
 
 *,
@@ -53,7 +56,6 @@ main {
 }
 
 .tarefa-card {
-  --small-gap: 0.3rem;
   width: 90dvw;
   display: flex;
   flex-direction: column;
@@ -67,7 +69,7 @@ main {
 }
 
 .tarefa-card:not(.tarefa-detailed-card) {
-  padding: 0.5rem;
+  padding: var(--medium-gap);
 }
 
 .tarefa-card .tarefa-card-titulo {
@@ -78,7 +80,7 @@ main {
 
 .tarefa-card .tarefa-card-titulo h2 {
   margin: 0;
-  padding-block: 0.5rem;
+  padding-block: var(--medium-gap);
   padding-left: var(--small-gap);
 }
 
@@ -104,8 +106,8 @@ main {
 
 input[type="checkbox"].tarefa-card-titulo-checkbox::before {
   content: "";
-  width: 0.5rem;
-  height: 0.5rem;
+  width: var(--medium-gap);
+  height: var(--medium-gap);
   border-radius: 50%;
   background-color: #3f353596;
   border: 1px solid #0000003d;
@@ -122,13 +124,13 @@ div:has(> .circle),
 .tarefa-card .tarefa-card-titulo > div:has(> .tarefa-card-button) {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--medium-gap);
 }
 
 .tarefa-card-button {
   width: 1.5rem;
   height: 1.5rem;
-  padding: 0.5rem;
+  padding: var(--medium-gap);
   border-radius: 50%;
   cursor: pointer;
   -webkit-appearance: none;
@@ -193,7 +195,7 @@ div:has(> .circle),
   font-size: 0.9rem;
   color: whitesmoke;
   border-radius: 0.3rem;
-  padding-inline: 0.5rem;
+  padding-inline: var(--medium-gap);
   align-self: center;
 }
 
@@ -232,13 +234,26 @@ div:has(> .circle),
   margin-bottom: 1rem;
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--big-gap);
+}
+
+.row > div {
+  width: -webkit-fill-available;
+}
+
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea,
 div.select-control,
 .datepicker-input {
   background-color: var(--fields-bg-color);
   border: 0.5px solid rgba(9, 8, 8, 0.3);
-  border-radius: 0.5rem;
+  border-radius: var(--medium-gap);
   /* margin-bottom: 1rem; */
   box-shadow: none;
 }
@@ -296,7 +311,7 @@ div.select-control:hover,
   transform: rotate(45deg);
   user-select: none;
   opacity: 0.5;
-  margin-top: 0.5rem;
+  margin-top: var(--medium-gap);
   transition: 200ms ease-in;
 }
 
@@ -313,7 +328,7 @@ div.select-control:hover,
   align-self: center;
   padding: 1rem;
   margin-block-start: 1rem;
-  border-radius: 0.5rem;
+  border-radius: var(--medium-gap);
   background: rgb(23, 96, 0);
   background: linear-gradient(135deg, hsl(106deg 100% 24% / 70%) 0%, rgb(9 121 20 / 30%) 50%, hsl(159 100% 44% / 1) 100%);
   color: #551c00;
@@ -350,7 +365,7 @@ div.select-control:hover,
 }
 
 .header-filter-container > .tarefa-card-button:nth-child(2) {
-  margin-inline-start: 0.5rem;
+  margin-inline-start: var(--medium-gap);
 }
 
 .filter-body {
@@ -364,7 +379,7 @@ div.select-control:hover,
 }
 
 .filter-body > div:not(:last-child) {
-  padding-block-end: 0.5rem;
+  padding-block-end: var(--medium-gap);
 }
 
 @keyframes drop-filter {
