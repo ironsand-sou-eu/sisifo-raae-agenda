@@ -363,6 +363,10 @@ div.select-control:hover,
   box-shadow: 0px 6px 20px 0px #589750;
 }
 
+.filter-body > div:not(:last-child) {
+  padding-block-end: 0.5rem;
+}
+
 @keyframes drop-filter {
   0% {
     transform: translateY(-100%);
