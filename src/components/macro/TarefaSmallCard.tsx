@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { projurisAppBase } from "../../hardcoded";
+import { projurisApiBase } from "../../hardcoded";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import { TarefaRenderingDetails } from "./TarefaDetailedCard";
 import TarefaSmallCardHeader from "./TarefaSmallCardHeader";
@@ -64,7 +64,7 @@ export default function TarefaSmallCard({ tarefaInfo, setRenderDetails }: Tarefa
   const { endpoints } = useProjurisConnector();
   const prazo = new Date(tarefaInfo.dataLimite);
   const prazoString = prazo.toLocaleDateString("pt-BR");
-  const processoUrl = projurisAppBase + endpoints.processoVisaoCompleta + tarefaInfo.modulo.chave;
+  const processoUrl = projurisApiBase + endpoints.processoVisaoCompleta + tarefaInfo.modulo.chave;
 
   return (
     <section className="tarefa-card">

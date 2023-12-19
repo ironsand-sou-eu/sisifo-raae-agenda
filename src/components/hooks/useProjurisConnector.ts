@@ -1,5 +1,5 @@
 import envVars from "../../envVars";
-import { projurisAppBase, projurisLoginUri } from "../../hardcoded";
+import { projurisApiBase, projurisLoginUri } from "../../hardcoded";
 
 export type SimpleDocument = {
   chave: number;
@@ -65,12 +65,7 @@ export type ProjurisOptionsFilter = {
   flattenOptions: boolean;
 };
 
-type Operator =
-  | "sensitiveStrictEquality"
-  | "insensitiveStrictEquality"
-  | "insentiviveIncludes"
-  | "includes"
-  | "numericEquality";
+type Operator = "sensitiveStrictEquality" | "insensitiveStrictEquality" | "insentiviveIncludes" | "includes" | "numericEquality";
 
 export default function useProjurisConnector() {
   const endpoints = {
@@ -89,7 +84,7 @@ export default function useProjurisConnector() {
     // instanciasCnj: "/processo/instancia-cnj/",
     // camposDinamicos: "/campo-dinamico/3/13",
     // tiposParticipacao: "/processo/participacao-tipo/obter-arvore-completa/",
-    tiposTarefa: "/tarefa-tipo/consulta",
+    tiposTarefa: "/tipo?chave-tipo=tarefa-tipo",
     situacoesTarefa: "/tipo?chave-tipo=tarefa-evento-situacao(chaveModulo:null)",
     tiposAndamento: "/andamento-tipo/consulta?",
     // pedidos: "/processo/pedido/consultar-por-nome?nome-pedido=",
@@ -103,15 +98,15 @@ export default function useProjurisConnector() {
     // criarPedido: "/processo/pedido/",
     criarTarefa: "/tarefa",
     tarefaDetails: (codigoTarefaEvento: number, codigoProcesso: number) => {
-      return `processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
+      return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
     },
     quadrosKanban: (codigoUsuario?: number) => {
       if (!codigoUsuario) return;
-      return `tipo?chave-tipo=kanbanTarefa(codigoUsuario:${codigoUsuario})`;
+      return `/tipo?chave-tipo=kanbanTarefa(codigoUsuario:${codigoUsuario})`;
     },
     colunasKanban: (codigoQuadroKanban?: number) => {
       if (!codigoQuadroKanban) return;
-      return `kanban/tarefa/${codigoQuadroKanban}`;
+      return `/kanban/tarefa/${codigoQuadroKanban}`;
     },
   };
 
@@ -171,8 +166,8 @@ export default function useProjurisConnector() {
 
   async function makeProjurisRequest<T>(fetchOptions: FetchOptions): Promise<T> {
     const { endpoint, method } = fetchOptions;
-    const body = "body" in fetchOptions ? fetchOptions.body : "";
-    const uri = (projurisAppBase + endpoint).replaceAll(`/${endpoint}`, `${endpoint}`);
+    const body = "body" in fetchOptions ? fetchOptions.body : undefined;
+    const uri = (projurisApiBase + endpoint).replaceAll(`/${endpoint}`, `${endpoint}`);
     const token = await getProjurisAuthTokenWithinExpiration();
     const params = {
       method: method,
@@ -182,22 +177,19 @@ export default function useProjurisConnector() {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: body,
+      body,
     };
     return fetch(uri, params) as Promise<T>;
   }
 
-  async function loadSimpleOptions(
-    endpoint?: string,
-    filterObject?: ProjurisOptionsFilter,
-    shallMap = true
-  ): Promise<any[]> {
+  async function loadSimpleOptions(endpoint?: string, filterObject?: ProjurisOptionsFilter, shallMap = true): Promise<any[]> {
     if (!endpoint) return [];
     const requestOptions: FetchOptions = {
       endpoint,
       method: "GET",
     };
     const optionsPromise = await makeProjurisRequest<Response>(requestOptions);
+    console.log(optionsPromise);
     const rawOptions = await extractOptionsArray(optionsPromise);
     const options = filterObject?.flattenOptions ? flattenObjectsArray(rawOptions) : rawOptions;
     let filteredOptions = options;
@@ -227,8 +219,7 @@ export default function useProjurisConnector() {
     if (projurisFetchResponse.status === 204) return "no content";
     const jsonResp = await projurisFetchResponse.json();
     if (jsonResp.simpleDto) return jsonResp.simpleDto;
-    if (jsonResp.consultaTipoRetorno && jsonResp.consultaTipoRetorno[0].simpleDto)
-      return jsonResp.consultaTipoRetorno[0].simpleDto;
+    if (jsonResp.consultaTipoRetorno && jsonResp.consultaTipoRetorno[0].simpleDto) return jsonResp.consultaTipoRetorno[0].simpleDto;
     if (jsonResp.nodeWs) return jsonResp.nodeWs;
     if (jsonResp.tarefaTipoConsultaWs) return jsonResp.tarefaTipoConsultaWs;
     if (jsonResp.andamentoTipoConsultaWs) return jsonResp.andamentoTipoConsultaWs;
