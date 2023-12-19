@@ -17,7 +17,20 @@ export default function TopFilterBody(): JSX.Element {
 
   return (
     <div ref={bodyDivRef} className="filter-body">
-      <div className="row">
+      <div className="date-row">
+        <div>
+          <label className="sisifo-label" htmlFor="nextXDays">
+            Próximos X dias
+          </label>
+          <input
+            className="datepicker-input"
+            type="number"
+            name="nextXdays"
+            id="nextXdays"
+            value={nextXDays ?? ""}
+            onChange={({ target: { value } }) => changeCurrentFilter(parseInt(value), "nextXDays")}
+          />
+        </div>
         <div>
           <label className="sisifo-label" htmlFor="filter-datepicker">
             Datas inicial e final
@@ -31,19 +44,6 @@ export default function TopFilterBody(): JSX.Element {
             wrapperClassName="datepicker-wrapper"
             className="datepicker-input"
             dateFormat={"dd/MM/yyyy"}
-          />
-        </div>
-        <div>
-          <label className="sisifo-label" htmlFor="nextXDays">
-            Próximos X dias
-          </label>
-          <input
-            className="datepicker-input"
-            type="number"
-            name="nextXdays"
-            id="nextXdays"
-            value={nextXDays ?? ""}
-            onChange={({ target: { value } }) => changeCurrentFilter(parseInt(value), "nextXDays")}
           />
         </div>
       </div>

@@ -234,7 +234,7 @@ div:has(> .circle),
   margin-bottom: 1rem;
 }
 
-.row {
+.date-row {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -243,7 +243,12 @@ div:has(> .circle),
   gap: var(--big-gap);
 }
 
-.row > div {
+.date-row > div:first-child {
+  width: 20%;
+  min-width: 101px;
+}
+
+.date-row > div:last-child {
   width: -webkit-fill-available;
 }
 
