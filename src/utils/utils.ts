@@ -4,12 +4,23 @@ export function areObjectsEqual(object1: any, object2: any, ignoreProperties: st
   return JSON.stringify(sortedObj1) === JSON.stringify(sortedObj2);
 }
 
-function deepSortObjectByEntries(object: object, ignoreProperties: string[] = []): object {
-  const sortedArrayFromObject = Object.entries(object).toSorted();
+export function deepSortObjectByEntries(object: object, ignoreProperties: string[] = []): object {
+  debugger;
+  const sortedArrayFromObject = Object.entries(object).sort();
   const ignoredAndSortedArray = sortedArrayFromObject.filter(([key, _]) => !ignoreProperties.includes(key));
   const deepSortedArrayFromObject = ignoredAndSortedArray.map(([key, value]) => {
     if (value instanceof Date) return [key, value.getTime()];
-    if (typeof value === "object") return [key, deepSortObjectByEntries(value)];
+    if (Array.isArray(value)) {
+      const valuesMap = value.map(arrayItem => {
+        if (arrayItem instanceof Date) return arrayItem.getTime();
+        if (typeof arrayItem === "object") return deepSortObjectByEntries(arrayItem);
+        return arrayItem;
+      });
+      return [key, valuesMap];
+    }
+    if (typeof value === "object") {
+      return [key, deepSortObjectByEntries(value)];
+    }
     return [key, value];
   });
   return Object.fromEntries(deepSortedArrayFromObject);
