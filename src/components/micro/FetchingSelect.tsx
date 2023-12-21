@@ -1,5 +1,5 @@
 import AsyncSelect from "react-select/async";
-import useProjurisConnector, { Marcador, SimpleDocument, SituacaoTarefa } from "../hooks/useProjurisConnector";
+import useProjurisConnector, { Marcador, ProjurisOptionsFilter, SimpleDocument, SituacaoTarefa } from "../hooks/useProjurisConnector";
 import useProjurisAdapter from "../hooks/useProjurisAdapter";
 
 export type SelectValue = Prettify<
@@ -16,6 +16,8 @@ type FetchingSelectProps = {
   isMulti: boolean;
   optionsEndpoint?: string;
   values?: SimpleDocument[] | Marcador[] | SituacaoTarefa[];
+  filterObject?: Prettify<Partial<ProjurisOptionsFilter>>;
+  onChange: (newValue: object) => void;
 };
 
 export default function FetchingSelect({
@@ -24,31 +26,23 @@ export default function FetchingSelect({
   name,
   label,
   values,
+  filterObject,
+  onChange,
   isMulti,
 }: FetchingSelectProps): JSX.Element {
   const { loadSimpleOptions } = useProjurisConnector();
   const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
 
-  const filterFunction = (input: string) =>
-    loadSimpleOptions(optionsEndpoint, {
+  const filterFunction = async (input: string) => {
+    const selectFilter: ProjurisOptionsFilter = {
       key: "valor",
       operator: "insentiviveIncludes",
       val: input,
       flattenOptions: hasMultiLevelSource,
-    });
-  // async function changed(newData) {
-  //   if (name !== "gruposDeTrabalho" || newData === null)
-  //     return onChange(removeValueLabel(newData), name);
-  //   try {
-  //     const gtCrew = await getGtCrew(newData.label, props?.allResponsaveis);
-  //     const responsaveis = gtCrew?.advs;
-  //     onChange(removeValueLabel(responsaveis), "responsaveis");
-  //     onChange(removeValueLabel(newData), name);
-  //   } catch (e) {
-  //     msgSetter.addMsg({ type: "fail", msg: e });
-  //     return onChange(removeValueLabel(newData), name);
-  //   }
-  // }
+    };
+
+    return loadSimpleOptions(optionsEndpoint, { ...selectFilter, ...filterObject });
+  };
 
   return (
     <div>
@@ -58,7 +52,7 @@ export default function FetchingSelect({
         value={insertValueLabel(values)}
         name={name}
         placeholder="Selecione uma opção..."
-        // onChange={changed}
+        onChange={newValues => onChange(removeValueLabel(newValues))}
         // isLoading={isLoading.scrapping ?? true}
         isSearchable
         isClearable

@@ -1,6 +1,6 @@
 import { MouseEventHandler, PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
 import { SimpleDocument, SituacaoTarefa } from "./useProjurisConnector";
-import filterMock from "../../mocks/filter-mocks";
+import { filterMock } from "../../mocks/filter-mocks";
 import { areObjectsEqual } from "../../utils/utils";
 
 export type Filter = {
@@ -60,6 +60,7 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
+    console.log({ filters });
     localStorage.setItem("filters", JSON.stringify(filters));
     // chrome.storage.local.set({ currentFilter });
   }, [filters]);
@@ -140,6 +141,14 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
         delete newFilter.dates;
         newFilter[action] = newValue;
         break;
+      case "categoria":
+      case "quadroKanban":
+      case "colunaKanban":
+      case "gruposTrabalho":
+      case "responsaveis":
+      case "situacoes":
+      case "tipos":
+        newFilter[action] = newValue;
     }
 
     setFilters(previousFiltersValues => {
