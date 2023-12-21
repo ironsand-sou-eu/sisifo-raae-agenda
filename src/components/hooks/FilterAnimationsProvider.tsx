@@ -1,13 +1,5 @@
-import {
-  Dispatch,
-  PropsWithChildren,
-  RefObject,
-  SetStateAction,
-  createContext,
-  useContext,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, PropsWithChildren, RefObject, SetStateAction, createContext, useContext, useRef, useState } from "react";
+import { Prettify } from "../../global";
 
 type AnimationsContext = {
   showFilter: boolean;

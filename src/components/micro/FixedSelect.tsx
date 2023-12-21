@@ -1,6 +1,7 @@
 import Select from "react-select";
 import { Marcador, SimpleDocument, SituacaoTarefa } from "../hooks/useProjurisConnector";
 import useProjurisAdapter, { InsertValueLabelParams } from "../hooks/useProjurisAdapter";
+import { Prettify } from "../../global";
 
 export type SelectValue = Prettify<
   {

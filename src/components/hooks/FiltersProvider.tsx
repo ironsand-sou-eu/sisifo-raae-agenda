@@ -2,6 +2,7 @@ import { MouseEventHandler, PropsWithChildren, createContext, useContext, useEff
 import { SimpleDocument, SituacaoTarefa } from "./useProjurisConnector";
 import { filterMock } from "../../mocks/filter-mocks";
 import { areObjectsEqual } from "../../utils/utils";
+import { Prettify } from "../../global";
 
 export type Filter = {
   categoria: "TAREFA" | "ANDAMENTO" | "TIMESHEET";
