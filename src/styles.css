@@ -47,12 +47,31 @@ div#root {
 }
 
 main {
+  height: calc(100dvh - 1.5 * var(--header-height));
+  overflow: auto;
   margin-block-start: var(--header-height);
   padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+}
+
+main::-webkit-scrollbar {
+  width: 3dvw;
+}
+
+main::-webkit-scrollbar-thumb {
+  background-color: hsl(0deg 0% 100% / 50%);
+  border-radius: 1rem;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(0deg 0% 100% / 90%);
+}
+
+main::-webkit-scrollbar-track {
+  background-color: hsl(240deg 12% 23% / 25%);
 }
 
 .tarefa-card {
@@ -217,8 +236,8 @@ div:has(> .circle),
 
 .tarefa-detailed-card {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50dvh;
+  left: 50dvw;
   translate: -50% -50%;
   width: 85dvw;
   padding: 2rem 1rem;
