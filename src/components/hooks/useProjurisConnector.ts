@@ -189,7 +189,6 @@ export default function useProjurisConnector() {
       method: "GET",
     };
     const optionsPromise = await makeProjurisRequest<Response>(requestOptions);
-    console.log(optionsPromise);
     const rawOptions = await extractOptionsArray(optionsPromise);
     const options = filterObject?.flattenOptions ? flattenObjectsArray(rawOptions) : rawOptions;
     let filteredOptions = options;
@@ -206,8 +205,8 @@ export default function useProjurisConnector() {
       return filteredOptions.map((option: any) => {
         return {
           ...option,
-          value: option.chave ?? option.codigoAssunto,
-          label: option.valor ?? option.nomeAssunto,
+          value: option.chave ?? option.codigoAssunto ?? option.codigo,
+          label: option.valor ?? option.nomeAssunto ?? option.titulo,
         };
       });
     } else {
@@ -221,6 +220,7 @@ export default function useProjurisConnector() {
     if (jsonResp.simpleDto) return jsonResp.simpleDto;
     if (jsonResp.consultaTipoRetorno && jsonResp.consultaTipoRetorno[0].simpleDto) return jsonResp.consultaTipoRetorno[0].simpleDto;
     if (jsonResp.nodeWs) return jsonResp.nodeWs;
+    if (jsonResp.colunaKanbanTarefaWs) return jsonResp.colunaKanbanTarefaWs;
     if (jsonResp.tarefaTipoConsultaWs) return jsonResp.tarefaTipoConsultaWs;
     if (jsonResp.andamentoTipoConsultaWs) return jsonResp.andamentoTipoConsultaWs;
     if (jsonResp.assuntoWs) return jsonResp.assuntoWs;
