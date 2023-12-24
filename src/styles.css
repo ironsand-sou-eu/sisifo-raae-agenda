@@ -3,12 +3,11 @@
   box-sizing: inherit;
   --fields-bg-color: rgba(255, 255, 255, 0.45);
   --header-height: 4rem;
-  --fill-color-cancel: #c80a0ae6;
-  --fill-color-timesheet: #0954bde6;
-  --fill-color-conclude: #099302e6;
-  --fill-color-filter: #099302e6;
-  --fill-color-save: #0954bde6;
-  --fill-color-delete: #c80a0ae6;
+  --fill-color-red: hsla(0, 90%, 41%, 0.902);
+  --fill-color-blue: hsla(215, 91%, 39%, 0.902);
+  --fill-color-green: hsla(117, 97%, 29%, 0.902);
+  --fill-color-black: hsla(0, 6%, 7%, 0.702);
+  --fill-color-orange: rgba(229, 163, 39, 0.7);
   --small-gap: 0.3rem;
   --medium-gap: 0.5rem;
   --big-gap: 1rem;
@@ -101,6 +100,7 @@ main::-webkit-scrollbar-track {
   margin: 0;
   padding-block: var(--medium-gap);
   padding-left: var(--small-gap);
+  font-size: 1.3rem;
 }
 
 .tarefa-card:not(.tarefa-detailed-card) .tarefa-card-titulo h2:hover {
@@ -114,8 +114,9 @@ main::-webkit-scrollbar-track {
   border-radius: 50%;
   display: grid;
   place-content: center;
-  width: 1.5rem;
   height: 1.5rem;
+  width: 1.5rem;
+  min-width: 1.5rem;
 }
 
 .tarefa-card-titulo-checkbox {
@@ -177,27 +178,27 @@ div:has(> .circle),
 }
 
 .tarefa-card-button:hover > svg > path.cancel {
-  fill: var(--fill-color-cancel);
+  fill: var(--fill-color-red);
 }
 
 .tarefa-card-button:hover > svg > path.timesheet {
-  fill: var(--fill-color-timesheet);
+  fill: var(--fill-color-blue);
 }
 
 .tarefa-card-button:hover > svg > path.conclude {
-  fill: var(--fill-color-conclude);
+  fill: var(--fill-color-green);
 }
 
 .tarefa-card-button:hover > svg > path.filter {
-  fill: var(--fill-color-filter);
+  fill: var(--fill-color-green);
 }
 
 .tarefa-card-button:hover > svg > path.save {
-  fill: var(--fill-color-save);
+  fill: var(--fill-color-blue);
 }
 
 .tarefa-card-button:hover > svg > path.delete {
-  fill: var(--fill-color-delete);
+  fill: var(--fill-color-red);
 }
 
 .tarefa-card processo-info {
@@ -219,19 +220,23 @@ div:has(> .circle),
 }
 
 .lost {
-  background-color: rgba(18, 16, 16, 0.702);
+  background-color: var(--fill-color-black);
 }
 
 .danger {
-  background-color: rgba(255, 0, 0, 0.702);
+  background-color: var(--fill-color-red);
 }
 
 .warning {
-  background-color: rgba(229, 163, 39, 0.7);
+  background-color: var(--fill-color-orange);
+}
+
+.done {
+  background-color: var(--fill-color-blue);
 }
 
 .normal {
-  background-color: rgba(83, 207, 11, 0.702);
+  background-color: var(--fill-color-green);
 }
 
 .tarefa-detailed-card {

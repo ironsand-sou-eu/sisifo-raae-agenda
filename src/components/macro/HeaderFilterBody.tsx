@@ -6,9 +6,9 @@ import envVars from "../../envVars";
 import { useFilterAnimations } from "../hooks/FilterAnimationsProvider";
 import { useFilters } from "../hooks/FiltersProvider";
 
-export default function TopFilterBody(): JSX.Element {
+export default function HeaderFilterBody(): JSX.Element {
   const { filters, changeCurrentFilter } = useFilters();
-  const { quadroKanban, colunaKanban, tipos, responsaveis, gruposTrabalho, situacoes, dates, nextXDays } = filters?.currentFilter ?? {};
+  const { quadroKanban, tipos, responsaveis, gruposTrabalho, situacao, dates, nextXDays } = filters?.currentFilter ?? {};
   const { endpoints } = useProjurisConnector();
   const { bodyDivRef, setBodyDisplayingAnimation } = useFilterAnimations();
   // SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
@@ -50,11 +50,11 @@ export default function TopFilterBody(): JSX.Element {
       <FetchingSelect
         optionsEndpoint={endpoints.situacoesTarefa}
         hasMultiLevelSource={false}
-        values={situacoes}
-        onChange={newValues => changeCurrentFilter(newValues, "situacoes")}
+        values={situacao ? [situacao] : undefined}
+        onChange={newValues => changeCurrentFilter(newValues, "situacao")}
         name="situacao"
         label="Situação da tarefa"
-        isMulti={true}
+        isMulti={false}
       />
       <FetchingSelect
         optionsEndpoint={endpoints.quadrosKanban(envVars.CODIGO_USUARIO)}
@@ -63,17 +63,6 @@ export default function TopFilterBody(): JSX.Element {
         onChange={newValues => changeCurrentFilter(newValues, "quadroKanban")}
         name="quadro-kanban"
         label="Quadro kanban"
-        isMulti={false}
-      />
-      <FetchingSelect
-        key={filters?.currentFilter?.quadroKanban?.chave}
-        optionsEndpoint={endpoints.colunasKanban(filters?.currentFilter?.quadroKanban?.chave)}
-        hasMultiLevelSource={false}
-        values={colunaKanban ? [colunaKanban] : undefined}
-        onChange={newValues => changeCurrentFilter(newValues, "colunaKanban")}
-        filterObject={{ key: "titulo" }}
-        name="coluna-kanban"
-        label="Coluna kanban"
         isMulti={false}
       />
       <FetchingSelect

@@ -2,9 +2,8 @@ import HeaderButton from "../micro/HeaderButton";
 import FixedSelect from "../micro/FixedSelect";
 import { useFilterAnimations } from "../hooks/FilterAnimationsProvider";
 import { useFilters } from "../hooks/FiltersProvider";
-import { useEffect } from "react";
 
-export default function TopFilterHeader(): JSX.Element {
+export default function HeaderFilterHeader(): JSX.Element {
   // TODO: SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
   const { toggleFilterVisibility } = useFilterAnimations();
   const { filters, applySelectedFilter, promptAddingFilter, promptDeletingFilter } = useFilters();

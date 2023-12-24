@@ -1,5 +1,7 @@
 import envVars from "../../envVars";
+import { Tarefa } from "../../global";
 import { projurisApiBase, projurisLoginUri } from "../../hardcoded";
+import { Filter } from "./FiltersProvider";
 
 export type SimpleDocument = {
   chave: number;
@@ -97,6 +99,9 @@ export default function useProjurisConnector() {
     // criarAndamento: "/andamento",
     // criarPedido: "/processo/pedido/",
     criarTarefa: "/tarefa",
+    consultarTarefaComPaginacao: (registersAmount: number, order: "ASC" | "DESC") => {
+      return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=0&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
+    },
     tarefaDetails: (codigoTarefaEvento: number, codigoProcesso: number) => {
       return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
     },
@@ -111,7 +116,11 @@ export default function useProjurisConnector() {
   };
 
   async function getProjurisAuthTokenWithinExpiration(): Promise<string> {
-    const tokenResponse = await chrome.storage.local.get(["projurisToken", "projurisExpiration"]);
+    // const tokenResponse = await chrome.storage.local.get(["projurisToken", "projurisExpiration"]);
+    const projurisToken = localStorage.getItem("projurisToken") ?? "";
+    const projurisExpiration: number = parseInt(localStorage.getItem("projurisExpiration") ?? "0");
+    const tokenResponse = { projurisToken, projurisExpiration };
+
     const storedTokenIsEmpty = Object.keys(tokenResponse).length === 0;
     if (storedTokenIsEmpty === true) return await fetchAndStoreNewProjurisAuthToken();
     const tokenExpired = tokenResponse.projurisExpiration < new Date().getTime();
@@ -121,7 +130,10 @@ export default function useProjurisConnector() {
 
   async function fetchAndStoreNewProjurisAuthToken(): Promise<string> {
     const tokenObj = await fetchProjurisAuthToken();
-    await chrome.storage.local.set(tokenObj);
+    // await chrome.storage.local.set(tokenObj);
+    localStorage.setItem("projurisToken", tokenObj.projurisToken);
+    localStorage.setItem("projurisExpiration", `${tokenObj.projurisExpiration}`);
+
     return tokenObj.projurisToken;
   }
 
@@ -161,10 +173,50 @@ export default function useProjurisConnector() {
 
   async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<TarefaDetails> {
     const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
-    return makeProjurisRequest<TarefaDetails>({ endpoint, method: "GET" });
+    const response = await makeProjurisRequest({ endpoint, method: "GET" });
+    return await response.json();
   }
 
-  async function makeProjurisRequest<T>(fetchOptions: FetchOptions): Promise<T> {
+  async function fetchTarefasFromFilter(filter: Filter): Promise<Tarefa[]> {
+    const endpoint = endpoints.consultarTarefaComPaginacao(30, "ASC");
+    const body = createQueryBody(filter);
+    const response = await makeProjurisRequest({ endpoint, method: "POST", body });
+    return await extractOptionsArray(response);
+  }
+
+  function createQueryBody(filter: Filter): string {
+    const filterBody: any = {
+      flagVinculoPrincipal: true,
+      tarefaTipoData: "DATA_PREVISTA_CONCLUSAO",
+      codigoQuadroKanban: filter.quadroKanban ? filter.quadroKanban.chave : "",
+      usuariosResponsaveis: filter.responsaveis ? filter.responsaveis : [],
+      gruposResponsaveis: filter.gruposTrabalho ? filter.gruposTrabalho : [],
+      codigoSituacao: filter.situacao ? filter.situacao.chave : "",
+      codigosTarefaTipo: filter.tipos ? filter.tipos.map(tipo => tipo.codigoTarefaTipo) : [],
+    };
+
+    const dateArray = [];
+    if (filter.nextXDays) {
+      dateArray[0] = new Date();
+      dateArray[1] = new Date().getTime() + filter.nextXDays * 24 * 60 * 60 * 1000;
+    } else if (filter.dates) {
+      dateArray[0] = filter.dates[0];
+      dateArray[1] = filter.dates[1];
+    }
+    dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    const [dataTarefaInicio, dataTarefaFim] = dateArray;
+    if (dataTarefaInicio) filterBody.dataTarefaInicio = dataTarefaInicio;
+    if (dataTarefaFim) filterBody.dataTarefaFim = dataTarefaFim;
+    return JSON.stringify(filterBody);
+  }
+
+  // async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<TarefaDetails> {
+  //   const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
+  //   const response = await makeProjurisRequest({ endpoint, method: "GET" });
+  //   return
+  // }
+
+  async function makeProjurisRequest(fetchOptions: FetchOptions): Promise<Response> {
     const { endpoint, method } = fetchOptions;
     const body = "body" in fetchOptions ? fetchOptions.body : undefined;
     const uri = (projurisApiBase + endpoint).replaceAll(`/${endpoint}`, `${endpoint}`);
@@ -179,7 +231,8 @@ export default function useProjurisConnector() {
       },
       body,
     };
-    return fetch(uri, params) as Promise<T>;
+
+    return fetch(uri, params);
   }
 
   async function loadSimpleOptions(endpoint?: string, filterObject?: ProjurisOptionsFilter, shallMap = true): Promise<any[]> {
@@ -188,7 +241,7 @@ export default function useProjurisConnector() {
       endpoint,
       method: "GET",
     };
-    const optionsPromise = await makeProjurisRequest<Response>(requestOptions);
+    const optionsPromise = await makeProjurisRequest(requestOptions);
     const rawOptions = await extractOptionsArray(optionsPromise);
     const options = filterObject?.flattenOptions ? flattenObjectsArray(rawOptions) : rawOptions;
     let filteredOptions = options;
@@ -229,6 +282,7 @@ export default function useProjurisConnector() {
     if (jsonResp.pessoaConsultaSimples) return jsonResp.pessoaConsultaSimples;
     if (jsonResp.campoDinamicoWs) return jsonResp.campoDinamicoWs;
     if (jsonResp.contaConsultaResultadoWs) return jsonResp.contaConsultaResultadoWs;
+    if (jsonResp.tarefaConsultaWs) return jsonResp.tarefaConsultaWs;
     return;
   }
 
@@ -277,7 +331,7 @@ export default function useProjurisConnector() {
     makeProjurisRequest,
     fetchTarefaDetails,
     loadSimpleOptions,
-    // extractOptionsArray,
-    // filterProjurisOptions,
+    extractOptionsArray,
+    fetchTarefasFromFilter,
   };
 }

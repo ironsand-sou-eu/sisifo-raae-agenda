@@ -1,13 +1,10 @@
-export type Tarefa = (typeof tarefasMock)[number];
-
 const tarefasMock = [
   {
     codigoTarefa: 18465366,
     codigoTarefaEvento: 19197742,
     codigoTarefaTipo: 1362420,
     corTarefaTipo: "#FF9800",
-    descricao:
-      "Anexar: Petição de habilitação; Estatuto Social; Ata de eleição da direitoria; Procuração e Substabelecimento.     |",
+    descricao: "Anexar: Petição de habilitação; Estatuto Social; Ata de eleição da direitoria; Procuração e Substabelecimento.     |",
     identificador: "TAR.0018071",
     modulo: {
       chave: 17949881,
@@ -54,8 +51,7 @@ const tarefasMock = [
     codigoTarefaEvento: 19197742,
     codigoTarefaTipo: 1362420,
     corTarefaTipo: "#FF9800",
-    descricao:
-      "Anexar: Petição de habilitação; Estatuto Social; Ata de eleição da direitoria; Procuração e Substabelecimento.     |",
+    descricao: "Anexar: Petição de habilitação; Estatuto Social; Ata de eleição da direitoria; Procuração e Substabelecimento.     |",
     identificador: "TAR.0018072",
     modulo: {
       chave: 17949881,
@@ -102,8 +98,7 @@ const tarefasMock = [
     codigoTarefaEvento: 19197742,
     codigoTarefaTipo: 1362420,
     corTarefaTipo: "#FF9800",
-    descricao:
-      "Anexar: Petição de habilitação; Estatuto Social; Ata de eleição da direitoria; Procuração e Substabelecimento.     |",
+    descricao: "Anexar: Petição de habilitação; Estatuto Social; Ata de eleição da direitoria; Procuração e Substabelecimento.     |",
     identificador: "TAR.0018073",
     modulo: {
       chave: 17949881,
@@ -150,8 +145,7 @@ const tarefasMock = [
     codigoTarefaEvento: 19197742,
     codigoTarefaTipo: 1362420,
     corTarefaTipo: "#FF9800",
-    descricao:
-      "Anexar: Petição de habilitação; Estatuto Social; Ata de eleição da direitoria; Procuração e Substabelecimento.     |",
+    descricao: "Anexar: Petição de habilitação; Estatuto Social; Ata de eleição da direitoria; Procuração e Substabelecimento.     |",
     identificador: "TAR.0018074",
     modulo: {
       chave: 17949881,

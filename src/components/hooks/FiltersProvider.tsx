@@ -9,11 +9,10 @@ export type Filter = {
   index: number;
   filterName: string;
   quadroKanban?: Prettify<SimpleDocument>;
-  colunaKanban?: Prettify<SimpleDocument>;
-  tipos?: Prettify<SimpleDocument>[];
+  tipos?: Prettify<SituacaoTarefa>[];
   responsaveis?: Prettify<SimpleDocument>[];
   gruposTrabalho?: Prettify<SimpleDocument>[];
-  situacoes?: Prettify<SituacaoTarefa>[];
+  situacao?: Prettify<SimpleDocument>;
   dates?: Date[];
   nextXDays?: number;
 };
@@ -61,7 +60,6 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
-    console.log({ filters });
     localStorage.setItem("filters", JSON.stringify(filters));
     // chrome.storage.local.set({ currentFilter });
   }, [filters]);
@@ -144,10 +142,9 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
         break;
       case "categoria":
       case "quadroKanban":
-      case "colunaKanban":
       case "gruposTrabalho":
       case "responsaveis":
-      case "situacoes":
+      case "situacao":
       case "tipos":
         newFilter[action] = newValue;
     }

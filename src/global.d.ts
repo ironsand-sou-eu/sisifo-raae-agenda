@@ -1,1 +1,41 @@
-type Prettify<T> = { [K in keyof T]: T[K] } & {};
+import { SimpleDocument } from "./components/hooks/useProjurisConnector";
+
+export type Prettify<T> = { [K in keyof T]: T[K] } & {};
+
+export type Tarefa = {
+  codigoTarefa: number;
+  codigoTarefaEvento: number;
+  codigoTarefaTipo: number;
+  corTarefaTipo: string;
+  descricao: string;
+  identificador: string;
+  modulo: SimpleDocument;
+  chaveModulo: string;
+  nomeTarefaTipo: string;
+  usuarioResponsaveis: string;
+  gruposResponsaveis: string;
+  dataLimite: number;
+  dataConclusao: number;
+  dataConclusaoPrevista: number;
+  horaConclusao: number;
+  horaLimite: number;
+  codigoSituacao: number;
+  situacao: string;
+  flagSituacaoConcluida: boolean;
+  titulo: string;
+  flagTarefaCompromisso: string;
+  dataInicioCompromisso: number;
+  horaInicioCompromisso: number;
+  dataFimCompromisso: number;
+  numeroComentarios: number;
+  flagCompromissoConcluido: boolean;
+  privado: boolean;
+  numeroProcesso: string;
+  parteAtiva: string;
+  partePassiva: string;
+  identificadorModulo: string;
+  tarefaPrivada: boolean;
+  acessoPrivado: boolean;
+  diaTodo: boolean;
+  dataInclusao: number;
+};

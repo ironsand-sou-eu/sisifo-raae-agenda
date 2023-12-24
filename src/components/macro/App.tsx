@@ -1,33 +1,26 @@
 import TarefasSmallCard from "./TarefaSmallCard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TarefaDetailedCard, { TarefaRenderingDetails } from "./TarefaDetailedCard";
-import tarefasMock, { Tarefa } from "../../mocks/app-mocks";
-import TopFilter from "./TopFilter";
+import HeaderFilter from "./HeaderFilter";
 import "../../styles.css";
 import "react-datepicker/dist/react-datepicker.min.css";
-import FilterAnimationsProvider from "../hooks/FilterAnimationsProvider";
+import { Tarefa } from "../../global";
+import useTarefas from "../hooks/useTarefas";
+import AppSkeleton from "./skeletons/AppSkeleton";
 
-function App() {
-  const [tarefas, setTarefas] = useState<Tarefa[] | undefined>();
+export default function App() {
   const [renderDetails, setRenderDetails] = useState<TarefaRenderingDetails | undefined>();
-
-  useEffect(() => {
-    setTarefas(tarefasMock);
-  }, []);
+  const { tarefas, isLoading } = useTarefas();
 
   return (
     <>
-      <FilterAnimationsProvider>
-        <TopFilter />
-      </FilterAnimationsProvider>
+      <HeaderFilter />
       <main>
-        {tarefas?.map(tarefaInfo => (
-          <TarefasSmallCard
-            key={tarefaInfo.identificador}
-            tarefaInfo={tarefaInfo}
-            setRenderDetails={setRenderDetails}
-          />
-        ))}
+        {isLoading && <AppSkeleton />}
+        {!isLoading &&
+          tarefas?.map((tarefaInfo: Tarefa) => (
+            <TarefasSmallCard key={tarefaInfo.codigoTarefaEvento} tarefaInfo={tarefaInfo} setRenderDetails={setRenderDetails} />
+          ))}
         {renderDetails && (
           <TarefaDetailedCard
             codigoTarefaEvento={renderDetails.codigoTarefaEvento}
@@ -43,5 +36,3 @@ function App() {
     </>
   );
 }
-
-export default App;
