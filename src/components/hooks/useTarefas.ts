@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Tarefa } from "../../global";
 import { useFilters } from "./FiltersProvider";
 import { useFilterAnimations } from "./FilterAnimationsProvider";

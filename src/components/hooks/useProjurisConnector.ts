@@ -329,9 +329,9 @@ export default function useProjurisConnector() {
   return {
     endpoints,
     makeProjurisRequest,
-    fetchTarefaDetails,
     loadSimpleOptions,
     extractOptionsArray,
     fetchTarefasFromFilter,
+    fetchTarefaDetails,
   };
 }
