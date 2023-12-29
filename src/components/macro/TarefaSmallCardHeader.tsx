@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
-import { TarefaRenderingDetails } from "./TarefaDetailedCard";
+import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import HeaderButton from "../micro/HeaderButton";
 
 type TarefaSmallCardHeaderProps = {
-  setRenderDetails: Dispatch<SetStateAction<TarefaRenderingDetails | undefined>>;
+  setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
   nomeTarefaTipo: string;
   codigoTarefaEvento: number;
   codigoProcesso: number;
@@ -21,10 +21,10 @@ export default function TarefaSmallCardHeader({
   codigoTarefaEvento,
   codigoProcesso,
   tarefaColor,
-  setRenderDetails,
+  setPrefetchDetails,
 }: TarefaSmallCardHeaderProps): JSX.Element {
   function renderDetails(): void {
-    setRenderDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
+    setPrefetchDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
   }
 
   function getCheckboxName(): string {

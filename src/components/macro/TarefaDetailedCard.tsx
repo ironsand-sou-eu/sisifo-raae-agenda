@@ -1,16 +1,18 @@
-import { Dispatch, FunctionComponent, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, FunctionComponent, SetStateAction } from "react";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import FetchingSelect from "../micro/FetchingSelect";
-import { TarefaDetails } from "../hooks/useProjurisConnector";
 import { codigoUsuario } from "../../hardcoded";
 import Textarea from "../micro/Textarea";
 import ProcessoInfo from "../micro/ProcessoInfoCard";
 import TarefaDetailedCardHeader from "./TarefaDetailedCardHeader";
 import PrazosCard from "../micro/PrazosCard";
 import Button from "../micro/Button";
-import tarefaDetailsMock from "../../mocks/tarefa-details-mock";
+import useTarefaDetails from "../hooks/useTarefaDetails";
+import useFetchedTarefasAdapter from "../hooks/useTarefasAdapter";
+import { useLoading } from "../hooks/LoadingProvider";
+import TarefaDetailedCardSkeleton from "./skeletons/TarefaDetailedCardSkeleton";
 
-export type TarefaRenderingDetails = {
+export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
   codigoProcesso: number;
   parteAtiva: string;
@@ -19,18 +21,9 @@ export type TarefaRenderingDetails = {
   tarefaColor: string;
 };
 
-export type TarefaDetailedCardProps = TarefaRenderingDetails & {
-  setRenderDetails: Dispatch<SetStateAction<TarefaRenderingDetails | undefined>>;
+export type TarefaDetailedCardProps = TarefaPrefetchDetails & {
+  setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
 };
-
-function getPrazoStyle(prazo?: Date): string {
-  if (!prazo) return "danger";
-  if (new Date().toLocaleDateString("pt-BR") === prazo.toLocaleDateString("pt-BR")) return "danger";
-  if (new Date().getTime() >= prazo.getTime()) return "lost";
-  const daysInMs = 2 * 24 * 60 * 60 * 1000;
-  if (new Date().getTime() >= prazo.getTime() - daysInMs) return "warning";
-  return "normal";
-}
 
 const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   codigoTarefaEvento,
@@ -39,59 +32,43 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   partePassiva,
   numeroProcesso,
   tarefaColor,
-  setRenderDetails,
+  setPrefetchDetails,
 }: TarefaDetailedCardProps) => {
-  const [tarefaDetails, setTarefaDetails] = useState<TarefaDetails | undefined>(tarefaDetailsMock);
+  const { endpoints } = useProjurisConnector();
+  const { tarefaDetails } = useTarefaDetails(codigoTarefaEvento, codigoProcesso);
+  const { adaptFetchedTarefaDetails } = useFetchedTarefasAdapter();
+  const { loadingDetails } = useLoading();
+
   const {
-    tarefaEventoWs: {
-      titulo,
-      tipoTarefa,
-      tarefaEventoSituacaoWs,
-      dataConclusao,
-      dataConclusaoPrevista,
-      dataLimite,
-      descricaoTarefa,
-      usuariosResponsaveis,
-      gruposResponsaveis,
-      marcadorWs,
-      colunaKanban,
-      quadroKanban,
-    },
-  } = tarefaDetails || { tarefaEventoWs: {} };
-  const { fetchTarefaDetails, endpoints } = useProjurisConnector();
+    displayTitulo,
+    situacao,
+    codigoProcessoProjuris,
+    processoUrl,
+    descricaoTarefa,
+    usuariosResponsaveis,
+    gruposResponsaveis,
+    marcadorWs,
+    colunaKanban,
+    quadroKanban,
+    prazoAdmString,
+    prazoFatalString,
+    dataConclusaoString,
+    prazoStyle,
+  } = adaptFetchedTarefaDetails(tarefaDetails, tarefaColor);
 
-  useEffect(() => {
-    setTarefaDetails(tarefaDetailsMock);
-    // fetchTarefaDetails(codigoTarefaEvento, codigoProcesso)
-    //   .then(tarefaDetails => setTarefaDetails(tarefaDetails))
-    //   .catch(e => console.error(e));
-  }, []);
-
-  return (
+  return loadingDetails ? (
+    <TarefaDetailedCardSkeleton />
+  ) : (
     <section className="tarefa-card tarefa-detailed-card">
-      <TarefaDetailedCardHeader
-        titulo={titulo}
-        tipoTarefa={tipoTarefa?.valor}
-        setRenderDetails={setRenderDetails}
-        tarefaColor={tarefaColor}
-      />
-      <PrazosCard
-        situacao={tarefaEventoSituacaoWs?.situacao}
-        dataConclusao={dataConclusao}
-        dataConclusaoPrevista={dataConclusaoPrevista}
-        dataLimite={dataLimite}
-      />
-      <ProcessoInfo
-        parteAtiva={parteAtiva}
-        partePassiva={partePassiva}
-        numeroProcesso={numeroProcesso}
-        codigoProcessoProjuris={tarefaDetails?.modulos[0].codigoRegistroVinculo}
-      />
+      <TarefaDetailedCardHeader {...{ displayTitulo, setPrefetchDetails, tarefaColor }} />
+      <PrazosCard {...{ situacao, prazoAdmString, prazoFatalString, dataConclusaoString, prazoStyle }} />
+      <ProcessoInfo {...{ parteAtiva, partePassiva, numeroProcesso, processoUrl }} />
       <Textarea nameAndId="descricao" label="Descrição" content={descricaoTarefa} />
       <FetchingSelect
         optionsEndpoint={endpoints.responsaveis}
         hasMultiLevelSource={false}
         values={usuariosResponsaveis}
+        onChange={() => {}}
         name="responsaveis"
         label="Responsáveis"
         isMulti={true}
@@ -100,6 +77,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.gruposTrabalho}
         hasMultiLevelSource={false}
         values={gruposResponsaveis}
+        onChange={() => {}}
         name="grupos-trabalho"
         label="Grupos de trabalho"
         isMulti={true}
@@ -108,22 +86,25 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.marcadores}
         hasMultiLevelSource={false}
         values={marcadorWs}
+        onChange={() => {}}
         name="marcadores"
         label="Marcadores"
         isMulti={true}
       />
       <FetchingSelect
-        optionsEndpoint={endpoints.quadrosKanban(quadroKanban?.chave)}
+        optionsEndpoint={endpoints.quadrosKanban(codigoUsuario)}
         hasMultiLevelSource={false}
         values={quadroKanban ? [quadroKanban] : undefined}
+        onChange={() => {}}
         name="quadro-kanban"
         label="Quadro kanban"
         isMulti={false}
       />
       <FetchingSelect
-        optionsEndpoint={endpoints.colunasKanban(codigoUsuario)}
+        optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
         hasMultiLevelSource={false}
         values={colunaKanban ? [colunaKanban] : undefined}
+        onChange={() => {}}
         name="coluna-kanban"
         label="Coluna kanban"
         isMulti={false}

@@ -1,28 +1,22 @@
 import { Dispatch, SetStateAction } from "react";
 import HeaderButton from "../micro/HeaderButton";
-import { TarefaRenderingDetails } from "./TarefaDetailedCard";
+import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 
 type TarefaDetailedCardHeaderProps = {
-  setRenderDetails: Dispatch<SetStateAction<TarefaRenderingDetails | undefined>>;
-  tipoTarefa?: string;
-  titulo?: string;
+  setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
   tarefaColor?: string;
+  displayTitulo?: string;
 };
 
-export default function TarefaDetailedCardHeader({
-  tipoTarefa,
-  titulo,
-  setRenderDetails,
-  tarefaColor,
-}: TarefaDetailedCardHeaderProps): JSX.Element {
+export default function TarefaDetailedCardHeader({ setPrefetchDetails, tarefaColor, displayTitulo }: TarefaDetailedCardHeaderProps): JSX.Element {
   return (
     <header className="tarefa-card-titulo">
-      <div onClick={() => setRenderDetails(undefined)} className="close-btn">
+      <div onClick={() => setPrefetchDetails(undefined)} className="close-btn">
         +
       </div>
       <div>
-        <div style={{ backgroundColor: tarefaColor ?? "" }} className="circle" />
-        <h2>{titulo ?? tipoTarefa ?? ""}</h2>
+        <div style={{ backgroundColor: tarefaColor }} className="circle" />
+        <h2>{displayTitulo}</h2>
       </div>
       <div>
         <HeaderButton type="cancel" onClick={e => console.log(e)} />

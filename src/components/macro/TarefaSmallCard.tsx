@@ -1,16 +1,16 @@
 import { Dispatch, SetStateAction } from "react";
-import { TarefaRenderingDetails } from "./TarefaDetailedCard";
+import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import TarefaSmallCardHeader from "./TarefaSmallCardHeader";
 
 type TarefaSmallCardProps = {
-  setRenderDetails: Dispatch<SetStateAction<TarefaRenderingDetails | undefined>>;
+  setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
   tarefaDisplayInfo: {
     codigoTarefaEvento: number;
     tarefaColor: string;
     dataConclusaoPrevista: number;
     descricao: string;
     gruposResponsaveis: string;
-    codigoProcesso: number;
+    codigoProcessoProjuris: number;
     nomeTarefaTipo: string;
     numeroProcesso: string;
     parteAtiva: string;
@@ -23,13 +23,13 @@ type TarefaSmallCardProps = {
   };
 };
 
-export default function TarefaSmallCard({ tarefaDisplayInfo, setRenderDetails }: TarefaSmallCardProps): JSX.Element {
+export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails }: TarefaSmallCardProps): JSX.Element {
   const {
     codigoTarefaEvento,
     tarefaColor,
     descricao,
     gruposResponsaveis,
-    codigoProcesso,
+    codigoProcessoProjuris,
     nomeTarefaTipo,
     numeroProcesso,
     parteAtiva,
@@ -44,10 +44,10 @@ export default function TarefaSmallCard({ tarefaDisplayInfo, setRenderDetails }:
   return (
     <section className="tarefa-card">
       <TarefaSmallCardHeader
-        setRenderDetails={setRenderDetails}
+        setPrefetchDetails={setPrefetchDetails}
         nomeTarefaTipo={nomeTarefaTipo}
         codigoTarefaEvento={codigoTarefaEvento}
-        codigoProcesso={codigoProcesso}
+        codigoProcesso={codigoProcessoProjuris}
         numeroProcesso={numeroProcesso}
         parteAtiva={parteAtiva}
         partePassiva={partePassiva}

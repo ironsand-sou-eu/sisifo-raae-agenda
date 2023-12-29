@@ -1,18 +1,11 @@
-import { projurisApiBase } from "../../hardcoded";
-import useProjurisConnector from "../hooks/useProjurisConnector";
-
 type ProcessoInfoCardProps = {
   parteAtiva: string;
   partePassiva: string;
   numeroProcesso: string;
-  codigoProcessoProjuris?: number;
+  processoUrl?: string;
 };
 
-export default function ProcessoInfoCard({ parteAtiva, partePassiva, numeroProcesso, codigoProcessoProjuris }: ProcessoInfoCardProps): JSX.Element {
-  const { endpoints } = useProjurisConnector();
-
-  const processoUrl = codigoProcessoProjuris ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcessoProjuris : "";
-
+export default function ProcessoInfoCard({ parteAtiva, partePassiva, numeroProcesso, processoUrl }: ProcessoInfoCardProps): JSX.Element {
   return (
     <div className="processo-info">
       <p>{parteAtiva}</p>
