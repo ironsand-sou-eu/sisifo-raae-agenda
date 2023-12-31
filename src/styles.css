@@ -73,10 +73,8 @@ main::-webkit-scrollbar-track {
   background-color: hsl(240deg 12% 23% / 25%);
 }
 
-.tarefa-card {
-  width: 90dvw;
+.card {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 20px;
@@ -86,7 +84,9 @@ main::-webkit-scrollbar-track {
   margin-bottom: 1rem;
 }
 
-.tarefa-card:not(.tarefa-detailed-card) {
+.tarefa-card {
+  width: 90dvw;
+  flex-direction: column;
   padding: var(--medium-gap);
 }
 
@@ -209,6 +209,7 @@ div:has(> .circle),
   font-size: 0.8rem;
   color: #446;
   align-self: flex-end;
+  text-align: end;
 }
 
 .prazo {
@@ -427,6 +428,13 @@ div.select-control:hover,
   100% {
     transform: translateY(-100%);
   }
+}
+
+.floating-command-bar {
+  position: absolute;
+  top: var(--header-height);
+  left: var(--big-gap);
+  z-index: 10;
 }
 
 .skeleton {

@@ -5,12 +5,13 @@ import TarefaSmallCardHeader from "./TarefaSmallCardHeader";
 type TarefaSmallCardProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
   tarefaDisplayInfo: {
+    checked?: boolean;
     codigoTarefaEvento: number;
     tarefaColor: string;
     dataConclusaoPrevista: number;
     descricao: string;
     gruposResponsaveis: string;
-    codigoProcessoProjuris: number;
+    codigoProcesso: number;
     nomeTarefaTipo: string;
     numeroProcesso: string;
     parteAtiva: string;
@@ -25,11 +26,12 @@ type TarefaSmallCardProps = {
 
 export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails }: TarefaSmallCardProps): JSX.Element {
   const {
+    checked,
     codigoTarefaEvento,
     tarefaColor,
     descricao,
     gruposResponsaveis,
-    codigoProcessoProjuris,
+    codigoProcesso,
     nomeTarefaTipo,
     numeroProcesso,
     parteAtiva,
@@ -42,16 +44,10 @@ export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails 
   } = tarefaDisplayInfo;
 
   return (
-    <section className="tarefa-card">
+    <section className="card tarefa-card">
       <TarefaSmallCardHeader
+        {...{ checked, nomeTarefaTipo, codigoTarefaEvento, codigoProcesso, numeroProcesso, parteAtiva, partePassiva, tarefaColor }}
         setPrefetchDetails={setPrefetchDetails}
-        nomeTarefaTipo={nomeTarefaTipo}
-        codigoTarefaEvento={codigoTarefaEvento}
-        codigoProcesso={codigoProcessoProjuris}
-        numeroProcesso={numeroProcesso}
-        parteAtiva={parteAtiva}
-        partePassiva={partePassiva}
-        tarefaColor={tarefaColor}
       />
       <p className={`prazo ${prazoStyle}`}>{`Prazo: ${prazoString} - Situação: ${situacao}`}</p>
       <div className="processo-info">

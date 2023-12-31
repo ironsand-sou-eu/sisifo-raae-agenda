@@ -11,13 +11,14 @@ export default function useFetchedTarefasAdapter() {
 
   function parseSmallTarefaCardProps(tarefaInfo: Tarefa) {
     const {
+      checked,
       codigoTarefaEvento,
       corTarefaTipo: tarefaColor,
       dataConclusaoPrevista,
       descricao,
       flagSituacaoConcluida,
       gruposResponsaveis,
-      modulo: { chave: codigoProcessoProjuris },
+      modulo: { chave: codigoProcesso },
       nomeTarefaTipo,
       numeroProcesso,
       parteAtiva,
@@ -32,12 +33,13 @@ export default function useFetchedTarefasAdapter() {
 
     const prazo = dataConclusaoPrevista ? new Date(dataConclusaoPrevista) : undefined;
     return {
+      checked,
       codigoTarefaEvento,
       tarefaColor: tarefaColor ?? "#fff9",
       dataConclusaoPrevista,
       descricao,
       gruposResponsaveis: displayingGruposResponsaveis,
-      codigoProcessoProjuris,
+      codigoProcesso,
       nomeTarefaTipo,
       numeroProcesso: displayingNumeroProcesso,
       parteAtiva: displayingParteAtiva,
@@ -45,7 +47,7 @@ export default function useFetchedTarefasAdapter() {
       situacao,
       usuarioResponsaveis,
       prazoString: prazo ? prazo.toLocaleDateString("pt-BR") : "Não encontrado",
-      processoUrl: codigoProcessoProjuris ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcessoProjuris : "",
+      processoUrl: codigoProcesso ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcesso : "",
       prazoStyle: getPrazoStyle(prazo, flagSituacaoConcluida),
     };
   }

@@ -3,6 +3,7 @@ import { SimpleDocument } from "./components/hooks/useProjurisConnector";
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
 export type Tarefa = {
+  checked?: boolean;
   codigoTarefa: number;
   codigoTarefaEvento: number;
   codigoTarefaTipo: number;

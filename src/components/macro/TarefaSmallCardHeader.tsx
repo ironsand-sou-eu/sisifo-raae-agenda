@@ -1,9 +1,11 @@
-import { Dispatch, SetStateAction } from "react";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import HeaderButton from "../micro/HeaderButton";
+import { useTarefasList } from "../hooks/TarefasListProvider";
 
 type TarefaSmallCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
+  checked?: boolean;
   nomeTarefaTipo: string;
   codigoTarefaEvento: number;
   codigoProcesso: number;
@@ -14,6 +16,7 @@ type TarefaSmallCardHeaderProps = {
 };
 
 export default function TarefaSmallCardHeader({
+  checked,
   nomeTarefaTipo,
   parteAtiva,
   partePassiva,
@@ -23,12 +26,29 @@ export default function TarefaSmallCardHeader({
   tarefaColor,
   setPrefetchDetails,
 }: TarefaSmallCardHeaderProps): JSX.Element {
+  const { setTarefas } = useTarefasList();
   function renderDetails(): void {
     setPrefetchDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
   }
 
   function getCheckboxName(): string {
-    return `chk-tarefa-${codigoProcesso}`;
+    return `chk-tarefa-${codigoProcesso}--${codigoTarefaEvento}`;
+  }
+
+  function getProcessoAndTarefaCodesFromCheckboxId(id: string): number[] {
+    const codes = id.replace("chk-tarefa-", "");
+    return codes.split("--").map(code => parseInt(code));
+  }
+
+  function handleSelect({ target: { id } }: ChangeEvent) {
+    const [_, codTarefaEvento] = getProcessoAndTarefaCodesFromCheckboxId(id);
+    setTarefas(prevValues => {
+      if (!prevValues) return [];
+      const index = prevValues?.findIndex(tarefa => tarefa.codigoTarefaEvento === codTarefaEvento);
+      const clone = structuredClone(prevValues);
+      clone[index].checked = !clone[index].checked;
+      return clone;
+    });
   }
 
   return (
@@ -38,6 +58,8 @@ export default function TarefaSmallCardHeader({
           style={{ backgroundColor: tarefaColor }}
           className="tarefa-card-titulo-checkbox"
           type="checkbox"
+          onChange={handleSelect}
+          checked={checked}
           name={getCheckboxName()}
           id={getCheckboxName()}
         />
