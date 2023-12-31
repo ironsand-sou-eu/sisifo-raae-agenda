@@ -1,18 +1,18 @@
-import React from "react";
+import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./components/macro/App";
 import FilterAnimationsProvider from "./components/hooks/FilterAnimationsProvider";
 import FiltersProvider from "./components/hooks/FiltersProvider";
-import LoadingProvider from "./components/hooks/LoadingProvider";
+import TarefasListProvider from "./components/hooks/TarefasListProvider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <StrictMode>
     <FilterAnimationsProvider>
       <FiltersProvider>
-        <LoadingProvider>
+        <TarefasListProvider>
           <App />
-        </LoadingProvider>
+        </TarefasListProvider>
       </FiltersProvider>
     </FilterAnimationsProvider>
-  </React.StrictMode>
+  </StrictMode>
 );

@@ -9,7 +9,6 @@ import PrazosCard from "../micro/PrazosCard";
 import Button from "../micro/Button";
 import useTarefaDetails from "../hooks/useTarefaDetails";
 import useFetchedTarefasAdapter from "../hooks/useTarefasAdapter";
-import { useLoading } from "../hooks/LoadingProvider";
 import TarefaDetailedCardSkeleton from "./skeletons/TarefaDetailedCardSkeleton";
 
 export type TarefaPrefetchDetails = {
@@ -35,9 +34,8 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   setPrefetchDetails,
 }: TarefaDetailedCardProps) => {
   const { endpoints } = useProjurisConnector();
-  const { tarefaDetails } = useTarefaDetails(codigoTarefaEvento, codigoProcesso);
+  const { tarefaDetails, isDetailLoading } = useTarefaDetails(codigoTarefaEvento, codigoProcesso);
   const { adaptFetchedTarefaDetails } = useFetchedTarefasAdapter();
-  const { loadingDetails } = useLoading();
 
   const {
     displayTitulo,
@@ -56,10 +54,10 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     prazoStyle,
   } = adaptFetchedTarefaDetails(tarefaDetails, tarefaColor);
 
-  return loadingDetails ? (
+  return isDetailLoading ? (
     <TarefaDetailedCardSkeleton />
   ) : (
-    <section className="tarefa-card tarefa-detailed-card">
+    <section className="card tarefa-card tarefa-detailed-card">
       <TarefaDetailedCardHeader {...{ displayTitulo, setPrefetchDetails, tarefaColor }} />
       <PrazosCard {...{ situacao, prazoAdmString, prazoFatalString, dataConclusaoString, prazoStyle }} />
       <ProcessoInfo {...{ parteAtiva, partePassiva, numeroProcesso, processoUrl }} />

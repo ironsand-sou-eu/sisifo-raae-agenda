@@ -1,25 +1,27 @@
-import TarefasSmallCard from "./TarefaSmallCard";
-import { useState } from "react";
-import TarefaDetailedCard, { TarefaPrefetchDetails } from "./TarefaDetailedCard";
+import { useEffect, useState } from "react";
+import useFetchedTarefasAdapter from "../hooks/useTarefasAdapter";
+import { useTarefasList } from "../hooks/TarefasListProvider";
 import HeaderFilter from "./HeaderFilter";
+import FloatingCommandBar from "./FloatingCommandBar";
+import TarefasSmallCard from "./TarefaSmallCard";
+import TarefaDetailedCard, { TarefaPrefetchDetails } from "./TarefaDetailedCard";
+import AppSkeleton from "./skeletons/AppSkeleton";
 import "../../styles.css";
 import "react-datepicker/dist/react-datepicker.min.css";
-import useTarefas from "../hooks/useTarefas";
-import AppSkeleton from "./skeletons/AppSkeleton";
-import useFetchedTarefasAdapter from "../hooks/useTarefasAdapter";
-import { useLoading } from "../hooks/LoadingProvider";
 
 export default function App() {
   const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
-  const { tarefas } = useTarefas();
-  const { loadingList } = useLoading();
+  const { tarefas, isListLoading } = useTarefasList();
   const { adaptFetchedTarefasList } = useFetchedTarefasAdapter();
   const displayingTarefas = adaptFetchedTarefasList(tarefas);
+  const selectedTarefas = tarefas?.filter(tarefa => tarefa.checked);
+
   return (
     <>
       <HeaderFilter />
       <main>
-        {loadingList ? (
+        {!!selectedTarefas.length && <FloatingCommandBar />}
+        {isListLoading ? (
           <AppSkeleton />
         ) : (
           displayingTarefas?.map(tarefaInfo => (
