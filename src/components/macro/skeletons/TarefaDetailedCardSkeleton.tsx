@@ -1,6 +1,6 @@
 export default function TarefaDetailedCardSkeleton(): JSX.Element {
   return (
-    <section className="tarefa-card tarefa-detailed-card">
+    <section className="card tarefa-card tarefa-detailed-card">
       <header className="tarefa-card-titulo">
         <div>
           <div className="skeleton skeleton-circle" />

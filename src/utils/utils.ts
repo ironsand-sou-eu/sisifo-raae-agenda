@@ -5,7 +5,6 @@ export function areObjectsEqual(object1: any, object2: any, ignoreProperties: st
 }
 
 export function deepSortObjectByEntries(object: object, ignoreProperties: string[] = []): object {
-  debugger;
   const sortedArrayFromObject = Object.entries(object).sort();
   const ignoredAndSortedArray = sortedArrayFromObject.filter(([key, _]) => !ignoreProperties.includes(key));
   const deepSortedArrayFromObject = ignoredAndSortedArray.map(([key, value]) => {

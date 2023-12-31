@@ -1,6 +1,6 @@
 export default function TarefaSmallCardSkeleton(): JSX.Element {
   return (
-    <section className="tarefa-card">
+    <section className="card tarefa-card">
       <header className="tarefa-card-titulo">
         <div>
           <div className="skeleton skeleton-circle" />
