@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import useProjurisConnector, { TarefaDetails } from "./useProjurisConnector";
+import useProjurisConnector from "./useProjurisConnector";
+import { ReceivedTarefaDetails } from "../../global";
 
 export default function useTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number) {
-  const [tarefaDetails, setTarefaDetails] = useState<TarefaDetails>();
+  const [tarefaDetails, setTarefaDetails] = useState<ReceivedTarefaDetails>();
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const { fetchTarefaDetails } = useProjurisConnector();
 
@@ -10,7 +11,6 @@ export default function useTarefaDetails(codigoTarefaEvento: number, codigoProce
     setIsDetailLoading(true);
     fetchTarefaDetails(codigoTarefaEvento, codigoProcesso)
       .then(details => {
-        console.log({ details });
         setTarefaDetails(details);
         setIsDetailLoading(false);
       })

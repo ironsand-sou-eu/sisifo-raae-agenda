@@ -12,8 +12,8 @@ import "react-datepicker/dist/react-datepicker.min.css";
 export default function App() {
   const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
   const { tarefas, isListLoading } = useTarefasList();
-  const { adaptFetchedTarefasList } = useFetchedTarefasAdapter();
-  const displayingTarefas = adaptFetchedTarefasList(tarefas);
+  const { adaptFetchedTarefasListToDisplayingType } = useFetchedTarefasAdapter();
+  const displayingTarefas = adaptFetchedTarefasListToDisplayingType(tarefas);
   const selectedTarefas = tarefas?.filter(tarefa => tarefa.checked);
 
   return (

@@ -1,84 +1,7 @@
 import envVars from "../../envVars";
-import { Tarefa } from "../../global";
+import { ReceivedTarefaDetails, SimpleDocument, Tarefa, WritingTarefaDetails } from "../../global";
 import { projurisApiBase, projurisLoginUri } from "../../hardcoded";
 import { Filter } from "./FiltersProvider";
-
-export type SimpleDocument = {
-  chave: number;
-  valor: string;
-};
-
-export type Marcador = {
-  codigoMarcador: number;
-  nomeMarcador: string;
-};
-
-export type SituacaoTarefa = {
-  codigoTarefaTipo: number;
-  nomeTipoTarefa: string;
-};
-
-type Modulo = {
-  modulo: string;
-  codigoRegistroVinculo: number;
-  vinculoPrincipal: boolean;
-};
-
-export type TarefaDetails = {
-  modulos: Modulo[];
-  codigoTarefa: number;
-  tarefaEventoWs: {
-    codigoTarefaEvento: number;
-    codigoUsuarioCriador: number;
-    descricaoTarefa: string;
-    identificador: string;
-    dataConclusao?: number;
-    dataConclusaoPrevista: number;
-    horaConclusao: number;
-    horaLimite: number;
-    dataLimite: number;
-    dataBase: number;
-    usuariosResponsaveis: SimpleDocument[];
-    gruposResponsaveis: SimpleDocument[];
-    codigoTarefa: number;
-    tipoTarefa: SimpleDocument;
-    marcadorWs: Marcador[];
-    tarefaEventoSituacaoWs: {
-      codigoTarefaEventoSituacao: number;
-      situacao: string;
-      situacaoConcluida: boolean;
-    };
-    titulo: string;
-    kanban: boolean;
-    quadroKanban: SimpleDocument;
-    colunaKanban: SimpleDocument;
-  };
-};
-
-type WritingTarefaDetails = {
-  modulos: Modulo[];
-  codigoTarefaEvento: number;
-  codigoUsuarioCriador: number;
-  descricaoTarefa: string;
-  identificador: string;
-  dataConclusao: number | null;
-  dataConclusaoPrevista: number | null;
-  dataLimite: number | null;
-  dataBase: number | null;
-  usuariosResponsaveis: SimpleDocument[];
-  gruposResponsaveis: SimpleDocument[];
-  codigoTarefa: number;
-  tipoTarefa: SimpleDocument;
-  marcadorWs: Marcador[];
-  tarefaEventoSituacaoWs: {
-    codigoTarefaEventoSituacao: number;
-    situacao: string;
-  };
-  titulo: string;
-  kanban: boolean;
-  quadroKanban: SimpleDocument;
-  colunaKanban: SimpleDocument;
-};
 
 type ProjurisAccessToken = {
   projurisToken: string;
@@ -196,7 +119,7 @@ export default function useProjurisConnector() {
         body: string;
       };
 
-  async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<TarefaDetails> {
+  async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<ReceivedTarefaDetails> {
     const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
     const response = await makeProjurisRequest({ endpoint, method: "GET" });
     return await response.json();
@@ -235,7 +158,7 @@ export default function useProjurisConnector() {
     return JSON.stringify(filterBody);
   }
 
-  // async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<TarefaDetails> {
+  // async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<ReceivedTarefaDetails> {
   //   const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
   //   const response = await makeProjurisRequest({ endpoint, method: "GET" });
   //   return

@@ -1,6 +1,6 @@
-import { TarefaDetails } from "../components/hooks/useProjurisConnector";
+import { ReceivedTarefaDetails } from "../global";
 
-const tarefaDetailsMock: TarefaDetails = {
+const tarefaDetailsMock: ReceivedTarefaDetails = {
   modulos: [
     {
       modulo: "PROCESSO",
@@ -14,7 +14,7 @@ const tarefaDetailsMock: TarefaDetails = {
     codigoUsuarioCriador: 89323,
     descricaoTarefa: "Minuta -  Petição Inicial - Prazo interno para ajuizamento da ação",
     identificador: "TAR.0017231",
-    dataConclusao: undefined,
+    dataConclusao: null,
     dataConclusaoPrevista: 1698116400000,
     horaConclusao: 1701812640217,
     horaLimite: 1701816240218,
