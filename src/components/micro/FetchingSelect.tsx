@@ -1,7 +1,7 @@
 import AsyncSelect from "react-select/async";
-import useProjurisConnector, { Marcador, ProjurisOptionsFilter, SimpleDocument, SituacaoTarefa } from "../hooks/useProjurisConnector";
+import useProjurisConnector, { ProjurisOptionsFilter } from "../hooks/useProjurisConnector";
 import useProjurisAdapter from "../hooks/useProjurisAdapter";
-import { Prettify } from "../../global";
+import { Marcador, Prettify, SimpleDocument, SituacaoTarefa } from "../../global";
 
 export type SelectValue = Prettify<
   {
