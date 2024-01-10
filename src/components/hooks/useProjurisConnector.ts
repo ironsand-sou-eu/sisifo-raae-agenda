@@ -18,14 +18,14 @@ export type SituacaoTarefa = {
   nomeTipoTarefa: string;
 };
 
+type Modulo = {
+  modulo: string;
+  codigoRegistroVinculo: number;
+  vinculoPrincipal: boolean;
+};
+
 export type TarefaDetails = {
-  modulos: [
-    {
-      modulo: string;
-      codigoRegistroVinculo: number;
-      vinculoPrincipal: boolean;
-    }
-  ];
+  modulos: Modulo[];
   codigoTarefa: number;
   tarefaEventoWs: {
     codigoTarefaEvento: number;
@@ -53,6 +53,31 @@ export type TarefaDetails = {
     quadroKanban: SimpleDocument;
     colunaKanban: SimpleDocument;
   };
+};
+
+type WritingTarefaDetails = {
+  modulos: Modulo[];
+  codigoTarefaEvento: number;
+  codigoUsuarioCriador: number;
+  descricaoTarefa: string;
+  identificador: string;
+  dataConclusao: number | null;
+  dataConclusaoPrevista: number | null;
+  dataLimite: number | null;
+  dataBase: number | null;
+  usuariosResponsaveis: SimpleDocument[];
+  gruposResponsaveis: SimpleDocument[];
+  codigoTarefa: number;
+  tipoTarefa: SimpleDocument;
+  marcadorWs: Marcador[];
+  tarefaEventoSituacaoWs: {
+    codigoTarefaEventoSituacao: number;
+    situacao: string;
+  };
+  titulo: string;
+  kanban: boolean;
+  quadroKanban: SimpleDocument;
+  colunaKanban: SimpleDocument;
 };
 
 type ProjurisAccessToken = {
@@ -98,7 +123,7 @@ export default function useProjurisConnector() {
     // criarProcesso: "/processo-judicial",
     // criarAndamento: "/andamento",
     // criarPedido: "/processo/pedido/",
-    criarTarefa: "/tarefa",
+    criarOuEditarTarefa: "/tarefa",
     consultarTarefaComPaginacao: (registersAmount: number, order: "ASC" | "DESC") => {
       return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=0&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
     },
