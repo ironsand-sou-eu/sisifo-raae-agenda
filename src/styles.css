@@ -301,7 +301,7 @@ div.select-control,
 
 .datepicker-wrapper,
 .datepicker-input {
-  line-height: var(--big-gap);
+  line-height: var(--medium-padding);
   width: -webkit-fill-available;
 }
 
