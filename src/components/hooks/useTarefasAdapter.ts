@@ -1,11 +1,11 @@
-import { Tarefa } from "../../global";
+import { ReceivedTarefaDetails, Tarefa, WritingTarefaDetails } from "../../global";
 import { projurisApiBase } from "../../hardcoded";
-import useProjurisConnector, { TarefaDetails } from "./useProjurisConnector";
+import useProjurisConnector from "./useProjurisConnector";
 
 export default function useFetchedTarefasAdapter() {
   const { endpoints } = useProjurisConnector();
 
-  function adaptFetchedTarefasList(tarefasList: Tarefa[] = []) {
+  function adaptFetchedTarefasListToDisplayingType(tarefasList: Tarefa[] = []) {
     return tarefasList.map(parseSmallTarefaCardProps);
   }
 
@@ -52,7 +52,7 @@ export default function useFetchedTarefasAdapter() {
     };
   }
 
-  function adaptFetchedTarefaDetails(tarefaDetails?: TarefaDetails, tarefaColor?: string) {
+  function adaptFetchedTarefaDetailsToDisplayingType(tarefaDetails?: ReceivedTarefaDetails, tarefaColor?: string) {
     const {
       tarefaEventoWs: {
         titulo,
@@ -103,5 +103,50 @@ export default function useFetchedTarefasAdapter() {
     return "normal";
   }
 
-  return { adaptFetchedTarefasList, adaptFetchedTarefaDetails };
+  function adaptTarefaDetailsToWritingType(tarefa: ReceivedTarefaDetails): WritingTarefaDetails {
+    const {
+      tarefaEventoWs: {
+        codigoTarefa,
+        codigoTarefaEvento,
+        descricaoTarefa,
+        dataConclusao,
+        dataConclusaoPrevista,
+        dataLimite,
+        dataBase,
+        usuariosResponsaveis,
+        gruposResponsaveis,
+        tipoTarefa,
+        marcadorWs,
+        tarefaEventoSituacaoWs: { codigoTarefaEventoSituacao, situacao },
+        titulo,
+        kanban,
+        quadroKanban,
+        colunaKanban,
+      },
+    } = tarefa;
+
+    return {
+      codigoTarefaEvento,
+      descricaoTarefa,
+      dataConclusao,
+      dataConclusaoPrevista,
+      dataLimite,
+      dataBase,
+      usuariosResponsaveis,
+      gruposResponsaveis,
+      codigoTarefa,
+      tipoTarefa,
+      marcadorWs,
+      tarefaEventoSituacaoWs: {
+        codigoTarefaEventoSituacao,
+        situacao,
+      },
+      titulo,
+      kanban,
+      quadroKanban,
+      colunaKanban,
+    };
+  }
+
+  return { adaptFetchedTarefasListToDisplayingType, adaptFetchedTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType };
 }
