@@ -11,6 +11,8 @@
   --small-gap: 0.3rem;
   --medium-gap: 0.5rem;
   --big-gap: 1rem;
+  --small-padding: 1rem;
+  --medium-padding: 2rem;
 }
 
 *,
@@ -49,27 +51,27 @@ main {
   height: calc(100dvh - 1.5 * var(--header-height));
   overflow: auto;
   margin-block-start: var(--header-height);
-  padding: 2rem;
+  padding: var(--medium-padding);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
 }
 
-main::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 3dvw;
 }
 
-main::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
   background-color: hsl(0deg 0% 100% / 50%);
-  border-radius: 1rem;
+  border-radius: var(--big-gap);
 }
 
-main::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background-color: hsl(0deg 0% 100% / 90%);
 }
 
-main::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background-color: hsl(240deg 12% 23% / 25%);
 }
 
@@ -81,7 +83,7 @@ main::-webkit-scrollbar-track {
   background-color: var(--fields-bg-color);
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(15px);
-  margin-bottom: 1rem;
+  margin-bottom: var(--small-padding);
 }
 
 .tarefa-card {
@@ -242,12 +244,12 @@ div:has(> .circle),
 
 .tarefa-detailed-card {
   position: absolute;
-  top: 50dvh;
+  top: calc(var(--header-height) + var(--small-gap));
   left: 50dvw;
-  translate: -50% -50%;
+  translate: -50%;
   width: 85dvw;
-  padding: 2rem 1rem;
-  --small-gap: 0.3rem;
+  max-height: calc(100dvh - var(--header-height) - 4rem);
+  padding: var(--medium-padding) var(--big-gap);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -256,7 +258,8 @@ div:has(> .circle),
   background-color: rgba(255, 255, 255, 0.45);
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(15px);
-  margin-bottom: 1rem;
+  margin-bottom: var(--small-padding);
+  overflow-y: auto;
 }
 
 .date-row {
@@ -284,7 +287,6 @@ div.select-control,
   background-color: var(--fields-bg-color);
   border: 0.5px solid rgba(9, 8, 8, 0.3);
   border-radius: var(--medium-gap);
-  /* margin-bottom: 1rem; */
   box-shadow: none;
 }
 
@@ -299,7 +301,7 @@ div.select-control,
 
 .datepicker-wrapper,
 .datepicker-input {
-  line-height: 2rem;
+  line-height: var(--big-gap);
   width: -webkit-fill-available;
 }
 
@@ -315,10 +317,14 @@ div.select-control:hover,
 
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea {
-  padding: 1rem;
+  padding: var(--small-padding);
   resize: vertical;
   width: -webkit-fill-available;
-  font: 1rem Inter, sans-serif;
+  font: var(--big-gap) Inter, sans-serif;
+}
+
+.tarefa-detailed-card textarea {
+  height: 5rem;
 }
 
 .sisifo-label {
@@ -335,7 +341,7 @@ div.select-control:hover,
   aspect-ratio: 1;
   line-height: 1.7rem;
   top: 0rem;
-  right: 1rem;
+  right: var(--small-padding);
   font-size: 2rem;
   text-align: center;
   transform: rotate(45deg);
@@ -356,8 +362,8 @@ div.select-control:hover,
 .save-btn {
   width: fit-content;
   align-self: center;
-  padding: 1rem;
-  margin-block-start: 1rem;
+  padding: var(--small-padding);
+  margin-block-start: var(--small-padding);
   border-radius: var(--medium-gap);
   background: rgb(23, 96, 0);
   background: linear-gradient(135deg, hsl(106deg 100% 24% / 70%) 0%, rgb(9 121 20 / 30%) 50%, hsl(159 100% 44% / 1) 100%);
@@ -380,7 +386,7 @@ div.select-control:hover,
   z-index: 10;
   position: fixed;
   height: var(--header-height);
-  padding-inline: 1rem;
+  padding-inline: var(--small-padding);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -403,7 +409,7 @@ div.select-control:hover,
   z-index: 5;
   background-color: var(--filter-hsl-background-color);
   margin-block-start: var(--header-height);
-  padding: 1rem;
+  padding: var(--small-padding);
   opacity: 1;
   box-shadow: 0px 6px 20px 0px #589750;
 }
@@ -443,14 +449,14 @@ div.select-control:hover,
 }
 
 .skeleton-buttons-area {
-  height: 2rem;
+  height: var(--big-gap);
   width: 9rem;
   border-radius: 1.5rem;
 }
 
 .skeleton-circle {
-  height: 2rem;
-  width: 2rem;
+  height: var(--big-gap);
+  width: var(--big-gap);
   border-radius: 50%;
 }
 
@@ -458,7 +464,7 @@ div:has(> div.skeleton-header) {
   display: flex;
   width: -webkit-fill-available;
   align-items: center;
-  gap: 1rem;
+  gap: var(--small-padding);
 }
 
 .skeleton-header {
@@ -473,11 +479,11 @@ footer.skeleton-text {
 }
 
 :has(> .skeleton-text) {
-  margin-block: 1rem;
+  margin-block: var(--small-padding);
 }
 
 .skeleton-text {
-  height: 1rem;
+  height: var(--big-gap);
   width: 100%;
   margin-block: 0.5rem;
   border-radius: 2px;
