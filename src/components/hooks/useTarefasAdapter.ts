@@ -1,4 +1,4 @@
-import { ReceivedTarefaDetails, Tarefa, WritingTarefaDetails } from "../../global";
+import { DisplayingTarefaDetails, ReceivedTarefaDetails, Tarefa, WritingTarefaDetails } from "../../global";
 import { projurisApiBase } from "../../hardcoded";
 import useProjurisConnector from "./useProjurisConnector";
 
@@ -52,7 +52,7 @@ export default function useFetchedTarefasAdapter() {
     };
   }
 
-  function adaptFetchedTarefaDetailsToDisplayingType(tarefaDetails?: ReceivedTarefaDetails, tarefaColor?: string) {
+  function adaptFetchedTarefaDetailsToDisplayingType(tarefaDetails?: ReceivedTarefaDetails, tarefaColor?: string): DisplayingTarefaDetails {
     const {
       tarefaEventoWs: {
         titulo,
@@ -80,9 +80,9 @@ export default function useFetchedTarefasAdapter() {
       codigoProcessoProjuris,
       processoUrl: codigoProcessoProjuris ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcessoProjuris : "",
       descricaoTarefa,
-      usuariosResponsaveis,
-      gruposResponsaveis,
-      marcadorWs,
+      usuariosResponsaveis: usuariosResponsaveis ?? [],
+      gruposResponsaveis: gruposResponsaveis ?? [],
+      marcadorWs: marcadorWs ?? [],
       colunaKanban,
       quadroKanban,
       prazoAdmString: prazoAdm ? prazoAdm.toLocaleDateString("pt-BR") : "Não encontrado",
