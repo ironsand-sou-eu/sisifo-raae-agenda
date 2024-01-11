@@ -1,5 +1,5 @@
 import Select from "react-select";
-import { Marcador, SimpleDocument, SituacaoTarefa } from "../hooks/useProjurisConnector";
+import { Marcador, SimpleDocument, SituacaoTarefa } from "../../global";
 import useProjurisAdapter, { InsertValueLabelParams } from "../hooks/useProjurisAdapter";
 import { Prettify } from "../../global";
 
@@ -16,11 +16,11 @@ type FixedSelectProps = {
   placeholder?: string;
   options?: Prettify<InsertValueLabelParams>[];
   values?: Prettify<InsertValueLabelParams>[];
-  changeHandler: (args: any) => void;
+  onChange: (args: any) => void;
   isMulti: boolean;
 };
 
-export default function FixedSelect({ name, label, placeholder, options, values, changeHandler, isMulti }: FixedSelectProps): JSX.Element {
+export default function FixedSelect({ name, label, placeholder, options, values, onChange, isMulti }: FixedSelectProps): JSX.Element {
   const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
 
   return (
@@ -31,7 +31,7 @@ export default function FixedSelect({ name, label, placeholder, options, values,
         value={insertValueLabel(values)}
         name={name}
         placeholder={placeholder ?? "Selecione uma opção..."}
-        onChange={args => changeHandler(removeValueLabel(args))}
+        onChange={args => onChange(removeValueLabel(args))}
         // isLoading={isLoading.scrapping ?? true}
         isSearchable
         isClearable
