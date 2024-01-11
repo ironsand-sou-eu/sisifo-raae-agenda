@@ -114,3 +114,21 @@ export type WritingTarefaDetails = {
   quadroKanban: SimpleDocument;
   colunaKanban: SimpleDocument;
 };
+
+export type DisplayingTarefaDetails = {
+  codigoProcessoProjuris?: number;
+  colunaKanban: SimpleDocument;
+  descricaoTarefa?: string;
+  dataConclusaoString: string;
+  displayTitulo: string;
+  gruposResponsaveis: SimpleDocument[];
+  marcadorWs: Marcador[];
+  prazoAdmString: string;
+  prazoFatalString: string;
+  prazoStyle: string;
+  processoUrl: string;
+  quadroKanban: SimpleDocument;
+  situacao: string;
+  tarefaColor: string;
+  usuariosResponsaveis: SimpleDocument[];
+};
