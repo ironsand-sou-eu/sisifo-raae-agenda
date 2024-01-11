@@ -206,8 +206,8 @@ export default function useProjurisConnector() {
       return filteredOptions.map((option: any) => {
         return {
           ...option,
-          value: option.chave ?? option.codigoAssunto ?? option.codigo,
-          label: option.valor ?? option.nomeAssunto ?? option.titulo,
+          value: option.chave ?? option.codigoAssunto ?? option.codigo ?? option.codigoMarcador,
+          label: option.valor ?? option.nomeAssunto ?? option.titulo ?? option.nomeMarcador,
         };
       });
     } else {
@@ -225,6 +225,7 @@ export default function useProjurisConnector() {
     if (jsonResp.tarefaTipoConsultaWs) return jsonResp.tarefaTipoConsultaWs;
     if (jsonResp.andamentoTipoConsultaWs) return jsonResp.andamentoTipoConsultaWs;
     if (jsonResp.assuntoWs) return jsonResp.assuntoWs;
+    if (jsonResp.marcadorWs) return jsonResp.marcadorWs;
     if (jsonResp.processoConsultaWs) return jsonResp.processoConsultaWs;
     if (jsonResp.pessoaConsulta) return jsonResp.pessoaConsulta;
     if (jsonResp.pessoaConsultaSimples) return jsonResp.pessoaConsultaSimples;
