@@ -1,5 +1,3 @@
-import { ChangeEventHandler } from "react";
-
 type TextareaProps = {
   nameAndId: string;
   label: string;

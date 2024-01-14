@@ -1,5 +1,5 @@
 import { MouseEventHandler, PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
-import { SimpleDocument, SituacaoTarefa } from "./useProjurisConnector";
+import { SimpleDocument, SituacaoTarefa } from "../../global";
 import { filterMock } from "../../mocks/filter-mocks";
 import { areObjectsEqual } from "../../utils/utils";
 import { Prettify } from "../../global";

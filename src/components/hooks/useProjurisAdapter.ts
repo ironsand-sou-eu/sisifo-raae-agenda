@@ -1,7 +1,7 @@
 import { Prettify } from "../../global";
 import { SelectValue } from "../micro/FetchingSelect";
 import { Filter } from "./FiltersProvider";
-import { Marcador, SimpleDocument, SituacaoTarefa } from "./useProjurisConnector";
+import { Marcador, SimpleDocument, SituacaoTarefa } from "../../global";
 
 export type InsertValueLabelParams = Prettify<SimpleDocument | Marcador | SituacaoTarefa | Filter>;
 
