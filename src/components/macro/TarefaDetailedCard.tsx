@@ -1,4 +1,4 @@
-import { Dispatch, FunctionComponent, SetStateAction } from "react";
+import { Dispatch, FunctionComponent, SetStateAction, useEffect, useMemo } from "react";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import FetchingSelect from "../micro/FetchingSelect";
 import { codigoUsuario } from "../../hardcoded";
@@ -8,7 +8,6 @@ import TarefaDetailedCardHeader from "./TarefaDetailedCardHeader";
 import PrazosCard from "../micro/PrazosCard";
 import Button from "../micro/Button";
 import useTarefaDetails from "../hooks/useTarefaDetails";
-import useFetchedTarefasAdapter from "../hooks/useTarefasAdapter";
 import TarefaDetailedCardSkeleton from "./skeletons/TarefaDetailedCardSkeleton";
 
 export type TarefaPrefetchDetails = {
@@ -34,8 +33,11 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   setPrefetchDetails,
 }: TarefaDetailedCardProps) => {
   const { endpoints } = useProjurisConnector();
-  const { tarefaDetails, isDetailLoading } = useTarefaDetails(codigoTarefaEvento, codigoProcesso);
-  const { adaptFetchedTarefaDetails } = useFetchedTarefasAdapter();
+  const { displayingTarefaDetails, isDetailLoading, updateTarefaDetails, saveTarefa } = useTarefaDetails(
+    codigoTarefaEvento,
+    codigoProcesso,
+    tarefaColor
+  );
 
   const {
     displayTitulo,
@@ -43,8 +45,8 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     codigoProcessoProjuris,
     processoUrl,
     descricaoTarefa,
-    usuariosResponsaveis,
     gruposResponsaveis,
+    usuariosResponsaveis,
     marcadorWs,
     colunaKanban,
     quadroKanban,
@@ -52,7 +54,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     prazoFatalString,
     dataConclusaoString,
     prazoStyle,
-  } = adaptFetchedTarefaDetails(tarefaDetails, tarefaColor);
+  } = displayingTarefaDetails ?? {};
 
   return isDetailLoading ? (
     <TarefaDetailedCardSkeleton />
@@ -61,12 +63,17 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
       <TarefaDetailedCardHeader {...{ displayTitulo, setPrefetchDetails, tarefaColor }} />
       <PrazosCard {...{ situacao, prazoAdmString, prazoFatalString, dataConclusaoString, prazoStyle }} />
       <ProcessoInfo {...{ parteAtiva, partePassiva, numeroProcesso, processoUrl }} />
-      <Textarea nameAndId="descricao" label="Descrição" content={descricaoTarefa} />
+      <Textarea
+        nameAndId="descricao"
+        label="Descrição"
+        onChange={newValue => updateTarefaDetails("descricaoTarefa", newValue)}
+        content={descricaoTarefa}
+      />
       <FetchingSelect
         optionsEndpoint={endpoints.responsaveis}
         hasMultiLevelSource={false}
         values={usuariosResponsaveis}
-        onChange={() => {}}
+        onChange={newValue => updateTarefaDetails("usuariosResponsaveis", newValue)}
         name="responsaveis"
         label="Responsáveis"
         isMulti={true}
@@ -75,7 +82,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.gruposTrabalho}
         hasMultiLevelSource={false}
         values={gruposResponsaveis}
-        onChange={() => {}}
+        onChange={newValue => updateTarefaDetails("gruposResponsaveis", newValue)}
         name="grupos-trabalho"
         label="Grupos de trabalho"
         isMulti={true}
@@ -84,7 +91,8 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.marcadores}
         hasMultiLevelSource={false}
         values={marcadorWs}
-        onChange={() => {}}
+        onChange={newValue => updateTarefaDetails("marcadorWs", newValue)}
+        filterObject={{ key: "nomeMarcador" }}
         name="marcadores"
         label="Marcadores"
         isMulti={true}
@@ -93,21 +101,23 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.quadrosKanban(codigoUsuario)}
         hasMultiLevelSource={false}
         values={quadroKanban ? [quadroKanban] : undefined}
-        onChange={() => {}}
+        onChange={newValue => updateTarefaDetails("quadroKanban", newValue)}
         name="quadro-kanban"
         label="Quadro kanban"
         isMulti={false}
       />
-      <FetchingSelect
-        optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
-        hasMultiLevelSource={false}
-        values={colunaKanban ? [colunaKanban] : undefined}
-        onChange={() => {}}
-        name="coluna-kanban"
-        label="Coluna kanban"
-        isMulti={false}
-      />
-      <Button name="salvar" onClick={() => {}} />
+      {quadroKanban && (
+        <FetchingSelect
+          optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
+          hasMultiLevelSource={false}
+          values={colunaKanban ? [colunaKanban] : undefined}
+          onChange={newValue => updateTarefaDetails("colunaKanban", newValue)}
+          name="coluna-kanban"
+          label="Coluna kanban"
+          isMulti={false}
+        />
+      )}
+      <Button name="salvar" onClick={saveTarefa} />
       <footer className="tarefa-card-footer">{}</footer>
     </section>
   );

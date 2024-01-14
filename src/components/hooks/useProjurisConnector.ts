@@ -215,13 +215,12 @@ export default function useProjurisConnector() {
     }
   }
 
-  async function extractOptionsArray(projurisFetchResponse: Response): Promise<any> {
+  async function extractOptionsArray(projurisFetchResponse: Response) {
     if (projurisFetchResponse.status === 204) return "no content";
     const jsonResp = await projurisFetchResponse.json();
     if (jsonResp.simpleDto) return jsonResp.simpleDto;
     if (jsonResp.consultaTipoRetorno && jsonResp.consultaTipoRetorno[0].simpleDto) return jsonResp.consultaTipoRetorno[0].simpleDto;
     if (jsonResp.nodeWs) return jsonResp.nodeWs;
-    if (jsonResp.colunaKanbanTarefaWs) return jsonResp.colunaKanbanTarefaWs;
     if (jsonResp.tarefaTipoConsultaWs) return jsonResp.tarefaTipoConsultaWs;
     if (jsonResp.andamentoTipoConsultaWs) return jsonResp.andamentoTipoConsultaWs;
     if (jsonResp.assuntoWs) return jsonResp.assuntoWs;
@@ -232,6 +231,9 @@ export default function useProjurisConnector() {
     if (jsonResp.campoDinamicoWs) return jsonResp.campoDinamicoWs;
     if (jsonResp.contaConsultaResultadoWs) return jsonResp.contaConsultaResultadoWs;
     if (jsonResp.tarefaConsultaWs) return jsonResp.tarefaConsultaWs;
+    if (jsonResp.colunaKanbanTarefaWs) {
+      return jsonResp.colunaKanbanTarefaWs.map((colunaKb: any) => ({ chave: colunaKb.codigo, valor: colunaKb.titulo }));
+    }
     return;
   }
 
