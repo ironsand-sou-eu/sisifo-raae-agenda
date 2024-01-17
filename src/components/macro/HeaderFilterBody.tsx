@@ -3,20 +3,20 @@ import DatePicker from "react-datepicker";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import FetchingSelect from "../micro/FetchingSelect";
 import envVars from "../../envVars";
-import { useFilterAnimations } from "../hooks/FilterAnimationsProvider";
+import { useAnimations } from "../hooks/AnimationsProvider";
 import { useFilters } from "../hooks/FiltersProvider";
 
 export default function HeaderFilterBody(): JSX.Element {
   const { filters, changeCurrentFilter } = useFilters();
   const { quadroKanban, tipos, responsaveis, gruposTrabalho, situacao, dates, nextXDays } = filters?.currentFilter ?? {};
   const { endpoints } = useProjurisConnector();
-  const { bodyDivRef, setBodyDisplayingAnimation } = useFilterAnimations();
+  const { elementRef, setDisplayingAnimation } = useAnimations();
   // SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
 
-  useEffect(() => setBodyDisplayingAnimation(), []);
+  useEffect(() => setDisplayingAnimation("filter"), []);
 
   return (
-    <div ref={bodyDivRef} className="filter-body">
+    <div ref={elementRef?.filter} className="filter-body">
       <div className="date-row">
         <div>
           <label className="sisifo-label" htmlFor="nextXDays">
