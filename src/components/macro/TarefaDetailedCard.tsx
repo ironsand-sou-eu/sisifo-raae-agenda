@@ -1,4 +1,4 @@
-import { Dispatch, FunctionComponent, SetStateAction, useEffect, useMemo } from "react";
+import { Dispatch, FunctionComponent, SetStateAction } from "react";
 import useProjurisConnector from "../hooks/useProjurisConnector";
 import FetchingSelect from "../micro/FetchingSelect";
 import { codigoUsuario } from "../../hardcoded";
@@ -9,6 +9,8 @@ import PrazosCard from "../micro/PrazosCard";
 import Button from "../micro/Button";
 import useTarefaDetails from "../hooks/useTarefaDetails";
 import TarefaDetailedCardSkeleton from "./skeletons/TarefaDetailedCardSkeleton";
+import { useAnimations } from "../hooks/AnimationsProvider";
+import AnimatableFetchingSelect from "../micro/AnimatableFetchingSelect";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -38,7 +40,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     codigoProcesso,
     tarefaColor
   );
-
+  const { setHidingAnimation } = useAnimations();
   const {
     displayTitulo,
     situacao,
@@ -55,6 +57,14 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     dataConclusaoString,
     prazoStyle,
   } = displayingTarefaDetails ?? {};
+
+  function handleQuadroKanbanChange(newValue: unknown) {
+    if (!newValue) {
+      setHidingAnimation("colunaKanban", () => updateTarefaDetails("quadroKanban", newValue));
+    } else {
+      updateTarefaDetails("quadroKanban", newValue);
+    }
+  }
 
   return isDetailLoading ? (
     <TarefaDetailedCardSkeleton />
@@ -101,22 +111,21 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.quadrosKanban(codigoUsuario)}
         hasMultiLevelSource={false}
         values={quadroKanban ? [quadroKanban] : undefined}
-        onChange={newValue => updateTarefaDetails("quadroKanban", newValue)}
+        onChange={handleQuadroKanbanChange}
         name="quadro-kanban"
         label="Quadro kanban"
         isMulti={false}
       />
-      {quadroKanban && (
-        <FetchingSelect
-          optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
-          hasMultiLevelSource={false}
-          values={colunaKanban ? [colunaKanban] : undefined}
-          onChange={newValue => updateTarefaDetails("colunaKanban", newValue)}
-          name="coluna-kanban"
-          label="Coluna kanban"
-          isMulti={false}
-        />
-      )}
+      <AnimatableFetchingSelect
+        condition={!!quadroKanban}
+        optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
+        hasMultiLevelSource={false}
+        values={colunaKanban ? [colunaKanban] : undefined}
+        onChange={newValue => updateTarefaDetails("colunaKanban", newValue)}
+        name="coluna-kanban"
+        label="Coluna kanban"
+        isMulti={false}
+      />
       <Button name="salvar" onClick={saveTarefa} />
       <footer className="tarefa-card-footer">{}</footer>
     </section>

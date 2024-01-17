@@ -11,9 +11,7 @@ export default function Textarea({ nameAndId, label, content, onChange }: Textar
       <label className="sisifo-label" htmlFor={nameAndId}>
         {label}
       </label>
-      <textarea id={nameAndId} name={nameAndId} onChange={({ target }) => onChange(target.value)}>
-        {content}
-      </textarea>
+      <textarea id={nameAndId} name={nameAndId} value={content} onChange={({ target }) => onChange(target.value)} />
     </div>
   );
 }
