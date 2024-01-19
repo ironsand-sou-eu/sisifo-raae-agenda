@@ -28,7 +28,7 @@ export default function HeaderFilterBody(): JSX.Element {
             name="nextXdays"
             id="nextXdays"
             value={nextXDays ?? ""}
-            onChange={({ target: { value } }) => changeCurrentFilter(parseInt(value), "nextXDays")}
+            onChange={({ target: { value } }) => changeCurrentFilter(value ? parseInt(value) : null, "nextXDays")}
           />
         </div>
         <div>
