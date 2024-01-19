@@ -48,7 +48,7 @@ export default function useFetchedTarefasAdapter() {
       usuarioResponsaveis,
       prazoString: prazo ? prazo.toLocaleDateString("pt-BR") : "Não encontrado",
       processoUrl: codigoProcesso ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcesso : "",
-      prazoStyle: getPrazoStyle(prazo, flagSituacaoConcluida),
+      prazoColorCssVariable: getPrazoColorCssVariable(prazo, flagSituacaoConcluida),
     };
   }
 
@@ -85,22 +85,22 @@ export default function useFetchedTarefasAdapter() {
       marcadorWs: marcadorWs ?? [],
       colunaKanban,
       quadroKanban,
-      prazoAdmString: prazoAdm ? prazoAdm.toLocaleDateString("pt-BR") : "Não encontrado",
-      prazoFatalString: dataLimite ? new Date(dataLimite).toLocaleDateString("pt-BR") : "Não encontrado",
-      dataConclusaoString: dataConclusao ? ` em ${new Date(dataConclusao).toLocaleDateString("pt-BR")}` : "",
-      prazoStyle: getPrazoStyle(prazoAdm, situacaoConcluida),
+      dataConclusaoPrevista: dataConclusaoPrevista ? new Date(dataConclusaoPrevista) : null,
+      dataLimite: dataLimite ? new Date(dataLimite) : null,
+      dataConclusao: dataConclusao ? new Date(dataConclusao) : null,
+      prazoColorCssVariable: getPrazoColorCssVariable(prazoAdm, situacaoConcluida),
     };
   }
 
-  function getPrazoStyle(prazo?: Date, flagSituacaoConcluida: boolean = false): string {
-    if (flagSituacaoConcluida) return "done";
-    if (!prazo) return "danger";
-    if (new Date().toLocaleDateString("pt-BR") === prazo.toLocaleDateString("pt-BR")) return "danger";
-    if (new Date().getTime() >= prazo.getTime()) return "lost";
+  function getPrazoColorCssVariable(prazo?: Date, flagSituacaoConcluida: boolean = false): string {
+    if (flagSituacaoConcluida) return "--fill-color-blue";
+    if (!prazo) return "--fill-color-red";
+    if (new Date().toLocaleDateString("pt-BR") === prazo.toLocaleDateString("pt-BR")) return "--fill-color-red";
+    if (new Date().getTime() >= prazo.getTime()) return "--fill-color-black";
     const daysToPutInWarning = 2;
     const daysToPutInWarningInMs = daysToPutInWarning * 24 * 60 * 60 * 1000;
-    if (new Date().getTime() >= prazo.getTime() - daysToPutInWarningInMs) return "warning";
-    return "normal";
+    if (new Date().getTime() >= prazo.getTime() - daysToPutInWarningInMs) return "--fill-color-orange";
+    return "--fill-color-green";
   }
 
   function adaptTarefaDetailsToWritingType(tarefa: ReceivedTarefaDetails): WritingTarefaDetails {

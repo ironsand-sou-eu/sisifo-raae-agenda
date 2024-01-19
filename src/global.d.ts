@@ -119,13 +119,13 @@ export type DisplayingTarefaDetails = {
   codigoProcessoProjuris?: number;
   colunaKanban: SimpleDocument;
   descricaoTarefa?: string;
-  dataConclusaoString: string;
+  dataConclusao: Date | null;
+  dataConclusaoPrevista: Date | null;
+  dataLimite: Date | null;
   displayTitulo: string;
   gruposResponsaveis: SimpleDocument[];
   marcadorWs: Marcador[];
-  prazoAdmString: string;
-  prazoFatalString: string;
-  prazoStyle: string;
+  prazoColorCssVariable: string;
   processoUrl: string;
   quadroKanban: SimpleDocument;
   situacao: string;

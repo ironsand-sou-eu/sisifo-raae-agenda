@@ -13,6 +13,7 @@
   --big-gap: 1rem;
   --small-padding: 1rem;
   --medium-padding: 2rem;
+  --min-width: 21rem;
 }
 
 *,
@@ -102,7 +103,7 @@ main {
   margin: 0;
   padding-block: var(--medium-gap);
   padding-left: var(--small-gap);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
 }
 
 .tarefa-card:not(.tarefa-detailed-card) .tarefa-card-titulo h2:hover {
@@ -175,6 +176,10 @@ div:has(> .circle),
   outline: transparent;
 }
 
+.tarefa-card-button {
+  box-sizing: content-box;
+}
+
 .tarefa-card-button > svg > path {
   fill: rgba(0, 0, 0, 0.75);
 }
@@ -222,7 +227,7 @@ div:has(> .circle),
   align-self: center;
 }
 
-.lost {
+/* .lost {
   background-color: var(--fill-color-black);
 }
 
@@ -236,11 +241,11 @@ div:has(> .circle),
 
 .done {
   background-color: var(--fill-color-blue);
-}
+} */
 
-.normal {
+/* .normal {
   background-color: var(--fill-color-green);
-}
+} */
 
 .tarefa-detailed-card {
   position: absolute;
@@ -250,16 +255,32 @@ div:has(> .circle),
   width: 85dvw;
   max-height: calc(100dvh - var(--header-height) - 4rem);
   padding: var(--medium-padding) var(--big-gap);
-  display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 20px;
-  background-color: rgba(255, 255, 255, 0.45);
-  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(15px);
-  margin-bottom: var(--small-padding);
   overflow-y: auto;
+}
+
+.tarefa-detailed-card > *:not(button) {
+  min-width: var(--min-width);
+  box-sizing: border-box;
+}
+
+div.prazos-card {
+  display: flex;
+  justify-content: space-around;
+  gap: var(--medium-gap);
+  margin-bottom: var(--small-padding);
+  padding: var(--small-padding);
+  padding-top: var(--medium-gap);
+  border-inline: var(--medium-gap) solid;
+}
+
+.prazos-card > div {
+  max-width: 33%;
+  min-width: 6rem;
+}
+
+.prazos-card .sisifo-label {
+  text-align: center;
 }
 
 .date-row {
@@ -282,6 +303,7 @@ div:has(> .circle),
 
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea,
+.prazos-card,
 div.select-control,
 .datepicker-input {
   background-color: var(--fields-bg-color);
@@ -303,6 +325,12 @@ div.select-control,
 .datepicker-input {
   line-height: var(--medium-padding);
   width: -webkit-fill-available;
+}
+
+.datepicker-wrapper > .react-datepicker__input-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .tarefa-detailed-card textarea:focus,

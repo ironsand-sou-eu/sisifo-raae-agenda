@@ -20,7 +20,7 @@ type TarefaSmallCardProps = {
     usuarioResponsaveis: string;
     prazoString: string;
     processoUrl: string;
-    prazoStyle: string;
+    prazoColorCssVariable: string;
   };
 };
 
@@ -40,7 +40,7 @@ export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails 
     usuarioResponsaveis,
     prazoString,
     processoUrl,
-    prazoStyle,
+    prazoColorCssVariable,
   } = tarefaDisplayInfo;
 
   return (
@@ -49,7 +49,7 @@ export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails 
         {...{ checked, nomeTarefaTipo, codigoTarefaEvento, codigoProcesso, numeroProcesso, parteAtiva, partePassiva, tarefaColor }}
         setPrefetchDetails={setPrefetchDetails}
       />
-      <p className={`prazo ${prazoStyle}`}>{`Prazo: ${prazoString} - Situação: ${situacao}`}</p>
+      <p className={`prazo`} style={{ backgroundColor: `var(${prazoColorCssVariable})` }}>{`Prazo: ${prazoString} - Situação: ${situacao}`}</p>
       <div className="processo-info">
         {`${parteAtiva} x ${partePassiva} - `}
         <a href={processoUrl}>{numeroProcesso}</a>

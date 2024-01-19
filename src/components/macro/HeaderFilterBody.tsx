@@ -44,6 +44,8 @@ export default function HeaderFilterBody(): JSX.Element {
             wrapperClassName="datepicker-wrapper"
             className="datepicker-input"
             dateFormat={"dd/MM/yyyy"}
+            showIcon
+            closeOnScroll
           />
         </div>
       </div>

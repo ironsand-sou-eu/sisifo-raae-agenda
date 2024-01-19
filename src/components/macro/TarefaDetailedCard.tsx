@@ -46,16 +46,16 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     situacao,
     codigoProcessoProjuris,
     processoUrl,
+    dataConclusao,
+    dataConclusaoPrevista,
+    dataLimite,
     descricaoTarefa,
     gruposResponsaveis,
     usuariosResponsaveis,
     marcadorWs,
     colunaKanban,
     quadroKanban,
-    prazoAdmString,
-    prazoFatalString,
-    dataConclusaoString,
-    prazoStyle,
+    prazoColorCssVariable,
   } = displayingTarefaDetails ?? {};
 
   function handleQuadroKanbanChange(newValue: unknown) {
@@ -71,7 +71,11 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   ) : (
     <section className="card tarefa-card tarefa-detailed-card">
       <TarefaDetailedCardHeader {...{ displayTitulo, setPrefetchDetails, tarefaColor }} />
-      <PrazosCard {...{ situacao, prazoAdmString, prazoFatalString, dataConclusaoString, prazoStyle }} />
+      <PrazosCard
+        {...{ dataConclusao, dataConclusaoPrevista, dataLimite }}
+        onChange={updateTarefaDetails}
+        prazoColorCssVariable={prazoColorCssVariable ?? ""}
+      />
       <ProcessoInfo {...{ parteAtiva, partePassiva, numeroProcesso, processoUrl }} />
       <Textarea
         nameAndId="descricao"

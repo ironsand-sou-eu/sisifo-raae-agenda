@@ -1,17 +1,10 @@
 import "@testing-library/jest-dom/";
 import { render, screen } from "@testing-library/react";
-import PrazosCard from "../../../components/micro/PrazosCard";
+import PrazosCard from "../../../components/micro/PrazosCard.1";
 
 describe("ProcessoInfoCard", () => {
   it("should render a paragraph containing the three deadlines in pt-BR locale string", () => {
-    render(
-      <PrazosCard
-        situacao="A cumprir"
-        dataConclusao={122264547645}
-        dataConclusaoPrevista={122264547645}
-        dataLimite={122264547645}
-      />
-    );
+    render(<PrazosCard situacao="A cumprir" dataConclusao={122264547645} dataConclusaoPrevista={122264547645} dataLimite={122264547645} />);
 
     const prazoAdmString = new Date(122264547645).toLocaleDateString("pt-BR");
     const prazoFatalString = new Date(122264547645).toLocaleDateString("pt-BR");
