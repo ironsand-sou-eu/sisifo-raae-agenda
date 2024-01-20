@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useFetchedTarefasAdapter from "../hooks/useTarefasAdapter";
 import { useTarefasList } from "../hooks/TarefasListProvider";
 import HeaderFilter from "./HeaderFilter";
@@ -25,10 +25,10 @@ export default function App() {
           <AppSkeleton />
         ) : (
           displayingTarefas?.map(tarefaInfo => (
-            <TarefasSmallCard key={tarefaInfo.codigoTarefaEvento} tarefaDisplayInfo={tarefaInfo} setPrefetchDetails={setPrefetchDetails} />
+            <TarefasSmallCard key={tarefaInfo.codigoTarefaEvento} tarefaDisplayInfo={tarefaInfo} {...{ setPrefetchDetails }} />
           ))
         )}
-        {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} setPrefetchDetails={setPrefetchDetails} />}
+        {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} {...{ setPrefetchDetails }} />}
       </main>
     </>
   );
