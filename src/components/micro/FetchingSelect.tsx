@@ -32,17 +32,11 @@ export default function FetchingSelect({
   optionsEndpoint,
   values,
 }: FetchingSelectProps): JSX.Element {
-  const { loadSimpleOptions } = useProjurisConnector();
+  const { loadSimpleOptions, createFilterObject } = useProjurisConnector();
   const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
 
   const filterFunction = async (input: string) => {
-    const selectFilter: ProjurisOptionsFilter = {
-      key: "valor",
-      operator: "insentiviveIncludes",
-      val: input,
-      flattenOptions: hasMultiLevelSource,
-    };
-
+    const selectFilter = createFilterObject({ val: input, flattenOptions: hasMultiLevelSource });
     return loadSimpleOptions(optionsEndpoint, { ...selectFilter, ...filterObject });
   };
 
