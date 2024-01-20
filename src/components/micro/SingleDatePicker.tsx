@@ -2,11 +2,12 @@ import DatePicker from "react-datepicker";
 
 export type SingleDatePickerProps = {
   label: string;
-  date?: Date | null;
   onChange: (newValue: any) => void;
+  date?: Date | null;
+  readonly?: boolean;
 };
 
-export default function SingleDatePicker({ label, date, onChange }: SingleDatePickerProps): JSX.Element {
+export default function SingleDatePicker({ label, onChange, date, readonly }: SingleDatePickerProps): JSX.Element {
   const datePickerId = `filter-datepicker-${label.toLowerCase().replaceAll(" ", "")}`;
   return (
     <div>
@@ -17,10 +18,11 @@ export default function SingleDatePicker({ label, date, onChange }: SingleDatePi
         id={datePickerId}
         selected={date}
         onChange={onChange}
-        wrapperClassName="datepicker-wrapper"
+        wrapperClassName="datepicker-wrapper text-center"
         className="datepicker-input"
         dateFormat={"dd/MM/yyyy"}
         closeOnScroll
+        readOnly={readonly}
       />
     </div>
   );

@@ -28,6 +28,7 @@ export default function PrazosCard({
         label="Cumprimento"
         onChange={(newValue: Date) => onChange("dataConclusao", newValue?.getTime() ?? null)}
         date={dataConclusao}
+        readonly={true}
       />
     </div>
   );
