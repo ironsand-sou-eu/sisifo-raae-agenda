@@ -128,7 +128,11 @@ export type DisplayingTarefaDetails = {
   prazoColorCssVariable: string;
   processoUrl: string;
   quadroKanban: SimpleDocument;
-  situacao: string;
   tarefaColor: string;
   usuariosResponsaveis: SimpleDocument[];
+};
+
+type Message = {
+  text: string;
+  type: "success" | "error" | "progress";
 };

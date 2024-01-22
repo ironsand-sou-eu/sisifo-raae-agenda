@@ -447,29 +447,75 @@ div.select-control:hover,
   padding-block-end: var(--medium-gap);
 }
 
-@keyframes drop-filter {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes pickup-filter {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-100%);
-  }
-}
-
 .floating-command-bar {
   position: absolute;
   top: var(--header-height);
   left: var(--big-gap);
   z-index: 10;
+}
+
+.messages {
+  position: fixed;
+  bottom: 0;
+  margin: auto;
+  list-style: none;
+  padding: 0;
+}
+
+.messages .msg-progress,
+.messages .msg-success,
+.messages .msg-error {
+  line-height: 1.5rem;
+  padding-inline-start: var(--small-padding);
+  padding-inline-end: var(--medium-padding);
+}
+
+.messages .msg-progress:first-of-type,
+.messages .msg-success:first-of-type,
+.messages .msg-error:first-of-type {
+  padding-block-start: var(--small-padding);
+}
+
+.messages .msg-progress:last-of-type,
+.messages .msg-success:last-of-type,
+.messages .msg-error:last-of-type {
+  padding-block-end: var(--small-padding);
+}
+
+.messages .msg-progress:not(first-of-type):not(last-of-type),
+.messages .msg-success:not(first-of-type):not(last-of-type),
+.messages .msg-error:not(first-of-type):not(last-of-type) {
+  padding-block-end: var(--small-padding);
+}
+
+.messages .msg-progress {
+  background-color: #fffc98;
+}
+
+.messages .msg-success {
+  background-color: #8ce181;
+}
+
+.messages .msg-error {
+  background-color: #f9afaf;
+}
+
+.msg-progress .close-btn,
+.msg-success .close-btn,
+.msg-error .close-btn {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  right: -15px;
+  height: 1.2rem;
+  line-height: 1.3rem;
+  font-size: 1.3rem;
+  margin-top: unset;
+}
+
+.fadeout {
+  opacity: 0;
+  transition: opacity linear 2500ms;
 }
 
 .skeleton {
@@ -528,5 +574,23 @@ footer.skeleton-text {
   }
   100% {
     background-color: hsl(200, 20%, 95%);
+  }
+}
+
+@keyframes drop-filter {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pickup-filter {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-100%);
   }
 }

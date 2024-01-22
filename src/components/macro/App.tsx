@@ -8,6 +8,7 @@ import TarefaDetailedCard, { TarefaPrefetchDetails } from "./TarefaDetailedCard"
 import AppSkeleton from "./skeletons/AppSkeleton";
 import "../../styles.css";
 import "react-datepicker/dist/react-datepicker.min.css";
+import Messenger from "./Messenger";
 
 export default function App() {
   const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
@@ -29,6 +30,7 @@ export default function App() {
           ))
         )}
         {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} {...{ setPrefetchDetails }} />}
+        <Messenger />
       </main>
     </>
   );
