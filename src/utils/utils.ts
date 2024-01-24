@@ -1,3 +1,21 @@
+export type Operator = "sensitiveStrictEquality" | "insensitiveStrictEquality" | "insentiviveIncludes" | "includes" | "numericEquality";
+
+export function compareWithOperator(a: string, operator: Operator, b: string) {
+  if (a === undefined || b === undefined) return false;
+  switch (operator) {
+    case "sensitiveStrictEquality":
+      return a === b;
+    case "insensitiveStrictEquality":
+      return a.toString().toLowerCase() === b.toString().toLowerCase();
+    case "insentiviveIncludes":
+      return a.toLowerCase().includes(b.toLowerCase());
+    case "includes":
+      return a.includes(b);
+    case "numericEquality":
+      return Number(a) === Number(b);
+  }
+}
+
 export function areObjectsEqual(object1: any, object2: any, ignoreProperties: string[] = []): boolean {
   const sortedObj1 = deepSortObjectByEntries(object1, ignoreProperties);
   const sortedObj2 = deepSortObjectByEntries(object2, ignoreProperties);
@@ -23,4 +41,8 @@ export function deepSortObjectByEntries(object: object, ignoreProperties: string
     return [key, value];
   });
   return Object.fromEntries(deepSortedArrayFromObject);
+}
+
+export function capitalizeFirstLetter(str: string) {
+  return str[0].toUpperCase() + str.substring(1);
 }
