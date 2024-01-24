@@ -11,6 +11,7 @@ import useTarefaDetails from "../hooks/useTarefaDetails";
 import TarefaDetailedCardSkeleton from "./skeletons/TarefaDetailedCardSkeleton";
 import { useAnimations } from "../hooks/AnimationsProvider";
 import AnimatableFetchingSelect from "../micro/AnimatableFetchingSelect";
+import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../global";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -35,7 +36,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   setPrefetchDetails,
 }: TarefaDetailedCardProps) => {
   const { endpoints } = useProjurisConnector();
-  const { displayingTarefaDetails, isDetailLoading, updateTarefaDetails, saveTarefa } = useTarefaDetails(
+  const { displayingTarefaDetails, isDetailLoading, updateTarefaDetails, saveTarefa, loadDetails, updatesOnColunaKanbanChange } = useTarefaDetails(
     codigoTarefaEvento,
     codigoProcesso,
     tarefaColor
@@ -43,8 +44,6 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   const { setHidingAnimation } = useAnimations();
   const {
     displayTitulo,
-    situacao,
-    codigoProcessoProjuris,
     processoUrl,
     dataConclusao,
     dataConclusaoPrevista,
@@ -56,13 +55,13 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     colunaKanban,
     quadroKanban,
     prazoColorCssVariable,
-  } = displayingTarefaDetails ?? {};
+  } = displayingTarefaDetails ?? ({} as DisplayingTarefaDetails);
 
   function handleQuadroKanbanChange(newValue: unknown) {
     if (!newValue) {
-      setHidingAnimation("colunaKanban", () => updateTarefaDetails("quadroKanban", newValue));
+      setHidingAnimation("colunaKanban", () => updateTarefaDetails({ quadroKanban: newValue }));
     } else {
-      updateTarefaDetails("quadroKanban", newValue);
+      updateTarefaDetails({ quadroKanban: newValue });
     }
   }
 
@@ -70,7 +69,9 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     <TarefaDetailedCardSkeleton />
   ) : (
     <section className="card tarefa-card tarefa-detailed-card">
-      <TarefaDetailedCardHeader {...{ displayTitulo, setPrefetchDetails, tarefaColor }} />
+      <TarefaDetailedCardHeader
+        {...{ displayTitulo, setPrefetchDetails, tarefaColor, codigoQuadroKanban: quadroKanban?.chave, codigoTarefaEvento, loadDetails }}
+      />
       <PrazosCard
         {...{ dataConclusao, dataConclusaoPrevista, dataLimite }}
         onChange={updateTarefaDetails}
@@ -80,14 +81,14 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
       <Textarea
         nameAndId="descricao"
         label="Descrição"
-        onChange={newValue => updateTarefaDetails("descricaoTarefa", newValue)}
+        onChange={newValue => updateTarefaDetails({ descricaoTarefa: newValue })}
         content={descricaoTarefa}
       />
       <FetchingSelect
         optionsEndpoint={endpoints.responsaveis}
         hasMultiLevelSource={false}
         values={usuariosResponsaveis}
-        onChange={newValue => updateTarefaDetails("usuariosResponsaveis", newValue)}
+        onChange={newValue => updateTarefaDetails({ usuariosResponsaveis: newValue as SimpleDocument[] })}
         name="responsaveis"
         label="Responsáveis"
         isMulti={true}
@@ -96,7 +97,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.gruposTrabalho}
         hasMultiLevelSource={false}
         values={gruposResponsaveis}
-        onChange={newValue => updateTarefaDetails("gruposResponsaveis", newValue)}
+        onChange={newValue => updateTarefaDetails({ gruposResponsaveis: newValue as SimpleDocument[] })}
         name="grupos-trabalho"
         label="Grupos de trabalho"
         isMulti={true}
@@ -105,7 +106,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.marcadores}
         hasMultiLevelSource={false}
         values={marcadorWs}
-        onChange={newValue => updateTarefaDetails("marcadorWs", newValue)}
+        onChange={newValue => updateTarefaDetails({ marcadorWs: newValue as Marcador[] })}
         filterObject={{ key: "nomeMarcador" }}
         name="marcadores"
         label="Marcadores"
@@ -125,7 +126,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
         hasMultiLevelSource={false}
         values={colunaKanban ? [colunaKanban] : undefined}
-        onChange={newValue => updateTarefaDetails("colunaKanban", newValue)}
+        onChange={newValue => updatesOnColunaKanbanChange(newValue as SimpleDocument)}
         name="coluna-kanban"
         label="Coluna kanban"
         isMulti={false}

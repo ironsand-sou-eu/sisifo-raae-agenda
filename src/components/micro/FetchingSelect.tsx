@@ -2,7 +2,6 @@ import AsyncSelect from "react-select/async";
 import useProjurisConnector, { ProjurisOptionsFilter } from "../hooks/useProjurisConnector";
 import useProjurisAdapter from "../hooks/useProjurisAdapter";
 import { Marcador, Prettify, SimpleDocument, SituacaoTarefa } from "../../global";
-import { RefObject } from "react";
 
 export type SelectValue = Prettify<
   {
@@ -18,6 +17,7 @@ type FetchingSelectProps = {
   label: string;
   name: string;
   onChange: (newValue: object) => void;
+  loadingFunction?: (input: string) => Promise<any[]>;
   optionsEndpoint?: string;
   values?: SimpleDocument[] | Marcador[] | SituacaoTarefa[];
 };
@@ -29,16 +29,19 @@ export default function FetchingSelect({
   label,
   name,
   onChange,
+  loadingFunction,
   optionsEndpoint,
   values,
 }: FetchingSelectProps): JSX.Element {
   const { loadSimpleOptions, createFilterObject } = useProjurisConnector();
   const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
 
-  const filterFunction = async (input: string) => {
-    const selectFilter = createFilterObject({ val: input, flattenOptions: hasMultiLevelSource });
-    return loadSimpleOptions(optionsEndpoint, { ...selectFilter, ...filterObject });
-  };
+  const filterFunction =
+    loadingFunction ??
+    async function (input: string) {
+      const selectFilter = createFilterObject({ val: input, flattenOptions: hasMultiLevelSource });
+      return loadSimpleOptions(optionsEndpoint, { ...selectFilter, ...filterObject });
+    };
 
   return (
     <div>
