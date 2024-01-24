@@ -5,7 +5,7 @@ export type PrazosCardProps = {
   dataConclusao?: Date | null;
   dataConclusaoPrevista?: Date | null;
   dataLimite?: Date | null;
-  onChange: (key: keyof ReceivedTarefaDetails["tarefaEventoWs"], newValue: unknown) => void;
+  onChange: (props: Partial<ReceivedTarefaDetails["tarefaEventoWs"]>) => void;
   prazoColorCssVariable: string;
 };
 
@@ -20,13 +20,13 @@ export default function PrazosCard({
     <div className={"prazos-card"} style={{ borderColor: `var(${prazoColorCssVariable})` }}>
       <SingleDatePicker
         label="Prazo"
-        onChange={(newValue: Date) => onChange("dataConclusaoPrevista", newValue?.getTime())}
+        onChange={(newValue: Date) => onChange({ dataConclusaoPrevista: newValue?.getTime() })}
         date={dataConclusaoPrevista}
       />
-      <SingleDatePicker label="Fatal" onChange={(newValue: Date) => onChange("dataLimite", newValue?.getTime() ?? null)} date={dataLimite} />
+      <SingleDatePicker label="Fatal" onChange={(newValue: Date) => onChange({ dataLimite: newValue?.getTime() ?? null })} date={dataLimite} />
       <SingleDatePicker
         label="Cumprimento"
-        onChange={(newValue: Date) => onChange("dataConclusao", newValue?.getTime() ?? null)}
+        onChange={(newValue: Date) => onChange({ dataConclusao: newValue?.getTime() ?? null })}
         date={dataConclusao}
         readonly={true}
       />
