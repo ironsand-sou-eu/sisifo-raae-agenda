@@ -12,10 +12,9 @@ import Messenger from "./Messenger";
 
 export default function App() {
   const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
-  const { tarefas, isListLoading } = useTarefasList();
+  const { tarefas, isListLoading, selectedTarefas } = useTarefasList();
   const { adaptFetchedTarefasListToDisplayingType } = useFetchedTarefasAdapter();
   const displayingTarefas = adaptFetchedTarefasListToDisplayingType(tarefas);
-  const selectedTarefas = tarefas?.filter(tarefa => tarefa.checked);
 
   return (
     <>
