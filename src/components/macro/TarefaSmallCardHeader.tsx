@@ -2,6 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import HeaderButton from "../micro/HeaderButton";
 import { useTarefasList } from "../hooks/TarefasListProvider";
+import useProjurisConnector from "../hooks/useProjurisConnector";
 
 type TarefaSmallCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -26,7 +27,8 @@ export default function TarefaSmallCardHeader({
   tarefaColor,
   setPrefetchDetails,
 }: TarefaSmallCardHeaderProps): JSX.Element {
-  const { setTarefas } = useTarefasList();
+  const { setTarefas, loadList } = useTarefasList();
+  const { dispatchBackendTarefaUpdate } = useProjurisConnector();
   function renderDetails(): void {
     setPrefetchDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
   }
@@ -66,9 +68,31 @@ export default function TarefaSmallCardHeader({
         <h2 onClick={renderDetails}>{nomeTarefaTipo}</h2>
       </div>
       <div>
-        <HeaderButton type="cancel" onClick={e => console.log(e)} />
+        <HeaderButton
+          type="cancel"
+          onClick={() =>
+            dispatchBackendTarefaUpdate({
+              type: "cancelar",
+              name: nomeTarefaTipo,
+              codigoTarefaEvento,
+              findingCode: { codigoProcesso },
+              reloadFunction: loadList,
+            })
+          }
+        />
         <HeaderButton type="timesheet" onClick={e => console.log(e)} />
-        <HeaderButton type="conclude" onClick={e => console.log(e)} />
+        <HeaderButton
+          type="conclude"
+          onClick={() =>
+            dispatchBackendTarefaUpdate({
+              type: "concluir",
+              name: nomeTarefaTipo,
+              codigoTarefaEvento,
+              findingCode: { codigoProcesso },
+              reloadFunction: loadList,
+            })
+          }
+        />
       </div>
     </header>
   );

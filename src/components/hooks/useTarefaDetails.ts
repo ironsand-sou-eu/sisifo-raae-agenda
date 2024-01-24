@@ -1,24 +1,17 @@
 import { useEffect, useState } from "react";
 import useProjurisConnector from "./useProjurisConnector";
-import { DisplayingTarefaDetails, ReceivedTarefaDetails } from "../../global";
+import { DisplayingTarefaDetails, ReceivedTarefaDetails, SimpleDocument } from "../../global";
 import useFetchedTarefasAdapter from "./useTarefasAdapter";
 
 export default function useTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number, tarefaColor: string) {
   const [tarefaDetails, setTarefaDetails] = useState<ReceivedTarefaDetails>();
   const [displayingTarefaDetails, setDisplayingTarefaDetails] = useState<DisplayingTarefaDetails>();
   const [isDetailLoading, setIsDetailLoading] = useState(false);
-  const { fetchTarefaDetails } = useProjurisConnector();
+
+  const { fetchTarefaDetails, dispatchBackendTarefaUpdate } = useProjurisConnector();
   const { adaptFetchedTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType } = useFetchedTarefasAdapter();
 
-  useEffect(() => {
-    setIsDetailLoading(true);
-    fetchTarefaDetails(codigoTarefaEvento, codigoProcesso)
-      .then(details => {
-        setTarefaDetails(details);
-      })
-      .catch(e => console.error(e))
-      .finally(() => setIsDetailLoading(false));
-  }, [codigoTarefaEvento, codigoProcesso]);
+  useEffect(loadDetails, [codigoTarefaEvento, codigoProcesso]);
 
   useEffect(() => {
     setDisplayingTarefaDetails(() => {
@@ -27,19 +20,51 @@ export default function useTarefaDetails(codigoTarefaEvento: number, codigoProce
     });
   }, [tarefaDetails]);
 
-  function updateTarefaDetails(key: keyof ReceivedTarefaDetails["tarefaEventoWs"], newValue: unknown): void {
+  type KanbanValue = SimpleDocument & { situacao?: SimpleDocument };
+
+  async function updatesOnColunaKanbanChange(colunaKanbanNewValue: KanbanValue) {
+    const situacao = colunaKanbanNewValue.situacao;
+    const colunaKanban = { ...colunaKanbanNewValue };
+    delete colunaKanban.situacao;
+    console.log("situacao", situacao);
+    console.log("kb", colunaKanban);
+    updateTarefaDetails({
+      colunaKanban,
+      tarefaEventoSituacaoWs: {
+        codigoTarefaEventoSituacao: situacao?.chave,
+        situacao: situacao?.valor,
+      },
+    });
+  }
+
+  function updateTarefaDetails(newProps: Partial<ReceivedTarefaDetails["tarefaEventoWs"]>): void {
     setTarefaDetails(prevValues => {
       if (!prevValues) return;
-      const tarefaEventoWs = { ...prevValues.tarefaEventoWs, [key]: newValue };
-      return { ...prevValues, tarefaEventoWs };
+      const newTarefaEventoWs = { ...prevValues.tarefaEventoWs, ...newProps };
+      return { ...prevValues, tarefaEventoWs: newTarefaEventoWs };
     });
   }
 
   function saveTarefa() {
     if (!tarefaDetails) return;
     const writeAdaptedTarefaDetails = adaptTarefaDetailsToWritingType(tarefaDetails);
-    console.log(writeAdaptedTarefaDetails);
+    dispatchBackendTarefaUpdate({
+      type: "salvar",
+      name: writeAdaptedTarefaDetails.titulo ?? "",
+      reloadFunction: loadDetails,
+      tarefa: writeAdaptedTarefaDetails,
+    });
   }
 
-  return { displayingTarefaDetails, isDetailLoading, updateTarefaDetails, saveTarefa };
+  function loadDetails() {
+    setIsDetailLoading(true);
+    fetchTarefaDetails(codigoTarefaEvento, codigoProcesso)
+      .then(details => {
+        setTarefaDetails(details);
+      })
+      .catch(e => console.error(e))
+      .finally(() => setIsDetailLoading(false));
+  }
+
+  return { displayingTarefaDetails, isDetailLoading, updateTarefaDetails, updatesOnColunaKanbanChange, saveTarefa, loadDetails };
 }

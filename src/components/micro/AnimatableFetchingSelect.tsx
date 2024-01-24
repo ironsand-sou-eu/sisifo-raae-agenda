@@ -12,6 +12,7 @@ type AnimatableFetchingSelectProps = {
   label: string;
   name: string;
   onChange: (newValue: object) => void;
+  loadingFunction?: (input: string) => Promise<any[]>;
   optionsEndpoint?: string;
   values?: SimpleDocument[] | Marcador[] | SituacaoTarefa[];
 };
@@ -24,6 +25,7 @@ export default function AnimatableFetchingSelect({
   label,
   name,
   onChange,
+  loadingFunction,
   optionsEndpoint,
   values,
 }: AnimatableFetchingSelectProps): JSX.Element {
@@ -37,7 +39,7 @@ export default function AnimatableFetchingSelect({
         <div ref={elementRef?.colunaKanban}>
           <FetchingSelect
             onChange={newValue => onChange(newValue)}
-            {...{ optionsEndpoint, hasMultiLevelSource, filterObject, values, name, label, isMulti }}
+            {...{ optionsEndpoint, hasMultiLevelSource, filterObject, values, name, label, isMulti, loadingFunction }}
           />
         </div>
       )}
