@@ -82,9 +82,9 @@ export type ReceivedTarefaDetails = {
     tipoTarefa: SimpleDocument;
     marcadorWs: Marcador[];
     tarefaEventoSituacaoWs: {
-      codigoTarefaEventoSituacao: number;
-      situacao: string;
-      situacaoConcluida: boolean;
+      codigoTarefaEventoSituacao?: number;
+      situacao?: string;
+      situacaoConcluida?: boolean;
     };
     titulo: string;
     kanban: boolean;

@@ -57,7 +57,7 @@ export default function useFetchedTarefasAdapter() {
       tarefaEventoWs: {
         titulo,
         tipoTarefa,
-        tarefaEventoSituacaoWs: { situacao, situacaoConcluida },
+        tarefaEventoSituacaoWs: { situacaoConcluida },
         dataConclusao,
         dataConclusaoPrevista,
         dataLimite,
@@ -75,7 +75,6 @@ export default function useFetchedTarefasAdapter() {
 
     return {
       displayTitulo,
-      situacao: situacao ?? "Não encontrada",
       tarefaColor: tarefaColor ?? "#fff9",
       codigoProcessoProjuris,
       processoUrl: codigoProcessoProjuris ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcessoProjuris : "",
