@@ -1,7 +1,10 @@
 import envVars from "../../envVars";
 import { ReceivedTarefaDetails, SimpleDocument, Tarefa, WritingTarefaDetails } from "../../global";
 import { projurisApiBase, projurisLoginUri } from "../../hardcoded";
+import { Operator, compareWithOperator } from "../../utils/utils";
 import { Filter } from "./FiltersProvider";
+import { useMessages } from "./MessagesProvider";
+import { useMessageGenerator } from "./useMessageGenerator";
 
 type ProjurisAccessToken = {
   projurisToken: string;
@@ -15,9 +18,55 @@ export type ProjurisOptionsFilter = {
   flattenOptions: boolean;
 };
 
-type Operator = "sensitiveStrictEquality" | "insensitiveStrictEquality" | "insentiviveIncludes" | "includes" | "numericEquality";
+type FetchOptions =
+  | {
+      method: "GET";
+      endpoint: string;
+    }
+  | {
+      method: "POST";
+      endpoint: string;
+      body: string;
+    }
+  | {
+      method: "PUT";
+      endpoint: string;
+      body: string;
+    };
+
+export type TarefaUpdateActions = "concluir" | "cancelar" | "salvar";
+
+type TarefaUpdateParams =
+  | {
+      type: "salvar";
+      name: string | undefined;
+      reloadFunction?: () => void;
+      tarefa?: WritingTarefaDetails;
+    }
+  | {
+      type: Exclude<TarefaUpdateActions, "salvar">;
+      name: string | undefined;
+      codigoTarefaEvento: number | undefined;
+      findingCode: FindingCode;
+      reloadFunction?: () => void;
+    };
+
+type FindingCode = { codigoQuadroKanban: number } | { codigoProcesso: number };
+
+const tarefaActions = {
+  concluir: {
+    code: 2,
+    name: "Concluída",
+  },
+  cancelar: {
+    code: 5,
+    name: "Cancelado",
+  },
+};
 
 export default function useProjurisConnector() {
+  const { addMessage, removeMessage } = useMessages();
+  const { generateResponseMessage, generateProgressMessage } = useMessageGenerator();
   const endpoints = {
     processoVisaoCompleta: "casos/processo/visao-completa/",
     // assuntosProjuris: "/assunto/consulta/",
@@ -46,7 +95,6 @@ export default function useProjurisConnector() {
     // criarProcesso: "/processo-judicial",
     // criarAndamento: "/andamento",
     // criarPedido: "/processo/pedido/",
-    criarOuEditarTarefa: "/tarefa",
     consultarTarefaComPaginacao: (registersAmount: number, order: "ASC" | "DESC") => {
       return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=0&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
     },
@@ -54,12 +102,21 @@ export default function useProjurisConnector() {
       return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
     },
     quadrosKanban: (codigoUsuario?: number) => {
-      if (!codigoUsuario) return;
+      if (!codigoUsuario) return "";
       return `/tipo?chave-tipo=kanbanTarefa(codigoUsuario:${codigoUsuario})`;
     },
     colunasKanban: (codigoQuadroKanban?: number) => {
-      if (!codigoQuadroKanban) return;
+      if (!codigoQuadroKanban) return "";
       return `/kanban/tarefa/${codigoQuadroKanban}`;
+    },
+    updateTarefa: (action: TarefaUpdateActions, codigoTarefaEvento?: number) => {
+      if (action !== "salvar" && !codigoTarefaEvento) return "";
+      if (action === "salvar") return "/tarefa";
+      return `/v2/tarefa/alterar-situacao/${codigoTarefaEvento}/situacao/${tarefaActions[action].code}`;
+    },
+    alterarColunaKanbanTarefa: (codigoTarefaEvento?: number) => {
+      if (!codigoTarefaEvento) return "";
+      return `/v2/tarefa/${codigoTarefaEvento}/alterar-coluna-kanban`;
     },
   };
 
@@ -108,17 +165,6 @@ export default function useProjurisConnector() {
     };
   }
 
-  type FetchOptions =
-    | {
-        endpoint: string;
-        method: "GET";
-      }
-    | {
-        endpoint: string;
-        method: "POST";
-        body: string;
-      };
-
   async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<ReceivedTarefaDetails> {
     const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
     const response = await makeProjurisRequest({ endpoint, method: "GET" });
@@ -158,19 +204,13 @@ export default function useProjurisConnector() {
     return JSON.stringify(filterBody);
   }
 
-  // async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<ReceivedTarefaDetails> {
-  //   const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
-  //   const response = await makeProjurisRequest({ endpoint, method: "GET" });
-  //   return
-  // }
-
   async function makeProjurisRequest(fetchOptions: FetchOptions): Promise<Response> {
     const { endpoint, method } = fetchOptions;
     const body = "body" in fetchOptions ? fetchOptions.body : undefined;
     const uri = (projurisApiBase + endpoint).replaceAll(`/${endpoint}`, `${endpoint}`);
     const token = await getProjurisAuthTokenWithinExpiration();
     const params = {
-      method: method,
+      method,
       async: true,
       headers: {
         Authorization: `Bearer ${token}`,
@@ -183,7 +223,17 @@ export default function useProjurisConnector() {
     return fetch(uri, params);
   }
 
-  async function loadSimpleOptions(endpoint?: string, filterObject?: ProjurisOptionsFilter, shallMap = true): Promise<any[]> {
+  function createFilterObject(filterObject?: Partial<ProjurisOptionsFilter>) {
+    const standardFilter: ProjurisOptionsFilter = {
+      key: "valor",
+      operator: "insentiviveIncludes",
+      val: "",
+      flattenOptions: false,
+    };
+    return { ...standardFilter, ...filterObject };
+  }
+
+  async function loadSimpleOptions(endpoint?: string, filterObject?: Partial<ProjurisOptionsFilter>, shallMap = true): Promise<any[]> {
     if (!endpoint) return [];
     const requestOptions: FetchOptions = {
       endpoint,
@@ -191,11 +241,12 @@ export default function useProjurisConnector() {
     };
     const optionsPromise = await makeProjurisRequest(requestOptions);
     const rawOptions = await extractOptionsArray(optionsPromise);
-    const options = filterObject?.flattenOptions ? flattenObjectsArray(rawOptions) : rawOptions;
+    const filter = createFilterObject(filterObject);
+    const options = filter?.flattenOptions ? flattenObjectsArray(rawOptions) : rawOptions;
     let filteredOptions = options;
-    if (filterObject) {
+    if (filter) {
       filteredOptions = options.filter((option: any) => {
-        return compareWithOperator(option[filterObject.key], filterObject.operator, filterObject.val);
+        return compareWithOperator(option[filter.key], filter.operator, filter.val);
       });
     }
     filteredOptions.forEach((option: any) => {
@@ -232,7 +283,11 @@ export default function useProjurisConnector() {
     if (jsonResp.contaConsultaResultadoWs) return jsonResp.contaConsultaResultadoWs;
     if (jsonResp.tarefaConsultaWs) return jsonResp.tarefaConsultaWs;
     if (jsonResp.colunaKanbanTarefaWs) {
-      return jsonResp.colunaKanbanTarefaWs.map((colunaKb: any) => ({ chave: colunaKb.codigo, valor: colunaKb.titulo }));
+      return jsonResp.colunaKanbanTarefaWs.map((colunaKb: any) => ({
+        chave: colunaKb.codigo,
+        valor: colunaKb.titulo,
+        situacao: colunaKb.situacaoTarefa,
+      }));
     }
     return;
   }
@@ -251,38 +306,70 @@ export default function useProjurisConnector() {
     return res;
   }
 
-  function compareWithOperator(a: string, operator: Operator, b: string) {
-    if (a === undefined || b === undefined) return false;
-    switch (operator) {
-      case "sensitiveStrictEquality":
-        return a === b;
-      case "insensitiveStrictEquality":
-        return a.toString().toLowerCase() === b.toString().toLowerCase();
-      case "insentiviveIncludes":
-        return a.toLowerCase().includes(b.toLowerCase());
-      case "includes":
-        return a.includes(b);
-      case "numericEquality":
-        return Number(a) === Number(b);
-    }
+  async function dispatchBackendTarefaUpdate(params: TarefaUpdateParams): Promise<void> {
+    const { type, name, reloadFunction } = params;
+    const tarefa = type === "salvar" ? params.tarefa : undefined;
+    const { codigoTarefaEvento, findingCode } = type !== "salvar" ? params : { codigoTarefaEvento: undefined, findingCode: undefined };
+    if (name === undefined) return;
+    if ((type === "salvar" && !tarefa) || (type !== "salvar" && !codigoTarefaEvento)) return;
+    if (!confirm(`Tem certeza de que deseja ${type.toUpperCase()} a tarefa?`)) return;
+    const progressMsg = generateProgressMessage(type);
+    addMessage(progressMsg);
+    const bodyObj = type === "salvar" ? tarefa : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, findingCode!);
+    const { responseAction, responseKanban } = await makeRequestsForUpdatingTarefa(type, JSON.stringify(bodyObj), codigoTarefaEvento);
+    removeMessage(progressMsg);
+    if (reloadFunction) reloadFunction();
+    const msg = generateResponseMessage(name, type, responseAction, responseKanban);
+    addMessage(msg);
   }
 
-  // function filterProjurisOptions(rawOptions, filterObject) {
-  //   let flattenedOptions;
-  //   if (filterObject.flattenOptions) flattenedOptions = flattenObjectsArray(rawOptions);
-  //   const options = flattenedOptions ?? rawOptions;
-  //   const filtered = options.filter(option =>
-  //     compareWithOperator(option[filterObject.key], filterObject.operator, filterObject.val)
-  //   );
-  //   return filtered.length !== 0 ? filtered : undefined;
-  // }
+  async function fetchPayloadsForUpdatingKanban(type: keyof typeof tarefaActions, codigoTarefaEvento: number, param: FindingCode) {
+    const quadroKanban =
+      "codigoQuadroKanban" in param ? param.codigoQuadroKanban : await fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento, param.codigoProcesso);
+    const colunasKanban: SimpleDocument[] = await loadSimpleOptions(endpoints.colunasKanban(quadroKanban), {}, false);
+    const concludedObj = colunasKanban.find(coluna => coluna.valor.toLowerCase() === tarefaActions[type].name.toLowerCase());
+    const concludedCode = concludedObj?.chave;
+    if (!concludedCode) throw new Error(`Não foi possível encontrar um código para a situação \"${tarefaActions[type].name}\".`);
+    return {
+      codigoColuna: concludedCode,
+      codigoQuadro: quadroKanban,
+      atualizarSituacaoTarefa: false,
+      codigoTarefaAnterior: 0,
+      codigoTarefaPosterior: 0,
+    };
+  }
+
+  async function fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento: number, codigoProcesso: number): Promise<number> {
+    const tarefaDetails = await fetchTarefaDetails(codigoTarefaEvento, codigoProcesso);
+    return tarefaDetails.tarefaEventoWs.quadroKanban.chave;
+  }
+
+  async function makeRequestsForUpdatingTarefa(type: TarefaUpdateActions, body: string, codigoTarefaEvento?: number) {
+    const endpointKanban = endpoints.alterarColunaKanbanTarefa(codigoTarefaEvento);
+    if (type !== "salvar" && !endpointKanban) {
+      const errorMsg = "Não encontramos um endpoint para alterar a coluna do Kanban - função makeRequestsForConcludingTarefa().";
+      addMessage({ type: "error", text: errorMsg });
+      throw new Error(errorMsg);
+    }
+    const endpointAction = endpoints.updateTarefa(type, codigoTarefaEvento);
+    if (!endpointAction) {
+      const errorMsg = `Não encontramos um endpoint para ${type} a tarefa - função makeRequestsForConcludingTarefa().`;
+      addMessage({ type: "error", text: errorMsg });
+      throw new Error(errorMsg);
+    }
+    const responseKanban = endpointKanban ? await makeProjurisRequest({ method: "PUT", endpoint: endpointKanban, body }) : new Response();
+    const responseAction = await makeProjurisRequest({ method: "PUT", endpoint: endpointAction, body: type === "salvar" ? body : "" });
+    return { responseAction, responseKanban };
+  }
 
   return {
     endpoints,
     makeProjurisRequest,
     loadSimpleOptions,
+    createFilterObject,
     extractOptionsArray,
     fetchTarefasFromFilter,
     fetchTarefaDetails,
+    dispatchBackendTarefaUpdate,
   };
 }
