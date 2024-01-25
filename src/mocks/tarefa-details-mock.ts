@@ -1,6 +1,6 @@
-import { ReceivedTarefaDetails } from "../global";
+import { FetchedTarefaDetails } from "../global";
 
-const tarefaDetailsMock: ReceivedTarefaDetails = {
+const tarefaDetailsMock: FetchedTarefaDetails = {
   modulos: [
     {
       modulo: "PROCESSO",

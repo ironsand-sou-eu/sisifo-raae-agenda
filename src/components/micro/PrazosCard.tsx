@@ -1,11 +1,11 @@
-import { ReceivedTarefaDetails } from "../../global";
+import { FetchedTarefaDetails } from "../../global";
 import SingleDatePicker from "./SingleDatePicker";
 
 export type PrazosCardProps = {
   dataConclusao?: Date | null;
   dataConclusaoPrevista?: Date | null;
   dataLimite?: Date | null;
-  onChange: (props: Partial<ReceivedTarefaDetails["tarefaEventoWs"]>) => void;
+  onChange: (props: Partial<FetchedTarefaDetails["tarefaEventoWs"]>) => void;
   prazoColorCssVariable: string;
 };
 

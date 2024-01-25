@@ -23,7 +23,7 @@ type Modulo = {
   vinculoPrincipal: boolean;
 };
 
-export type Tarefa = {
+export type FetchedTarefa = {
   checked?: boolean;
   codigoTarefa: number;
   codigoTarefaEvento: number;
@@ -62,7 +62,25 @@ export type Tarefa = {
   dataInclusao: number;
 };
 
-export type ReceivedTarefaDetails = {
+export type DisplayingTarefa = {
+  checked?: boolean;
+  codigoTarefaEvento: number;
+  tarefaColor: string;
+  descricao: string;
+  gruposResponsaveis: string;
+  codigoProcesso: number;
+  nomeTarefaTipo: string;
+  numeroProcesso: string;
+  parteAtiva: string;
+  partePassiva: string;
+  situacao: string;
+  usuarioResponsaveis: string;
+  prazo: string;
+  processoUrl: string;
+  prazoColorCssVariable: string;
+};
+
+export type FetchedTarefaDetails = {
   modulos: Modulo[];
   codigoTarefa: number;
   tarefaEventoWs: {

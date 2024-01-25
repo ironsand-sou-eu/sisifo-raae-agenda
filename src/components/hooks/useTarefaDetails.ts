@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import useProjurisConnector from "./useProjurisConnector";
-import { DisplayingTarefaDetails, ReceivedTarefaDetails, SimpleDocument } from "../../global";
-import useFetchedTarefasAdapter from "./useTarefasAdapter";
+import { DisplayingTarefaDetails, FetchedTarefaDetails, SimpleDocument } from "../../global";
+import useTarefasAdapter from "./useTarefasAdapter";
 
 export default function useTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number, tarefaColor: string) {
-  const [tarefaDetails, setTarefaDetails] = useState<ReceivedTarefaDetails>();
+  const [tarefaDetails, setTarefaDetails] = useState<FetchedTarefaDetails>();
   const [displayingTarefaDetails, setDisplayingTarefaDetails] = useState<DisplayingTarefaDetails>();
   const [isDetailLoading, setIsDetailLoading] = useState(false);
 
   const { fetchTarefaDetails, dispatchBackendTarefaUpdate } = useProjurisConnector();
-  const { adaptFetchedTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType } = useFetchedTarefasAdapter();
+  const { adaptTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType } = useTarefasAdapter();
 
   useEffect(loadDetails, [codigoTarefaEvento, codigoProcesso]);
 
   useEffect(() => {
     setDisplayingTarefaDetails(() => {
-      const dispdetails = adaptFetchedTarefaDetailsToDisplayingType(tarefaDetails, tarefaColor);
+      const dispdetails = adaptTarefaDetailsToDisplayingType(tarefaDetails, tarefaColor);
       return dispdetails;
     });
   }, [tarefaDetails]);
@@ -37,7 +37,7 @@ export default function useTarefaDetails(codigoTarefaEvento: number, codigoProce
     });
   }
 
-  function updateTarefaDetails(newProps: Partial<ReceivedTarefaDetails["tarefaEventoWs"]>): void {
+  function updateTarefaDetails(newProps: Partial<FetchedTarefaDetails["tarefaEventoWs"]>): void {
     setTarefaDetails(prevValues => {
       if (!prevValues) return;
       const newTarefaEventoWs = { ...prevValues.tarefaEventoWs, ...newProps };
