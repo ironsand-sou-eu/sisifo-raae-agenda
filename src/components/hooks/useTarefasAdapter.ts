@@ -1,15 +1,15 @@
-import { DisplayingTarefaDetails, ReceivedTarefaDetails, Tarefa, WritingTarefaDetails } from "../../global";
+import { DisplayingTarefa, DisplayingTarefaDetails, FetchedTarefaDetails, FetchedTarefa, WritingTarefaDetails } from "../../global";
 import { projurisApiBase } from "../../hardcoded";
-import useProjurisConnector from "./useProjurisConnector";
+import useProjurisConnector, { TarefaUpdateActions, TarefaUpdateParams } from "./useProjurisConnector";
 
-export default function useFetchedTarefasAdapter() {
+export default function useTarefasAdapter() {
   const { endpoints } = useProjurisConnector();
 
-  function adaptFetchedTarefasListToDisplayingType(tarefasList: Tarefa[] = []) {
+  function adaptTarefasListToDisplayingType(tarefasList: FetchedTarefa[] = []): DisplayingTarefa[] {
     return tarefasList.map(parseSmallTarefaCardProps);
   }
 
-  function parseSmallTarefaCardProps(tarefaInfo: Tarefa) {
+  function parseSmallTarefaCardProps(tarefaInfo: FetchedTarefa): DisplayingTarefa {
     const {
       checked,
       codigoTarefaEvento,
@@ -30,13 +30,12 @@ export default function useFetchedTarefasAdapter() {
     const displayingPartePassiva = partePassiva ? partePassiva : "Não disponível";
     const displayingNumeroProcesso = numeroProcesso ? numeroProcesso : "Sem número";
     const displayingGruposResponsaveis = gruposResponsaveis ? gruposResponsaveis : "Sem núcleo";
-
     const prazo = dataConclusaoPrevista ? new Date(dataConclusaoPrevista) : undefined;
+
     return {
       checked,
       codigoTarefaEvento,
       tarefaColor: tarefaColor ?? "#fff9",
-      dataConclusaoPrevista,
       descricao,
       gruposResponsaveis: displayingGruposResponsaveis,
       codigoProcesso,
@@ -46,13 +45,30 @@ export default function useFetchedTarefasAdapter() {
       partePassiva: displayingPartePassiva,
       situacao,
       usuarioResponsaveis,
-      prazoString: prazo ? prazo.toLocaleDateString("pt-BR") : "Não encontrado",
+      prazo: prazo ? prazo.toLocaleDateString("pt-BR") : "Não encontrado",
       processoUrl: codigoProcesso ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcesso : "",
       prazoColorCssVariable: getPrazoColorCssVariable(prazo, flagSituacaoConcluida),
     };
   }
 
-  function adaptFetchedTarefaDetailsToDisplayingType(tarefaDetails?: ReceivedTarefaDetails, tarefaColor?: string): DisplayingTarefaDetails {
+  function adaptTarefasListToUpdatingParams(
+    tarefas: DisplayingTarefa | DisplayingTarefa[],
+    type: TarefaUpdateActions,
+    reloadFunction?: () => void
+  ): TarefaUpdateParams[] {
+    const list = Array.isArray(tarefas) ? tarefas : [tarefas];
+    return list.map(({ nomeTarefaTipo, codigoTarefaEvento, codigoProcesso }) => {
+      return {
+        type,
+        name: nomeTarefaTipo,
+        codigoTarefaEvento: codigoTarefaEvento,
+        kanbanFindingCode: { codigoProcesso: codigoProcesso },
+        reloadFunction,
+      };
+    });
+  }
+
+  function adaptTarefaDetailsToDisplayingType(tarefaDetails?: FetchedTarefaDetails, tarefaColor?: string): DisplayingTarefaDetails {
     const {
       tarefaEventoWs: {
         titulo,
@@ -102,7 +118,7 @@ export default function useFetchedTarefasAdapter() {
     return "--fill-color-green";
   }
 
-  function adaptTarefaDetailsToWritingType(tarefa: ReceivedTarefaDetails): WritingTarefaDetails {
+  function adaptTarefaDetailsToWritingType(tarefa: FetchedTarefaDetails): WritingTarefaDetails {
     const {
       tarefaEventoWs: {
         codigoTarefa,
@@ -137,8 +153,8 @@ export default function useFetchedTarefasAdapter() {
       tipoTarefa,
       marcadorWs,
       tarefaEventoSituacaoWs: {
-        codigoTarefaEventoSituacao,
-        situacao,
+        codigoTarefaEventoSituacao: codigoTarefaEventoSituacao ?? -1,
+        situacao: situacao ?? "",
       },
       titulo,
       kanban,
@@ -147,5 +163,26 @@ export default function useFetchedTarefasAdapter() {
     };
   }
 
-  return { adaptFetchedTarefasListToDisplayingType, adaptFetchedTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType };
+  function adaptTarefaDetailsToUpdatingParams(
+    tarefaDetails: DisplayingTarefaDetails,
+    codigoTarefaEvento: number,
+    type: TarefaUpdateActions,
+    reloadFunction?: () => void
+  ): TarefaUpdateParams {
+    return {
+      type,
+      name: tarefaDetails.displayTitulo,
+      codigoTarefaEvento,
+      kanbanFindingCode: { codigoQuadroKanban: tarefaDetails.quadroKanban.chave },
+      reloadFunction,
+    };
+  }
+
+  return {
+    adaptTarefasListToDisplayingType,
+    adaptTarefaDetailsToDisplayingType,
+    adaptTarefaDetailsToWritingType,
+    adaptTarefasListToUpdatingParams,
+    adaptTarefaDetailsToUpdatingParams,
+  };
 }
