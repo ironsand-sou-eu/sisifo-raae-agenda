@@ -1,30 +1,19 @@
 import { Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import TarefaSmallCardHeader from "./TarefaSmallCardHeader";
+import { DisplayingTarefa } from "../../global";
+import useTarefasAdapter from "../hooks/useTarefasAdapter";
+import { useTarefasList } from "../hooks/TarefasListProvider";
 
 type TarefaSmallCardProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
-  tarefaDisplayInfo: {
-    checked?: boolean;
-    codigoTarefaEvento: number;
-    tarefaColor: string;
-    dataConclusaoPrevista: number;
-    descricao: string;
-    gruposResponsaveis: string;
-    codigoProcesso: number;
-    nomeTarefaTipo: string;
-    numeroProcesso: string;
-    parteAtiva: string;
-    partePassiva: string;
-    situacao: string;
-    usuarioResponsaveis: string;
-    prazoString: string;
-    processoUrl: string;
-    prazoColorCssVariable: string;
-  };
+  tarefaDisplayInfo: DisplayingTarefa;
 };
 
 export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails }: TarefaSmallCardProps): JSX.Element {
+  const { adaptTarefasListToUpdatingParams } = useTarefasAdapter();
+  const { loadList } = useTarefasList();
+  const updateParams = adaptTarefasListToUpdatingParams(tarefaDisplayInfo, "cancelar", loadList)[0];
   const {
     checked,
     codigoTarefaEvento,
@@ -38,7 +27,7 @@ export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails 
     partePassiva,
     situacao,
     usuarioResponsaveis,
-    prazoString,
+    prazo,
     processoUrl,
     prazoColorCssVariable,
   } = tarefaDisplayInfo;
@@ -46,10 +35,23 @@ export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails 
   return (
     <section className="card tarefa-card">
       <TarefaSmallCardHeader
-        {...{ checked, nomeTarefaTipo, codigoTarefaEvento, codigoProcesso, numeroProcesso, parteAtiva, partePassiva, tarefaColor }}
+        {...{
+          checked,
+          nomeTarefaTipo,
+          codigoTarefaEvento,
+          codigoProcesso,
+          numeroProcesso,
+          parteAtiva,
+          partePassiva,
+          tarefaColor,
+          updateParams,
+        }}
         setPrefetchDetails={setPrefetchDetails}
       />
-      <p className={`prazo`} style={{ backgroundColor: `var(${prazoColorCssVariable})` }}>{`Prazo: ${prazoString} - Situação: ${situacao}`}</p>
+      <p
+        className={`prazo`}
+        style={{ backgroundColor: `var(${prazoColorCssVariable})` }}
+      >{`Prazo: ${prazo} - Situação: ${situacao}`}</p>
       <div className="processo-info">
         {`${parteAtiva} x ${partePassiva} - `}
         <a href={processoUrl}>{numeroProcesso}</a>

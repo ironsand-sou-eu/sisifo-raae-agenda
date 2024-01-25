@@ -2,7 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import HeaderButton from "../micro/HeaderButton";
 import { useTarefasList } from "../hooks/TarefasListProvider";
-import useProjurisConnector from "../hooks/useProjurisConnector";
+import useProjurisConnector, { TarefaUpdateParams } from "../hooks/useProjurisConnector";
 
 type TarefaSmallCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -14,6 +14,7 @@ type TarefaSmallCardHeaderProps = {
   parteAtiva: string;
   partePassiva: string;
   tarefaColor: string;
+  updateParams: TarefaUpdateParams;
 };
 
 export default function TarefaSmallCardHeader({
@@ -25,9 +26,10 @@ export default function TarefaSmallCardHeader({
   codigoTarefaEvento,
   codigoProcesso,
   tarefaColor,
+  updateParams,
   setPrefetchDetails,
 }: TarefaSmallCardHeaderProps): JSX.Element {
-  const { setTarefas, loadList } = useTarefasList();
+  const { toggleCheck } = useTarefasList();
   const { dispatchBackendTarefaUpdate } = useProjurisConnector();
   function renderDetails(): void {
     setPrefetchDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
@@ -44,14 +46,10 @@ export default function TarefaSmallCardHeader({
 
   function handleSelect({ target: { id } }: ChangeEvent) {
     const [_, codTarefaEvento] = getProcessoAndTarefaCodesFromCheckboxId(id);
-    setTarefas(prevValues => {
-      if (!prevValues) return [];
-      const index = prevValues?.findIndex(tarefa => tarefa.codigoTarefaEvento === codTarefaEvento);
-      const clone = structuredClone(prevValues);
-      clone[index].checked = !clone[index].checked;
-      return clone;
-    });
+    toggleCheck(codTarefaEvento);
   }
+  const cancelParams = { ...updateParams, type: "cancelar" } as TarefaUpdateParams;
+  const concludeParams = { ...updateParams, type: "concluir" } as TarefaUpdateParams;
 
   return (
     <header className="tarefa-card-titulo">
@@ -68,31 +66,9 @@ export default function TarefaSmallCardHeader({
         <h2 onClick={renderDetails}>{nomeTarefaTipo}</h2>
       </div>
       <div>
-        <HeaderButton
-          type="cancel"
-          onClick={() =>
-            dispatchBackendTarefaUpdate({
-              type: "cancelar",
-              name: nomeTarefaTipo,
-              codigoTarefaEvento,
-              findingCode: { codigoProcesso },
-              reloadFunction: loadList,
-            })
-          }
-        />
+        <HeaderButton type="cancel" onClick={() => dispatchBackendTarefaUpdate(cancelParams)} />
         <HeaderButton type="timesheet" onClick={e => console.log(e)} />
-        <HeaderButton
-          type="conclude"
-          onClick={() =>
-            dispatchBackendTarefaUpdate({
-              type: "concluir",
-              name: nomeTarefaTipo,
-              codigoTarefaEvento,
-              findingCode: { codigoProcesso },
-              reloadFunction: loadList,
-            })
-          }
-        />
+        <HeaderButton type="conclude" onClick={() => dispatchBackendTarefaUpdate(concludeParams)} />
       </div>
     </header>
   );

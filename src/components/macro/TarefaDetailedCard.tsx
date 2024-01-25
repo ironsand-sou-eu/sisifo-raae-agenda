@@ -12,6 +12,7 @@ import TarefaDetailedCardSkeleton from "./skeletons/TarefaDetailedCardSkeleton";
 import { useAnimations } from "../hooks/AnimationsProvider";
 import AnimatableFetchingSelect from "../micro/AnimatableFetchingSelect";
 import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../global";
+import useTarefasAdapter from "../hooks/useTarefasAdapter";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -42,6 +43,10 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     tarefaColor
   );
   const { setHidingAnimation } = useAnimations();
+  const { adaptTarefaDetailsToUpdatingParams } = useTarefasAdapter();
+  const updateParams = displayingTarefaDetails
+    ? adaptTarefaDetailsToUpdatingParams(displayingTarefaDetails, codigoTarefaEvento, "cancelar", loadDetails)
+    : undefined;
   const {
     displayTitulo,
     processoUrl,
@@ -70,7 +75,15 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   ) : (
     <section className="card tarefa-card tarefa-detailed-card">
       <TarefaDetailedCardHeader
-        {...{ displayTitulo, setPrefetchDetails, tarefaColor, codigoQuadroKanban: quadroKanban?.chave, codigoTarefaEvento, loadDetails }}
+        {...{
+          displayTitulo,
+          setPrefetchDetails,
+          tarefaColor,
+          codigoQuadroKanban: quadroKanban?.chave,
+          codigoTarefaEvento,
+          loadDetails,
+          updateParams,
+        }}
       />
       <PrazosCard
         {...{ dataConclusao, dataConclusaoPrevista, dataLimite }}
