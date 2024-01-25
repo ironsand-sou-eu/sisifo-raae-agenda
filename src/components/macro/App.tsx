@@ -1,5 +1,4 @@
 import { useState } from "react";
-import useFetchedTarefasAdapter from "../hooks/useTarefasAdapter";
 import { useTarefasList } from "../hooks/TarefasListProvider";
 import HeaderFilter from "./HeaderFilter";
 import FloatingCommandBar from "./FloatingCommandBar";
@@ -12,9 +11,7 @@ import Messenger from "./Messenger";
 
 export default function App() {
   const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
-  const { tarefas, isListLoading, selectedTarefas } = useTarefasList();
-  const { adaptFetchedTarefasListToDisplayingType } = useFetchedTarefasAdapter();
-  const displayingTarefas = adaptFetchedTarefasListToDisplayingType(tarefas);
+  const { displayingTarefas, selectedTarefas, isListLoading } = useTarefasList();
 
   return (
     <>
@@ -24,8 +21,8 @@ export default function App() {
         {isListLoading ? (
           <AppSkeleton />
         ) : (
-          displayingTarefas?.map(tarefaInfo => (
-            <TarefasSmallCard key={tarefaInfo.codigoTarefaEvento} tarefaDisplayInfo={tarefaInfo} {...{ setPrefetchDetails }} />
+          displayingTarefas?.map(tarefaDisplayInfo => (
+            <TarefasSmallCard key={tarefaDisplayInfo.codigoTarefaEvento} {...{ tarefaDisplayInfo, setPrefetchDetails }} />
           ))
         )}
         {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} {...{ setPrefetchDetails }} />}
