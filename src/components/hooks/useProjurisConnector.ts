@@ -1,5 +1,5 @@
 import envVars from "../../envVars";
-import { ReceivedTarefaDetails, SimpleDocument, Tarefa, WritingTarefaDetails } from "../../global";
+import { FetchedTarefaDetails, SimpleDocument, FetchedTarefa, WritingTarefaDetails } from "../../global";
 import { projurisApiBase, projurisLoginUri } from "../../hardcoded";
 import { Operator, compareWithOperator } from "../../utils/utils";
 import { Filter } from "./FiltersProvider";
@@ -36,7 +36,7 @@ type FetchOptions =
 
 export type TarefaUpdateActions = "concluir" | "cancelar" | "salvar";
 
-type TarefaUpdateParams =
+export type TarefaUpdateParams =
   | {
       type: "salvar";
       name: string | undefined;
@@ -47,11 +47,11 @@ type TarefaUpdateParams =
       type: Exclude<TarefaUpdateActions, "salvar">;
       name: string | undefined;
       codigoTarefaEvento: number | undefined;
-      findingCode: FindingCode;
+      kanbanFindingCode: KanbanFindingCode;
       reloadFunction?: () => void;
     };
 
-type FindingCode = { codigoQuadroKanban: number } | { codigoProcesso: number };
+type KanbanFindingCode = { codigoQuadroKanban: number } | { codigoProcesso: number };
 
 const tarefaActions = {
   concluir: {
@@ -165,13 +165,13 @@ export default function useProjurisConnector() {
     };
   }
 
-  async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<ReceivedTarefaDetails> {
+  async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<FetchedTarefaDetails> {
     const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
     const response = await makeProjurisRequest({ endpoint, method: "GET" });
     return await response.json();
   }
 
-  async function fetchTarefasFromFilter(filter: Filter): Promise<Tarefa[]> {
+  async function fetchTarefasFromFilter(filter: Filter): Promise<FetchedTarefa[]> {
     const endpoint = endpoints.consultarTarefaComPaginacao(30, "ASC");
     const body = createQueryBody(filter);
     const response = await makeProjurisRequest({ endpoint, method: "POST", body });
@@ -306,16 +306,25 @@ export default function useProjurisConnector() {
     return res;
   }
 
-  async function dispatchBackendTarefaUpdate(params: TarefaUpdateParams): Promise<void> {
+  async function dispatchBackendTarefaUpdate(params: TarefaUpdateParams | TarefaUpdateParams[]): Promise<void> {
+    const parameters = Array.isArray(params) ? params : [params];
+    parameters.forEach(async param => {
+      setTimeout(() => {
+        singleBackendTarefaUpdate(param);
+      }, 200);
+    });
+  }
+
+  async function singleBackendTarefaUpdate(params: TarefaUpdateParams): Promise<void> {
     const { type, name, reloadFunction } = params;
     const tarefa = type === "salvar" ? params.tarefa : undefined;
-    const { codigoTarefaEvento, findingCode } = type !== "salvar" ? params : { codigoTarefaEvento: undefined, findingCode: undefined };
+    const { codigoTarefaEvento, kanbanFindingCode } = type !== "salvar" ? params : { codigoTarefaEvento: undefined, kanbanFindingCode: undefined };
     if (name === undefined) return;
     if ((type === "salvar" && !tarefa) || (type !== "salvar" && !codigoTarefaEvento)) return;
     if (!confirm(`Tem certeza de que deseja ${type.toUpperCase()} a tarefa?`)) return;
     const progressMsg = generateProgressMessage(type);
     addMessage(progressMsg);
-    const bodyObj = type === "salvar" ? tarefa : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, findingCode!);
+    const bodyObj = type === "salvar" ? tarefa : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, kanbanFindingCode!);
     const { responseAction, responseKanban } = await makeRequestsForUpdatingTarefa(type, JSON.stringify(bodyObj), codigoTarefaEvento);
     removeMessage(progressMsg);
     if (reloadFunction) reloadFunction();
@@ -323,7 +332,7 @@ export default function useProjurisConnector() {
     addMessage(msg);
   }
 
-  async function fetchPayloadsForUpdatingKanban(type: keyof typeof tarefaActions, codigoTarefaEvento: number, param: FindingCode) {
+  async function fetchPayloadsForUpdatingKanban(type: keyof typeof tarefaActions, codigoTarefaEvento: number, param: KanbanFindingCode) {
     const quadroKanban =
       "codigoQuadroKanban" in param ? param.codigoQuadroKanban : await fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento, param.codigoProcesso);
     const colunasKanban: SimpleDocument[] = await loadSimpleOptions(endpoints.colunasKanban(quadroKanban), {}, false);
