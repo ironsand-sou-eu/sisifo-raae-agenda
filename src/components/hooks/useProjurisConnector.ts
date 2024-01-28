@@ -3,7 +3,7 @@ import { FetchedTarefaDetails, SimpleDocument, FetchedTarefa, WritingTarefaDetai
 import { projurisApiBase, projurisLoginUri } from "../../hardcoded";
 import { Operator, compareWithOperator } from "../../utils/utils";
 import { Filter } from "./FiltersProvider";
-import { useMessages } from "./MessagesProvider";
+import { useNotifications } from "./NotificationsProvider";
 import { useMessageGenerator } from "./useMessageGenerator";
 
 type ProjurisAccessToken = {
@@ -65,8 +65,8 @@ const tarefaActions = {
 };
 
 export default function useProjurisConnector() {
-  const { addMessage, removeMessage } = useMessages();
-  const { generateResponseMessage, generateProgressMessage } = useMessageGenerator();
+  const { addNotification, removeNotification } = useNotifications();
+  const { generateNotification, generateStringMsg } = useMessageGenerator();
   const endpoints = {
     processoVisaoCompleta: "casos/processo/visao-completa/",
     // assuntosProjuris: "/assunto/consulta/",
@@ -233,7 +233,11 @@ export default function useProjurisConnector() {
     return { ...standardFilter, ...filterObject };
   }
 
-  async function loadSimpleOptions(endpoint?: string, filterObject?: Partial<ProjurisOptionsFilter>, shallMap = true): Promise<any[]> {
+  async function loadSimpleOptions(
+    endpoint?: string,
+    filterObject?: Partial<ProjurisOptionsFilter>,
+    shallMap = true
+  ): Promise<any[]> {
     if (!endpoint) return [];
     const requestOptions: FetchOptions = {
       endpoint,
@@ -270,7 +274,8 @@ export default function useProjurisConnector() {
     if (projurisFetchResponse.status === 204) return "no content";
     const jsonResp = await projurisFetchResponse.json();
     if (jsonResp.simpleDto) return jsonResp.simpleDto;
-    if (jsonResp.consultaTipoRetorno && jsonResp.consultaTipoRetorno[0].simpleDto) return jsonResp.consultaTipoRetorno[0].simpleDto;
+    if (jsonResp.consultaTipoRetorno && jsonResp.consultaTipoRetorno[0].simpleDto)
+      return jsonResp.consultaTipoRetorno[0].simpleDto;
     if (jsonResp.nodeWs) return jsonResp.nodeWs;
     if (jsonResp.tarefaTipoConsultaWs) return jsonResp.tarefaTipoConsultaWs;
     if (jsonResp.andamentoTipoConsultaWs) return jsonResp.andamentoTipoConsultaWs;
@@ -318,27 +323,41 @@ export default function useProjurisConnector() {
   async function singleBackendTarefaUpdate(params: TarefaUpdateParams): Promise<void> {
     const { type, name, reloadFunction } = params;
     const tarefa = type === "salvar" ? params.tarefa : undefined;
-    const { codigoTarefaEvento, kanbanFindingCode } = type !== "salvar" ? params : { codigoTarefaEvento: undefined, kanbanFindingCode: undefined };
+    const { codigoTarefaEvento, kanbanFindingCode } =
+      type !== "salvar" ? params : { codigoTarefaEvento: undefined, kanbanFindingCode: undefined };
     if (name === undefined) return;
     if ((type === "salvar" && !tarefa) || (type !== "salvar" && !codigoTarefaEvento)) return;
-    if (!confirm(`Tem certeza de que deseja ${type.toUpperCase()} a tarefa?`)) return;
-    const progressMsg = generateProgressMessage(type);
-    addMessage(progressMsg);
-    const bodyObj = type === "salvar" ? tarefa : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, kanbanFindingCode!);
-    const { responseAction, responseKanban } = await makeRequestsForUpdatingTarefa(type, JSON.stringify(bodyObj), codigoTarefaEvento);
-    removeMessage(progressMsg);
+    if (!confirm(generateStringMsg.confirmUpdate(type))) return;
+    const progressMsg = generateNotification.progress(type);
+    addNotification(progressMsg);
+    const bodyObj =
+      type === "salvar" ? tarefa : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, kanbanFindingCode!);
+    const { responseAction, responseKanban } = await makeRequestsForUpdatingTarefa(
+      type,
+      JSON.stringify(bodyObj),
+      codigoTarefaEvento
+    );
+    removeNotification(progressMsg);
     if (reloadFunction) reloadFunction();
-    const msg = generateResponseMessage(name, type, responseAction, responseKanban);
-    addMessage(msg);
+    const msg = generateNotification.response(name, type, responseAction, responseKanban);
+    addNotification(msg);
   }
 
-  async function fetchPayloadsForUpdatingKanban(type: keyof typeof tarefaActions, codigoTarefaEvento: number, param: KanbanFindingCode) {
+  async function fetchPayloadsForUpdatingKanban(
+    type: keyof typeof tarefaActions,
+    codigoTarefaEvento: number,
+    param: KanbanFindingCode
+  ) {
     const quadroKanban =
-      "codigoQuadroKanban" in param ? param.codigoQuadroKanban : await fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento, param.codigoProcesso);
+      "codigoQuadroKanban" in param
+        ? param.codigoQuadroKanban
+        : await fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento, param.codigoProcesso);
     const colunasKanban: SimpleDocument[] = await loadSimpleOptions(endpoints.colunasKanban(quadroKanban), {}, false);
-    const concludedObj = colunasKanban.find(coluna => coluna.valor.toLowerCase() === tarefaActions[type].name.toLowerCase());
+    const concludedObj = colunasKanban.find(
+      coluna => coluna.valor.toLowerCase() === tarefaActions[type].name.toLowerCase()
+    );
     const concludedCode = concludedObj?.chave;
-    if (!concludedCode) throw new Error(`Não foi possível encontrar um código para a situação \"${tarefaActions[type].name}\".`);
+    if (!concludedCode) throw new Error(generateStringMsg.situacaoCodeNotFound(tarefaActions[type].name));
     return {
       codigoColuna: concludedCode,
       codigoQuadro: quadroKanban,
@@ -356,18 +375,24 @@ export default function useProjurisConnector() {
   async function makeRequestsForUpdatingTarefa(type: TarefaUpdateActions, body: string, codigoTarefaEvento?: number) {
     const endpointKanban = endpoints.alterarColunaKanbanTarefa(codigoTarefaEvento);
     if (type !== "salvar" && !endpointKanban) {
-      const errorMsg = "Não encontramos um endpoint para alterar a coluna do Kanban - função makeRequestsForConcludingTarefa().";
-      addMessage({ type: "error", text: errorMsg });
-      throw new Error(errorMsg);
+      const errorMsg = generateNotification.errorKanbanEndpointNotFound("makeRequestsForConcludingTarefa");
+      addNotification(errorMsg);
+      throw new Error(errorMsg.text);
     }
     const endpointAction = endpoints.updateTarefa(type, codigoTarefaEvento);
     if (!endpointAction) {
-      const errorMsg = `Não encontramos um endpoint para ${type} a tarefa - função makeRequestsForConcludingTarefa().`;
-      addMessage({ type: "error", text: errorMsg });
-      throw new Error(errorMsg);
+      const errorMsg = generateNotification.errorUpdateEndpointNotFound(type, "makeRequestsForConcludingTarefa");
+      addNotification(errorMsg);
+      throw new Error(errorMsg.text);
     }
-    const responseKanban = endpointKanban ? await makeProjurisRequest({ method: "PUT", endpoint: endpointKanban, body }) : new Response();
-    const responseAction = await makeProjurisRequest({ method: "PUT", endpoint: endpointAction, body: type === "salvar" ? body : "" });
+    const responseKanban = endpointKanban
+      ? await makeProjurisRequest({ method: "PUT", endpoint: endpointKanban, body })
+      : new Response();
+    const responseAction = await makeProjurisRequest({
+      method: "PUT",
+      endpoint: endpointAction,
+      body: type === "salvar" ? body : "",
+    });
     return { responseAction, responseKanban };
   }
 

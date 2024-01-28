@@ -1,12 +1,12 @@
-import { useMessages } from "../hooks/MessagesProvider";
-import MessageCard from "../micro/MessageCard";
+import { useNotifications } from "../hooks/NotificationsProvider";
+import NotificationCard from "../micro/NotificationCard";
 
 export default function Messenger(): JSX.Element {
-  const { msgs } = useMessages();
+  const { msgs } = useNotifications();
   return (
-    <ul className="messages">
+    <ul className="notifications">
       {msgs.map((msg, index) => (
-        <MessageCard key={index} msg={msg} />
+        <NotificationCard key={index} msg={msg} />
       ))}
     </ul>
   );

@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import { Message } from "../../global";
+import { Notification } from "../../global";
 
-type MessageCarddProps = {
-  msg: Message;
+type NotificationCardProps = {
+  msg: Notification;
 };
 
-export default function MessageCard({ msg }: MessageCarddProps): JSX.Element {
+export default function NotificationCard({ msg }: NotificationCardProps): JSX.Element {
   const liRef = useRef<HTMLLIElement>(null);
   useEffect(() => {
     setTimeout(() => {

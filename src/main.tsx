@@ -4,16 +4,16 @@ import App from "./components/macro/App";
 import AnimationsProvider from "./components/hooks/AnimationsProvider";
 import FiltersProvider from "./components/hooks/FiltersProvider";
 import TarefasListProvider from "./components/hooks/TarefasListProvider";
-import MessagesProvider from "./components/hooks/MessagesProvider";
+import NotificationsProvider from "./components/hooks/NotificationsProvider";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AnimationsProvider>
       <FiltersProvider>
         <TarefasListProvider>
-          <MessagesProvider>
+          <NotificationsProvider>
             <App />
-          </MessagesProvider>
+          </NotificationsProvider>
         </TarefasListProvider>
       </FiltersProvider>
     </AnimationsProvider>

@@ -150,7 +150,7 @@ export type DisplayingTarefaDetails = {
   usuariosResponsaveis: SimpleDocument[];
 };
 
-type Message = {
+type Notification = {
   text: string;
   type: "success" | "error" | "progress";
 };
