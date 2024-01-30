@@ -24,7 +24,7 @@ export default function HeaderFilterHeader(): JSX.Element {
         <HeaderButton type="save" onClick={promptAddingFilter} />
         <HeaderButton type="delete" onClick={promptDeletingFilter} />
       </div>
-      <HeaderButton type="filter" title="Exibir filtros..." onClick={() => toggleVisibility("filter")} />
+      <HeaderButton type="filter" title="Exibir filtros... (Ctrl + q)" onClick={() => toggleVisibility("filter")} />
     </header>
   );
 }
