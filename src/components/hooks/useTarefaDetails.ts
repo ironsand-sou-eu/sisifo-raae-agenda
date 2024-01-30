@@ -14,6 +14,7 @@ export default function useTarefaDetails(codigoTarefaEvento: number, codigoProce
   useEffect(loadDetails, [codigoTarefaEvento, codigoProcesso]);
 
   useEffect(() => {
+    if (!tarefaDetails) return;
     setDisplayingTarefaDetails(() => {
       const dispdetails = adaptTarefaDetailsToDisplayingType(tarefaDetails, tarefaColor);
       return dispdetails;
