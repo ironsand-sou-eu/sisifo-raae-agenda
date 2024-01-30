@@ -5,7 +5,7 @@ import { useFilters } from "../hooks/FiltersProvider";
 
 export default function HeaderFilterHeader(): JSX.Element {
   // TODO: SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
-  const { toggleVisibility } = useAnimations();
+  const { toggleVisibility, show } = useAnimations();
   const { filters, applySelectedFilter, promptAddingFilter, promptDeletingFilter } = useFilters();
   const currentFilter = filters?.currentFilter ? [filters.currentFilter] : undefined;
 
@@ -24,7 +24,11 @@ export default function HeaderFilterHeader(): JSX.Element {
         <HeaderButton type="save" onClick={promptAddingFilter} />
         <HeaderButton type="delete" onClick={promptDeletingFilter} />
       </div>
-      <HeaderButton type="filter" title="Exibir filtros... (Ctrl + q)" onClick={() => toggleVisibility("filter")} />
+      <HeaderButton
+        type="filter"
+        title={(show?.filter ? "Ocultar filtros" : "Exibir filtros") + "... (Ctrl + q)"}
+        onClick={() => toggleVisibility("filter")}
+      />
     </header>
   );
 }
