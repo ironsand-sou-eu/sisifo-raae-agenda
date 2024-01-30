@@ -8,7 +8,8 @@ import { useFilters } from "../hooks/FiltersProvider";
 
 export default function HeaderFilterBody(): JSX.Element {
   const { filters, changeCurrentFilter } = useFilters();
-  const { quadroKanban, tipos, responsaveis, gruposTrabalho, situacao, dates, nextXDays } = filters?.currentFilter ?? {};
+  const { quadroKanban, tipos, responsaveis, gruposTrabalho, situacao, dates, nextXDays } =
+    filters?.currentFilter ?? {};
   const { endpoints } = useProjurisConnector();
   const { elementRef, setDisplayingAnimation } = useAnimations();
   // SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
@@ -19,7 +20,7 @@ export default function HeaderFilterBody(): JSX.Element {
     <div ref={elementRef?.filter} className="filter-body">
       <div className="date-row">
         <div>
-          <label className="sisifo-label" htmlFor="nextXDays">
+          <label title="(Negativo para os últimos X dias)" className="sisifo-label" htmlFor="nextXDays">
             Próximos X dias
           </label>
           <input

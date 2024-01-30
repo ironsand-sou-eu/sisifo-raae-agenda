@@ -1,4 +1,13 @@
-import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Prettify, FetchedTarefa, DisplayingTarefa } from "../../global";
 import { useFilters } from "./FiltersProvider";
 import { useAnimations } from "./AnimationsProvider";
@@ -41,7 +50,6 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
 
   function loadList() {
     if (show?.filter || !filters?.currentFilter) return;
-    console.log("new list fetch");
     setIsListLoading(true);
     fetchTarefasFromFilter(filters.currentFilter).then(tarefas => {
       setIsListLoading(false);

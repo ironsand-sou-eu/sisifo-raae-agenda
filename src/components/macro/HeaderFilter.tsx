@@ -4,6 +4,7 @@ import { useAnimations } from "../hooks/AnimationsProvider";
 
 export default function HeaderFilter(): JSX.Element {
   const { show } = useAnimations();
+
   return (
     <aside className="filter">
       <HeaderFilterHeader />
