@@ -36,7 +36,7 @@ export default function TarefaDetailedCardHeader({
       </div>
       <div>
         <HeaderButton type="cancel" onClick={() => handleClick(cancelParams)} />
-        <HeaderButton type="timesheet" onClick={e => console.log(e)} />
+        <HeaderButton type="timesheet" disabled={true} onClick={() => {}} />
         <HeaderButton type="conclude" onClick={() => handleClick(concludeParams)} />
       </div>
     </header>

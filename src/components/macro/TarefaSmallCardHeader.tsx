@@ -67,7 +67,7 @@ export default function TarefaSmallCardHeader({
       </div>
       <div>
         <HeaderButton type="cancel" onClick={() => dispatchBackendTarefaUpdate(cancelParams)} />
-        <HeaderButton type="timesheet" onClick={e => console.log(e)} />
+        <HeaderButton type="timesheet" disabled={true} onClick={() => {}} />
         <HeaderButton type="conclude" onClick={() => dispatchBackendTarefaUpdate(concludeParams)} />
       </div>
     </header>

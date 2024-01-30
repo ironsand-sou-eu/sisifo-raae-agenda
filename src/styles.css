@@ -164,15 +164,19 @@ div:has(> .circle),
   transition: 200ms ease-in-out;
 }
 
-.tarefa-card-button:active,
-.tarefa-card-button:hover {
+.tarefa-card-button[aria-disabled] {
+  cursor: default;
+}
+
+.tarefa-card-button:not([aria-disabled]):active,
+.tarefa-card-button:not([aria-disabled]):hover {
   box-shadow: 0 0em 0em 1px hsl(223deg 10% 55% / 60%) inset;
   opacity: 1;
   transform: scale(1.2);
   background-color: #f5f5f563;
 }
 
-.tarefa-card-button:hover {
+.tarefa-card-button:not([aria-disabled]):hover {
   outline: transparent;
 }
 
@@ -184,27 +188,27 @@ div:has(> .circle),
   fill: rgba(0, 0, 0, 0.75);
 }
 
-.tarefa-card-button:hover > svg > path.cancel {
+.tarefa-card-button:not([aria-disabled]):hover > svg > path.cancel {
   fill: var(--fill-color-red);
 }
 
-.tarefa-card-button:hover > svg > path.timesheet {
+.tarefa-card-button:not([aria-disabled]):hover > svg > path.timesheet {
   fill: var(--fill-color-blue);
 }
 
-.tarefa-card-button:hover > svg > path.conclude {
+.tarefa-card-button:not([aria-disabled]):hover > svg > path.conclude {
   fill: var(--fill-color-green);
 }
 
-.tarefa-card-button:hover > svg > path.filter {
+.tarefa-card-button:not([aria-disabled]):hover > svg > path.filter {
   fill: var(--fill-color-green);
 }
 
-.tarefa-card-button:hover > svg > path.save {
+.tarefa-card-button:not([aria-disabled]):hover > svg > path.save {
   fill: var(--fill-color-blue);
 }
 
-.tarefa-card-button:hover > svg > path.delete {
+.tarefa-card-button:not([aria-disabled]):hover > svg > path.delete {
   fill: var(--fill-color-red);
 }
 
