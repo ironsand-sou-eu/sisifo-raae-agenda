@@ -313,6 +313,7 @@ export default function useProjurisConnector() {
 
   async function dispatchBackendTarefaUpdate(params: TarefaUpdateParams | TarefaUpdateParams[]): Promise<void> {
     const parameters = Array.isArray(params) ? params : [params];
+    if (!confirm(generateStringMsg.confirmUpdate(parameters[0].type))) return;
     parameters.forEach(async param => {
       setTimeout(() => {
         singleBackendTarefaUpdate(param);
@@ -327,7 +328,6 @@ export default function useProjurisConnector() {
       type !== "salvar" ? params : { codigoTarefaEvento: undefined, kanbanFindingCode: undefined };
     if (name === undefined) return;
     if ((type === "salvar" && !tarefa) || (type !== "salvar" && !codigoTarefaEvento)) return;
-    if (!confirm(generateStringMsg.confirmUpdate(type))) return;
     const progressMsg = generateNotification.progress(type);
     addNotification(progressMsg);
     const bodyObj =
