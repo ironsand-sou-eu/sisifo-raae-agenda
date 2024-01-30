@@ -37,11 +37,14 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   setPrefetchDetails,
 }: TarefaDetailedCardProps) => {
   const { endpoints } = useProjurisConnector();
-  const { displayingTarefaDetails, isDetailLoading, updateTarefaDetails, saveTarefa, loadDetails, updatesOnColunaKanbanChange } = useTarefaDetails(
-    codigoTarefaEvento,
-    codigoProcesso,
-    tarefaColor
-  );
+  const {
+    displayingTarefaDetails,
+    isDetailLoading,
+    updateTarefaDetails,
+    saveTarefa,
+    loadDetails,
+    updatesOnColunaKanbanChange,
+  } = useTarefaDetails(codigoTarefaEvento, codigoProcesso, tarefaColor);
   const { setHidingAnimation } = useAnimations();
   const { adaptTarefaDetailsToUpdatingParams } = useTarefasAdapter();
   const updateParams = displayingTarefaDetails

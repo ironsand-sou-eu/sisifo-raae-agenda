@@ -1,4 +1,9 @@
-export type Operator = "sensitiveStrictEquality" | "insensitiveStrictEquality" | "insentiviveIncludes" | "includes" | "numericEquality";
+export type Operator =
+  | "sensitiveStrictEquality"
+  | "insensitiveStrictEquality"
+  | "insentiviveIncludes"
+  | "includes"
+  | "numericEquality";
 
 export function compareWithOperator(a: string, operator: Operator, b: string) {
   if (a === undefined || b === undefined) return false;
@@ -45,4 +50,14 @@ export function deepSortObjectByEntries(object: object, ignoreProperties: string
 
 export function capitalizeFirstLetter(str: string) {
   return str[0].toUpperCase() + str.substring(1);
+}
+
+export function debounce(cb: (...args: any[]) => void, delay = 300) {
+  let timeOut: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeOut);
+    timeOut = setTimeout(() => {
+      cb(...args);
+    }, delay);
+  };
 }

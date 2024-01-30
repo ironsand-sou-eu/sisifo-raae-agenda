@@ -26,8 +26,6 @@ export default function useTarefaDetails(codigoTarefaEvento: number, codigoProce
     const situacao = colunaKanbanNewValue.situacao;
     const colunaKanban = { ...colunaKanbanNewValue };
     delete colunaKanban.situacao;
-    console.log("situacao", situacao);
-    console.log("kb", colunaKanban);
     updateTarefaDetails({
       colunaKanban,
       tarefaEventoSituacaoWs: {
@@ -66,5 +64,12 @@ export default function useTarefaDetails(codigoTarefaEvento: number, codigoProce
       .finally(() => setIsDetailLoading(false));
   }
 
-  return { displayingTarefaDetails, isDetailLoading, updateTarefaDetails, updatesOnColunaKanbanChange, saveTarefa, loadDetails };
+  return {
+    displayingTarefaDetails,
+    isDetailLoading,
+    updateTarefaDetails,
+    updatesOnColunaKanbanChange,
+    saveTarefa,
+    loadDetails,
+  };
 }
