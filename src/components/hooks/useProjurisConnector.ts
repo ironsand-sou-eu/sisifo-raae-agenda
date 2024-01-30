@@ -313,7 +313,7 @@ export default function useProjurisConnector() {
 
   async function dispatchBackendTarefaUpdate(params: TarefaUpdateParams | TarefaUpdateParams[]): Promise<void> {
     const parameters = Array.isArray(params) ? params : [params];
-    if (!confirm(generateStringMsg.confirmUpdate(parameters[0].type))) return;
+    if (!confirm(generateStringMsg.confirmUpdate(parameters[0].type, parameters.length > 1))) return;
     parameters.forEach(async param => {
       setTimeout(() => {
         singleBackendTarefaUpdate(param);

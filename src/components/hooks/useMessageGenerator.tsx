@@ -62,13 +62,16 @@ export function useMessageGenerator() {
   };
 
   const generateStringMsg = {
-    confirmUpdate: (type: TarefaUpdateActions): string => {
-      return `Tem certeza de que deseja ${type.toUpperCase()} a tarefa?`;
+    filterExclusionConfirmation: "Tem certeza de que deseja excluir o filtro?",
+    newFilterNamePrompt: "Digite um nome para o novo filtro:",
+    operationCancelled: "Operação cancelada.",
+    confirmUpdate: (type: TarefaUpdateActions, plural?: boolean) => {
+      return plural
+        ? `Tem certeza de que deseja ${type.toUpperCase()} as tarefas?`
+        : `Tem certeza de que deseja ${type.toUpperCase()} a tarefa?`;
     },
-
-    situacaoCodeNotFound: (situacao: string) => {
-      return `Não foi possível encontrar um código para a situação \"${situacao}\".`;
-    },
+    filterAlreadyExists: (filterName: string) => `O filtro atual já está salvo, com o nome "${filterName}".`,
+    situacaoCodeNotFound: (situacao: string) => `Não foi possível encontrar um código para a situação \"${situacao}\".`,
   };
 
   return { generateNotification, generateStringMsg };

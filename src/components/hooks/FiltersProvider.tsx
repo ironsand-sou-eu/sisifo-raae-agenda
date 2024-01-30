@@ -3,6 +3,7 @@ import { SimpleDocument, SituacaoTarefa } from "../../global";
 import { filterMock } from "../../mocks/filter-mocks";
 import { areObjectsEqual } from "../../utils/utils";
 import { Prettify } from "../../global";
+import { useMessageGenerator } from "./useMessageGenerator";
 
 export type Filter = {
   categoria: "TAREFA" | "ANDAMENTO" | "TIMESHEET";
@@ -22,7 +23,11 @@ type FiltersStructure = {
   savedFilters: Prettify<Filter>[];
 };
 
-const minimalCurrentFilter: Filter = { index: -1, filterName: "", categoria: "TAREFA" };
+const minimalCurrentFilter: Filter = {
+  index: -1,
+  filterName: "",
+  categoria: "TAREFA",
+};
 
 const minimalTarefaFilter: FiltersStructure = {
   currentFilter: minimalCurrentFilter,
@@ -51,6 +56,7 @@ export function useFilters() {
 
 export default function FiltersProvider({ children }: PropsWithChildren) {
   const [filters, setFilters] = useState<Prettify<FiltersStructure> | undefined>();
+  const { generateStringMsg } = useMessageGenerator();
 
   useEffect(() => {
     // const retrievedString = localStorage.getItem("filters"); //chrome.storage.local.get(currentFilter);
@@ -69,12 +75,12 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
       return areObjectsEqual(filters.currentFilter, savedFilter, ["index", "filterName"]);
     });
     if (savedFilterEqualToCurrent) {
-      alert(`O filtro atual já está salvo, com o nome "${savedFilterEqualToCurrent.filterName}".`);
+      alert(generateStringMsg.filterAlreadyExists(savedFilterEqualToCurrent.filterName));
       return;
     }
-    const userResp = prompt("Digite um nome para o novo filtro:");
+    const userResp = prompt(generateStringMsg.newFilterNamePrompt);
     if (!userResp) {
-      alert(`Operação cancelada.`);
+      alert(generateStringMsg.operationCancelled);
       return;
     }
     const newFilter: Filter = structuredClone(filters?.currentFilter!);
@@ -106,9 +112,9 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
   }
 
   function promptDeletingFilter() {
-    const userResp = confirm("Tem certeza de que deseja excluir o filtro?");
+    const userResp = confirm(generateStringMsg.filterExclusionConfirmation);
     if (!userResp) {
-      alert(`Operação cancelada.`);
+      alert(generateStringMsg.operationCancelled);
       return;
     }
     deleteSavedFilter(filters!.currentFilter!.index);
