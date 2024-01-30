@@ -1,4 +1,10 @@
-import { DisplayingTarefa, DisplayingTarefaDetails, FetchedTarefaDetails, FetchedTarefa, WritingTarefaDetails } from "../../global";
+import {
+  DisplayingTarefa,
+  DisplayingTarefaDetails,
+  FetchedTarefaDetails,
+  FetchedTarefa,
+  WritingTarefaDetails,
+} from "../../global";
 import { projurisApiBase } from "../../hardcoded";
 import useProjurisConnector, { TarefaUpdateActions, TarefaUpdateParams } from "./useProjurisConnector";
 
@@ -68,7 +74,10 @@ export default function useTarefasAdapter() {
     });
   }
 
-  function adaptTarefaDetailsToDisplayingType(tarefaDetails?: FetchedTarefaDetails, tarefaColor?: string): DisplayingTarefaDetails {
+  function adaptTarefaDetailsToDisplayingType(
+    tarefaDetails?: FetchedTarefaDetails,
+    tarefaColor?: string
+  ): DisplayingTarefaDetails {
     const {
       tarefaEventoWs: {
         titulo,
@@ -93,7 +102,9 @@ export default function useTarefasAdapter() {
       displayTitulo,
       tarefaColor: tarefaColor ?? "#fff9",
       codigoProcessoProjuris,
-      processoUrl: codigoProcessoProjuris ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcessoProjuris : "",
+      processoUrl: codigoProcessoProjuris
+        ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcessoProjuris
+        : "",
       descricaoTarefa,
       usuariosResponsaveis: usuariosResponsaveis ?? [],
       gruposResponsaveis: gruposResponsaveis ?? [],
