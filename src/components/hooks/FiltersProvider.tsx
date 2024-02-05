@@ -1,6 +1,5 @@
 import { MouseEventHandler, PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
 import { SimpleDocument, SituacaoTarefa } from "../../global";
-import { filterMock } from "../../mocks/filter-mocks";
 import { areObjectsEqual } from "../../utils/utils";
 import { Prettify } from "../../global";
 import { useMessageGenerator } from "./useMessageGenerator";
@@ -59,15 +58,15 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
   const { generateStringMsg } = useMessageGenerator();
 
   useEffect(() => {
-    // const retrievedString = localStorage.getItem("filters"); //chrome.storage.local.get(currentFilter);
-    // const retrieved = retrievedString === "undefined" ? undefined : retrievedString;
-    // const retrievedFilters = JSON.parse(retrieved ?? JSON.stringify(minimalTarefaFilter));
-    setFilters({ currentFilter: undefined, savedFilters: filterMock });
+    chrome.storage.local
+      .get("filters")
+      .then(storage => (storage.filters === "undefined" ? undefined : storage.filters))
+      .then(retrievedFiltersStr => JSON.parse(retrievedFiltersStr ?? JSON.stringify(minimalTarefaFilter)))
+      .then(retrievedFilters => setFilters(retrievedFilters));
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("filters", JSON.stringify(filters));
-    // chrome.storage.local.set({ currentFilter });
+    chrome.storage.local.set({ filters: JSON.stringify(filters) });
   }, [filters]);
 
   function promptAddingFilter() {

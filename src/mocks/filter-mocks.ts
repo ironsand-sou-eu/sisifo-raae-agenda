@@ -4,29 +4,11 @@ const filterMock: Filter[] = [
   {
     categoria: "TAREFA",
     index: 1,
-    filterName: "Todas da semana",
-    situacoes: [
-      {
-        codigoTarefaTipo: 1,
-        nomeTipoTarefa: "A cumprir",
-      },
-      {
-        codigoTarefaTipo: 2,
-        nomeTipoTarefa: "Cumprida",
-      },
-    ],
-    dates: [new Date("2023-12-01"), new Date("2023-12-10")],
-  },
-  {
-    categoria: "TAREFA",
-    index: 2,
-    filterName: "Cumpridas hoje",
-    situacoes: [
-      {
-        codigoTarefaTipo: 2,
-        nomeTipoTarefa: "Cumprida",
-      },
-    ],
+    filterName: "Todas do dia",
+    situacao: {
+      chave: 1,
+      valor: "A cumprir",
+    },
     dates: [new Date(), new Date()],
   },
 ];
@@ -39,18 +21,14 @@ const unorderedFilterObj: Filter = {
     chave: 2,
     valor: "EMPRESARIAL",
   },
-  colunaKanban: {
-    chave: 8,
-    valor: "ongoing",
-  },
   tipos: [
     {
-      chave: 12,
-      valor: "Agravo de Intrumento",
+      codigoTarefaTipo: 12,
+      nomeTipoTarefa: "Agravo de Intrumento",
     },
     {
-      chave: 37,
-      valor: "Petição simples",
+      codigoTarefaTipo: 37,
+      nomeTipoTarefa: "Petição simples",
     },
   ],
   responsaveis: [
@@ -77,12 +55,10 @@ const unorderedFilterObj: Filter = {
       valor: "Le Biscuit",
     },
   ],
-  situacoes: [
-    {
-      codigoTarefaTipo: 6,
-      nomeTipoTarefa: "A cumprir",
-    },
-  ],
+  situacao: {
+    chave: 6,
+    valor: "A cumprir",
+  },
   dates: [new Date("2023-12-26"), new Date("2023-11-15")],
 };
 
@@ -103,10 +79,6 @@ const orderedFilterObj: Filter = {
     chave: 2,
     valor: "EMPRESARIAL",
   },
-  colunaKanban: {
-    chave: 8,
-    valor: "ongoing",
-  },
   responsaveis: [
     {
       chave: 4657,
@@ -124,20 +96,18 @@ const orderedFilterObj: Filter = {
   categoria: "TAREFA",
   tipos: [
     {
-      chave: 12,
-      valor: "Agravo de Intrumento",
+      codigoTarefaTipo: 12,
+      nomeTipoTarefa: "Agravo de Intrumento",
     },
     {
-      chave: 37,
-      valor: "Petição simples",
+      codigoTarefaTipo: 37,
+      nomeTipoTarefa: "Petição simples",
     },
   ],
-  situacoes: [
-    {
-      codigoTarefaTipo: 6,
-      nomeTipoTarefa: "A cumprir",
-    },
-  ],
+  situacao: {
+    chave: 6,
+    valor: "A cumprir",
+  },
   dates: [new Date("2023-12-26"), new Date("2023-11-15")],
 };
 

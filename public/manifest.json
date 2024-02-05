@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+
+  "name": "Sísifo Ruy Andrade - Agenda",
+  "description": "Esta extensão facilita o acesso à agenda de tarefas do escritório Ruy Andrade Advocacia Empresarial",
+  "author": "César Rodriguez",
+  "version": "1.0.0",
+
+  "action": {
+    "default_icon": {
+      "16": "images/sisifo-ico-16.png",
+      "32": "images/sisifo-ico-32.png",
+      "192": "images/sisifo-ico-192.png",
+      "256": "images/sisifo-ico-256.png"
+    },
+    "default_title": "Sísifo Ruy Andrade"
+  },
+
+  "icons": {
+    "16": "images/sisifo-ico-16.png",
+    "32": "images/sisifo-ico-32.png",
+    "192": "images/sisifo-ico-192.png",
+    "256": "images/sisifo-ico-256.png"
+  },
+
+  "permissions": ["identity", "storage", "sidePanel"],
+
+  "side_panel": {
+    "default_path": "index.html"
+  },
+
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvsVet3B4m+5QGWzhZOEIuPuAjemWbxYJxVo+X4byuN4Z97R1073EO1NMrMAE0U/1ifH6C4+l+qT7lLYiVtXId8mfybsU1QoEvAx53nO69zwpT16rO3j3IunsmBeEhE5ZwG+459hB4bZwX8H1OJ1Qq+wP+HH2ZWqFTzd/nkIvgaFVQgoTUgWwJLmAJdK3O+r38RQAZlT/PnWqWrhp6Pip2wN04mu0+Q42w/cCV41d6X/gDF6rlCkO4r4s93lVDrUsMzQxx4vZ9JIHMEz6UQS5A8+mqtAi+puqvk5Me97ccI86L2hGc/RUCQF6FMU8cQuxZukJZwwq2QmpkV49TH98DQIDAQAB",
+
+  "oauth2": {
+    "client_id": "403199002425-j3ldtkoukcm0peu8hnad98vhi3nnd4mk.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/directory.readonly"]
+  }
+}
