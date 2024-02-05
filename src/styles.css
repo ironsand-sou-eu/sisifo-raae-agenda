@@ -259,7 +259,6 @@ div:has(> .circle),
   width: 85dvw;
   max-height: calc(100dvh - var(--header-height) - 4rem);
   padding: var(--medium-padding) var(--big-gap);
-  flex-direction: column;
   overflow-y: auto;
 }
 
