@@ -2,33 +2,34 @@ import envVars from "../../envVars";
 import { projurisLoginUri } from "../../hardcoded";
 
 type ProjurisAccessToken = {
-  projurisToken: string;
-  projurisExpiration: number;
+  projurisToken?: string;
+  projurisExpiration?: number;
 };
 
 export default function useProjurisAuthConnector() {
   async function getProjurisAuthTokenWithinExpiration(): Promise<string> {
-    const tokenResponse = (await chrome.storage.local.get([
-      "projurisToken",
-      "projurisExpiration",
-    ])) as ProjurisAccessToken;
-    console.log({ tokenResponse });
-    // const tokenResponse = await chrome.storage.local.get(["projurisToken", "projurisExpiration"]);
-    // const projurisToken = localStorage.getItem("projurisToken") ?? "";
-    // const projurisExpiration: number = parseInt(localStorage.getItem("projurisExpiration") ?? "0");
-    // const tokenResponse = { projurisToken, projurisExpiration };
-    const noToken = !("projurisToken" in tokenResponse);
-    const tokenExpired =
-      "projurisExpiration" in tokenResponse && Number(tokenResponse.projurisExpiration) < new Date().getTime();
-    if (noToken || tokenExpired) return await fetchAndStoreNewProjurisAuthToken();
+    let tokenResponse: ProjurisAccessToken = {};
+
+    if (chrome.storage) {
+      tokenResponse = await chrome.storage.local.get(["projurisToken", "projurisExpiration"]);
+    } else {
+      tokenResponse.projurisToken = localStorage.getItem("projurisToken") ?? "";
+      tokenResponse.projurisExpiration = parseInt(localStorage.getItem("projurisExpiration") ?? "0");
+    }
+    const tokenExpired = Number(tokenResponse.projurisExpiration) < new Date().getTime();
+    if (!tokenResponse.projurisToken || tokenExpired) return await fetchAndStoreNewProjurisAuthToken();
     return tokenResponse.projurisToken;
   }
 
   async function fetchAndStoreNewProjurisAuthToken(): Promise<string> {
     const { projurisToken, projurisExpiration } = await fetchProjurisAuthToken();
-    await chrome.storage.local.set({ projurisToken, projurisExpiration });
-    // localStorage.setItem("projurisToken", projurisToken);
-    // localStorage.setItem("projurisExpiration", `${projurisExpiration}`);
+    if (chrome.storage) {
+      await chrome.storage.local.set({ projurisToken, projurisExpiration });
+    } else {
+      localStorage.setItem("projurisToken", projurisToken ?? "");
+      localStorage.setItem("projurisExpiration", `${projurisExpiration}`);
+    }
+    if (!projurisToken) throw new Error("Não foi possível obter um token de acesso ao Projuris");
     return projurisToken;
   }
 

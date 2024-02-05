@@ -58,15 +58,19 @@ export default function FiltersProvider({ children }: PropsWithChildren) {
   const { generateStringMsg } = useMessageGenerator();
 
   useEffect(() => {
-    chrome.storage.local
-      .get("filters")
-      .then(storage => (storage.filters === "undefined" ? undefined : storage.filters))
-      .then(retrievedFiltersStr => JSON.parse(retrievedFiltersStr ?? JSON.stringify(minimalTarefaFilter)))
-      .then(retrievedFilters => setFilters(retrievedFilters));
+    if (chrome.storage) {
+      chrome.storage.local
+        .get("filters")
+        .then(storage => (storage.filters === "undefined" ? undefined : storage.filters))
+        .then(retrievedFiltersStr => JSON.parse(retrievedFiltersStr ?? JSON.stringify(minimalTarefaFilter)))
+        .then(retrievedFilters => setFilters(retrievedFilters));
+    }
   }, []);
 
   useEffect(() => {
-    chrome.storage.local.set({ filters: JSON.stringify(filters) });
+    if (chrome.storage) {
+      chrome.storage.local.set({ filters: JSON.stringify(filters) });
+    }
   }, [filters]);
 
   function promptAddingFilter() {

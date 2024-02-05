@@ -9,7 +9,6 @@ export default function useGoogleConnector() {
     } catch (e) {
       setIsAuthenticated(false);
       alert(e);
-      console.error(e);
     }
   }
 
