@@ -1,47 +1,28 @@
 import { useEffect, useState } from "react";
-import { useTarefasList } from "../hooks/TarefasListProvider";
-import HeaderFilter from "./HeaderFilter";
-import FloatingCommandBar from "./FloatingCommandBar";
-import TarefasSmallCard from "./TarefaSmallCard";
-import TarefaDetailedCard, { TarefaPrefetchDetails } from "./TarefaDetailedCard";
-import AppSkeleton from "./skeletons/AppSkeleton";
+import AnimationsProvider from "../hooks/AnimationsProvider";
+import FiltersProvider from "../hooks/FiltersProvider";
+import NotificationsProvider from "../hooks/NotificationsProvider";
+import TarefasListProvider from "../hooks/TarefasListProvider";
+import StartScreen from "./StartScreen";
+import useGoogleConnector from "../hooks/useGoogleConnector";
+import LoginScreen from "./LoginScreen";
 import "../../styles.css";
-import "react-datepicker/dist/react-datepicker.min.css";
-import Messenger from "./Messenger";
-import { useAnimations } from "../hooks/AnimationsProvider";
 
 export default function App() {
-  const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
-  const { displayingTarefas, selectedTarefas, isListLoading } = useTarefasList();
-  const { toggleVisibility } = useAnimations();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { assessAuthentication } = useGoogleConnector();
 
   useEffect(() => {
-    function handleKeydown({ key, ctrlKey }: KeyboardEvent) {
-      if (ctrlKey && key === "q") toggleVisibility("filter");
-    }
-    window.addEventListener("keydown", handleKeydown);
-
-    return () => window.removeEventListener("keydown", handleKeydown);
+    assessAuthentication(setIsAuthenticated);
   }, []);
 
   return (
-    <>
-      <HeaderFilter />
-      <main>
-        {!!selectedTarefas.length && <FloatingCommandBar />}
-        {isListLoading ? (
-          <AppSkeleton />
-        ) : (
-          displayingTarefas?.map(tarefaDisplayInfo => (
-            <TarefasSmallCard
-              key={tarefaDisplayInfo.codigoTarefaEvento}
-              {...{ tarefaDisplayInfo, setPrefetchDetails }}
-            />
-          ))
-        )}
-        {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} {...{ setPrefetchDetails }} />}
-        <Messenger />
-      </main>
-    </>
+    <AnimationsProvider>
+      <FiltersProvider>
+        <TarefasListProvider>
+          <NotificationsProvider>{isAuthenticated ? <StartScreen /> : <LoginScreen />}</NotificationsProvider>
+        </TarefasListProvider>
+      </FiltersProvider>
+    </AnimationsProvider>
   );
 }
