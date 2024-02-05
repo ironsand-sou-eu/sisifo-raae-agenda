@@ -1,15 +1,8 @@
-import envVars from "../../envVars";
-import { FetchedTarefaDetails, SimpleDocument, FetchedTarefa, WritingTarefaDetails } from "../../global";
-import { projurisApiBase, projurisLoginUri } from "../../hardcoded";
+import { SimpleDocument } from "../../global";
+import { projurisApiBase } from "../../hardcoded";
 import { Operator, compareWithOperator } from "../../utils/utils";
-import { Filter } from "./FiltersProvider";
-import { useNotifications } from "./NotificationsProvider";
-import { useMessageGenerator } from "./useMessageGenerator";
-
-type ProjurisAccessToken = {
-  projurisToken: string;
-  projurisExpiration: number;
-};
+import useProjurisAuthConnector from "./useProjurisAuthConnector";
+import { TarefaUpdateActions, tarefaActions } from "./useProjurisTarefasConnector";
 
 export type ProjurisOptionsFilter = {
   key: string;
@@ -34,39 +27,11 @@ type FetchOptions =
       body: string;
     };
 
-export type TarefaUpdateActions = "concluir" | "cancelar" | "salvar";
-
-export type TarefaUpdateParams =
-  | {
-      type: "salvar";
-      name: string | undefined;
-      reloadFunction?: () => void;
-      tarefa?: WritingTarefaDetails;
-    }
-  | {
-      type: Exclude<TarefaUpdateActions, "salvar">;
-      name: string | undefined;
-      codigoTarefaEvento: number | undefined;
-      kanbanFindingCode: KanbanFindingCode;
-      reloadFunction?: () => void;
-    };
-
-type KanbanFindingCode = { codigoQuadroKanban: number } | { codigoProcesso: number };
-
-const tarefaActions = {
-  concluir: {
-    code: 2,
-    name: "Concluída",
-  },
-  cancelar: {
-    code: 5,
-    name: "Cancelado",
-  },
-};
+type DocumentWithChildren = SimpleDocument & { nodeWs?: DocumentWithChildren };
+type DocumentWithParent = SimpleDocument & { parent?: string };
 
 export default function useProjurisConnector() {
-  const { addNotification, removeNotification } = useNotifications();
-  const { generateNotification, generateStringMsg } = useMessageGenerator();
+  const { getProjurisAuthTokenWithinExpiration } = useProjurisAuthConnector();
   const endpoints = {
     processoVisaoCompleta: "casos/processo/visao-completa/",
     // assuntosProjuris: "/assunto/consulta/",
@@ -120,90 +85,6 @@ export default function useProjurisConnector() {
     },
   };
 
-  async function getProjurisAuthTokenWithinExpiration(): Promise<string> {
-    // const tokenResponse = await chrome.storage.local.get(["projurisToken", "projurisExpiration"]);
-    const projurisToken = localStorage.getItem("projurisToken") ?? "";
-    const projurisExpiration: number = parseInt(localStorage.getItem("projurisExpiration") ?? "0");
-    const tokenResponse = { projurisToken, projurisExpiration };
-
-    const storedTokenIsEmpty = Object.keys(tokenResponse).length === 0;
-    if (storedTokenIsEmpty === true) return await fetchAndStoreNewProjurisAuthToken();
-    const tokenExpired = tokenResponse.projurisExpiration < new Date().getTime();
-    if (tokenExpired) return await fetchAndStoreNewProjurisAuthToken();
-    return tokenResponse.projurisToken;
-  }
-
-  async function fetchAndStoreNewProjurisAuthToken(): Promise<string> {
-    const tokenObj = await fetchProjurisAuthToken();
-    // await chrome.storage.local.set(tokenObj);
-    localStorage.setItem("projurisToken", tokenObj.projurisToken);
-    localStorage.setItem("projurisExpiration", `${tokenObj.projurisExpiration}`);
-
-    return tokenObj.projurisToken;
-  }
-
-  async function fetchProjurisAuthToken(): Promise<ProjurisAccessToken> {
-    const secret = `${envVars.PROJURIS_API_CLIENT_ID}:${envVars.PROJURIS_API_CLIENT_SECRET}`;
-    const secretHash = btoa(secret);
-
-    const params = {
-      method: "POST",
-      async: true,
-      headers: {
-        Authorization: `Basic ${secretHash}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: `grant_type=password&username=${envVars.PROJURIS_API_USERNAME}$$${envVars.PROJURIS_API_DOMAIN}&password=${envVars.PROJURIS_API_PASSWORD}`,
-    };
-    const response = await fetch(projurisLoginUri, params);
-    const tokenData = await response.json();
-    const now = new Date();
-    const projurisExpiration = now.getTime() + tokenData.expires_in * 1000;
-    return {
-      projurisToken: tokenData.access_token,
-      projurisExpiration,
-    };
-  }
-
-  async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<FetchedTarefaDetails> {
-    const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
-    const response = await makeProjurisRequest({ endpoint, method: "GET" });
-    return await response.json();
-  }
-
-  async function fetchTarefasFromFilter(filter: Filter): Promise<FetchedTarefa[]> {
-    const endpoint = endpoints.consultarTarefaComPaginacao(30, "ASC");
-    const body = createQueryBody(filter);
-    const response = await makeProjurisRequest({ endpoint, method: "POST", body });
-    return await extractOptionsArray(response);
-  }
-
-  function createQueryBody(filter: Filter): string {
-    const filterBody: any = {
-      flagVinculoPrincipal: true,
-      tarefaTipoData: "DATA_PREVISTA_CONCLUSAO",
-      codigoQuadroKanban: filter.quadroKanban ? filter.quadroKanban.chave : "",
-      usuariosResponsaveis: filter.responsaveis ? filter.responsaveis : [],
-      gruposResponsaveis: filter.gruposTrabalho ? filter.gruposTrabalho : [],
-      codigoSituacao: filter.situacao ? filter.situacao.chave : "",
-      codigosTarefaTipo: filter.tipos ? filter.tipos.map(tipo => tipo.codigoTarefaTipo) : [],
-    };
-
-    const dateArray = [];
-    if (filter.nextXDays) {
-      dateArray[0] = new Date();
-      dateArray[1] = new Date().getTime() + filter.nextXDays * 24 * 60 * 60 * 1000;
-    } else if (filter.dates) {
-      dateArray[0] = filter.dates[0];
-      dateArray[1] = filter.dates[1];
-    }
-    dateArray.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-    const [dataTarefaInicio, dataTarefaFim] = dateArray;
-    if (dataTarefaInicio) filterBody.dataTarefaInicio = dataTarefaInicio;
-    if (dataTarefaFim) filterBody.dataTarefaFim = dataTarefaFim;
-    return JSON.stringify(filterBody);
-  }
-
   async function makeProjurisRequest(fetchOptions: FetchOptions): Promise<Response> {
     const { endpoint, method } = fetchOptions;
     const body = "body" in fetchOptions ? fetchOptions.body : undefined;
@@ -237,14 +118,15 @@ export default function useProjurisConnector() {
     endpoint?: string,
     filterObject?: Partial<ProjurisOptionsFilter>,
     shallMap = true
-  ): Promise<any[]> {
+  ): Promise<SimpleDocument[]> {
     if (!endpoint) return [];
     const requestOptions: FetchOptions = {
       endpoint,
       method: "GET",
     };
     const optionsPromise = await makeProjurisRequest(requestOptions);
-    const rawOptions = await extractOptionsArray(optionsPromise);
+    const rawOptions = await extractOptionsArray<SimpleDocument>(optionsPromise);
+    if (!rawOptions) return [];
     const filter = createFilterObject(filterObject);
     const options = filter?.flattenOptions ? flattenObjectsArray(rawOptions) : rawOptions;
     let filteredOptions = options;
@@ -270,8 +152,8 @@ export default function useProjurisConnector() {
     }
   }
 
-  async function extractOptionsArray(projurisFetchResponse: Response) {
-    if (projurisFetchResponse.status === 204) return "no content";
+  async function extractOptionsArray<T>(projurisFetchResponse: Response): Promise<T[] | undefined> {
+    if (projurisFetchResponse.status === 204) return;
     const jsonResp = await projurisFetchResponse.json();
     if (jsonResp.simpleDto) return jsonResp.simpleDto;
     if (jsonResp.consultaTipoRetorno && jsonResp.consultaTipoRetorno[0].simpleDto)
@@ -294,11 +176,7 @@ export default function useProjurisConnector() {
         situacao: colunaKb.situacaoTarefa,
       }));
     }
-    return;
   }
-
-  type DocumentWithChildren = SimpleDocument & { nodeWs?: DocumentWithChildren };
-  type DocumentWithParent = SimpleDocument & { parent?: string };
 
   function flattenObjectsArray(objsArray: DocumentWithChildren[], parent?: string, res: DocumentWithParent[] = []) {
     objsArray.forEach(obj => {
@@ -311,99 +189,11 @@ export default function useProjurisConnector() {
     return res;
   }
 
-  async function dispatchBackendTarefaUpdate(params: TarefaUpdateParams | TarefaUpdateParams[]): Promise<void> {
-    const parameters = Array.isArray(params) ? params : [params];
-    if (!confirm(generateStringMsg.confirmUpdate(parameters[0].type, parameters.length > 1))) return;
-    parameters.forEach(async param => {
-      setTimeout(() => {
-        singleBackendTarefaUpdate(param);
-      }, 200);
-    });
-  }
-
-  async function singleBackendTarefaUpdate(params: TarefaUpdateParams): Promise<void> {
-    const { type, name, reloadFunction } = params;
-    const tarefa = type === "salvar" ? params.tarefa : undefined;
-    const { codigoTarefaEvento, kanbanFindingCode } =
-      type !== "salvar" ? params : { codigoTarefaEvento: undefined, kanbanFindingCode: undefined };
-    if (name === undefined) return;
-    if ((type === "salvar" && !tarefa) || (type !== "salvar" && !codigoTarefaEvento)) return;
-    const progressMsg = generateNotification.progress(type);
-    addNotification(progressMsg);
-    const bodyObj =
-      type === "salvar" ? tarefa : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, kanbanFindingCode!);
-    const { responseAction, responseKanban } = await makeRequestsForUpdatingTarefa(
-      type,
-      JSON.stringify(bodyObj),
-      codigoTarefaEvento
-    );
-    removeNotification(progressMsg);
-    if (reloadFunction) reloadFunction();
-    const msg = generateNotification.response(name, type, responseAction, responseKanban);
-    addNotification(msg);
-  }
-
-  async function fetchPayloadsForUpdatingKanban(
-    type: keyof typeof tarefaActions,
-    codigoTarefaEvento: number,
-    param: KanbanFindingCode
-  ) {
-    const quadroKanban =
-      "codigoQuadroKanban" in param
-        ? param.codigoQuadroKanban
-        : await fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento, param.codigoProcesso);
-    const colunasKanban: SimpleDocument[] = await loadSimpleOptions(endpoints.colunasKanban(quadroKanban), {}, false);
-    const concludedObj = colunasKanban.find(
-      coluna => coluna.valor.toLowerCase() === tarefaActions[type].name.toLowerCase()
-    );
-    const concludedCode = concludedObj?.chave;
-    if (!concludedCode) throw new Error(generateStringMsg.situacaoCodeNotFound(tarefaActions[type].name));
-    return {
-      codigoColuna: concludedCode,
-      codigoQuadro: quadroKanban,
-      atualizarSituacaoTarefa: false,
-      codigoTarefaAnterior: 0,
-      codigoTarefaPosterior: 0,
-    };
-  }
-
-  async function fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento: number, codigoProcesso: number): Promise<number> {
-    const tarefaDetails = await fetchTarefaDetails(codigoTarefaEvento, codigoProcesso);
-    return tarefaDetails.tarefaEventoWs.quadroKanban.chave;
-  }
-
-  async function makeRequestsForUpdatingTarefa(type: TarefaUpdateActions, body: string, codigoTarefaEvento?: number) {
-    const endpointKanban = endpoints.alterarColunaKanbanTarefa(codigoTarefaEvento);
-    if (type !== "salvar" && !endpointKanban) {
-      const errorMsg = generateNotification.errorKanbanEndpointNotFound("makeRequestsForConcludingTarefa");
-      addNotification(errorMsg);
-      throw new Error(errorMsg.text);
-    }
-    const endpointAction = endpoints.updateTarefa(type, codigoTarefaEvento);
-    if (!endpointAction) {
-      const errorMsg = generateNotification.errorUpdateEndpointNotFound(type, "makeRequestsForConcludingTarefa");
-      addNotification(errorMsg);
-      throw new Error(errorMsg.text);
-    }
-    const responseKanban = endpointKanban
-      ? await makeProjurisRequest({ method: "PUT", endpoint: endpointKanban, body })
-      : new Response();
-    const responseAction = await makeProjurisRequest({
-      method: "PUT",
-      endpoint: endpointAction,
-      body: type === "salvar" ? body : "",
-    });
-    return { responseAction, responseKanban };
-  }
-
   return {
     endpoints,
     makeProjurisRequest,
     loadSimpleOptions,
     createFilterObject,
     extractOptionsArray,
-    fetchTarefasFromFilter,
-    fetchTarefaDetails,
-    dispatchBackendTarefaUpdate,
   };
 }

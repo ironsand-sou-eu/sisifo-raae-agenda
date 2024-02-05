@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import HeaderButton from "../micro/HeaderButton";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
-import useProjurisConnector, { TarefaUpdateParams } from "../hooks/useProjurisConnector";
+import useProjurisTarefasConnector, { TarefaUpdateParams } from "../hooks/useProjurisTarefasConnector";
 
 type TarefaDetailedCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -16,7 +16,7 @@ export default function TarefaDetailedCardHeader({
   displayTitulo,
   updateParams,
 }: TarefaDetailedCardHeaderProps): JSX.Element {
-  const { dispatchBackendTarefaUpdate } = useProjurisConnector();
+  const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
   const cancelParams = { ...updateParams, type: "cancelar" } as TarefaUpdateParams;
   const concludeParams = { ...updateParams, type: "concluir" } as TarefaUpdateParams;
 

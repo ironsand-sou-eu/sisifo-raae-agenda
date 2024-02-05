@@ -2,7 +2,7 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import HeaderButton from "../micro/HeaderButton";
 import { useTarefasList } from "../hooks/TarefasListProvider";
-import useProjurisConnector, { TarefaUpdateParams } from "../hooks/useProjurisConnector";
+import useProjurisTarefasConnector, { TarefaUpdateParams } from "../hooks/useProjurisTarefasConnector";
 
 type TarefaSmallCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -30,7 +30,7 @@ export default function TarefaSmallCardHeader({
   setPrefetchDetails,
 }: TarefaSmallCardHeaderProps): JSX.Element {
   const { toggleCheck } = useTarefasList();
-  const { dispatchBackendTarefaUpdate } = useProjurisConnector();
+  const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
   function renderDetails(): void {
     setPrefetchDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
   }

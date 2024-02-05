@@ -11,8 +11,8 @@ import {
 import { Prettify, FetchedTarefa, DisplayingTarefa } from "../../global";
 import { useFilters } from "./FiltersProvider";
 import { useAnimations } from "./AnimationsProvider";
-import useProjurisConnector from "./useProjurisConnector";
 import useTarefasAdapter from "./useTarefasAdapter";
+import useProjurisTarefasConnector from "./useProjurisTarefasConnector";
 
 type TarefasListContext = {
   displayingTarefas: DisplayingTarefa[];
@@ -41,7 +41,7 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
 
   const { filters } = useFilters();
   const { show } = useAnimations();
-  const { fetchTarefasFromFilter } = useProjurisConnector();
+  const { fetchTarefasFromFilter } = useProjurisTarefasConnector();
   const { adaptTarefasListToDisplayingType } = useTarefasAdapter();
 
   useEffect(loadList, [filters?.currentFilter, show?.filter]);

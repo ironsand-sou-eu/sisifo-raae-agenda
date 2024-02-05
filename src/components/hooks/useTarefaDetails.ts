@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import useProjurisConnector from "./useProjurisConnector";
 import { DisplayingTarefaDetails, FetchedTarefaDetails, SimpleDocument } from "../../global";
 import useTarefasAdapter from "./useTarefasAdapter";
+import useProjurisTarefasConnector from "./useProjurisTarefasConnector";
 
 export default function useTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number, tarefaColor: string) {
   const [tarefaDetails, setTarefaDetails] = useState<FetchedTarefaDetails>();
   const [displayingTarefaDetails, setDisplayingTarefaDetails] = useState<DisplayingTarefaDetails>();
   const [isDetailLoading, setIsDetailLoading] = useState(false);
 
-  const { fetchTarefaDetails, dispatchBackendTarefaUpdate } = useProjurisConnector();
+  const { fetchTarefaDetails, dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
   const { adaptTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType } = useTarefasAdapter();
 
   useEffect(loadDetails, [codigoTarefaEvento, codigoProcesso]);
