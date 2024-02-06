@@ -147,7 +147,15 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         label="Coluna kanban"
         isMulti={false}
       />
-      <Button name="salvar" onClick={saveTarefa} />
+      <div className="btn-container">
+        <Button
+          name="create-tarefa"
+          caption="Criar andamento"
+          className="btn new-andamento-button"
+          onClick={() => {}}
+        />
+        <Button name="salvar" caption="Salvar alterações" className="btn save-btn" onClick={saveTarefa} />
+      </div>
       <footer className="tarefa-card-footer">{}</footer>
     </section>
   );

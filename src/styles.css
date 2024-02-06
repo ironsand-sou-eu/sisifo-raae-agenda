@@ -391,26 +391,52 @@ div.select-control:hover,
   cursor: pointer;
 }
 
-.save-btn {
+.btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.btn {
   width: fit-content;
   align-self: center;
   padding: var(--small-padding);
   margin-block-start: var(--small-padding);
   border-radius: var(--medium-gap);
+  transition: 200ms ease-in;
+  cursor: pointer;
+}
+
+.save-btn {
   background: rgb(23, 96, 0);
   background: linear-gradient(
     135deg,
-    hsl(106deg 100% 24% / 70%) 0%,
+    hsl(106deg 43.61% 66.75% / 70%) 0%,
     rgb(9 121 20 / 30%) 50%,
     hsl(159 100% 44% / 1) 100%
   );
-  color: #551c00;
-  border: 1px solid #0fc10b;
-  transition: 200ms ease-in;
+  color: #2d1003;
+  border: 1px solid #037b01;
 }
 
 .save-btn:hover {
-  box-shadow: inset 0px 0px 9px 1px #00800057;
+  box-shadow: inset 0px 0px 9px 1px #008000de;
+}
+
+.new-andamento-button {
+  background: rgb(97, 145, 248);
+  background: linear-gradient(
+    135deg,
+    hsl(213.75deg 65.88% 79.66% / 70%) 0%,
+    rgb(97, 145, 248) 50%,
+    hsl(199.38deg 45.79% 66.87%) 100%
+  );
+  color: #2d1003;
+  border: 1px solid #0b5cc1;
+}
+
+.new-andamento-button:hover {
+  box-shadow: inset 0px 0px 9px 1px #0b37659e;
 }
 
 .filter-header,
