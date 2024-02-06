@@ -6,7 +6,8 @@ import {
   WritingTarefaDetails,
 } from "../../global";
 import { projurisApiBase } from "../../hardcoded";
-import useProjurisConnector, { TarefaUpdateActions, TarefaUpdateParams } from "./useProjurisConnector";
+import useProjurisConnector from "./useProjurisConnector";
+import { TarefaUpdateActions, TarefaUpdateParams } from "./useProjurisTarefasConnector";
 
 export default function useTarefasAdapter() {
   const { endpoints } = useProjurisConnector();

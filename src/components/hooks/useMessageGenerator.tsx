@@ -1,6 +1,6 @@
 import { Notification } from "../../global";
 import { capitalizeFirstLetter } from "../../utils/utils";
-import { TarefaUpdateActions } from "./useProjurisConnector";
+import { TarefaUpdateActions } from "./useProjurisTarefasConnector";
 
 export function useMessageGenerator() {
   const verbs = {
