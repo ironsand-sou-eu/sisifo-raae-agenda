@@ -359,6 +359,11 @@ div.select-control:hover,
   height: 5rem;
 }
 
+.end-card {
+  text-align: center;
+  font-weight: bold;
+}
+
 .sisifo-label {
   display: block;
   padding-inline-end: 0.2rem;

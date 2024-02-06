@@ -60,8 +60,8 @@ export default function useProjurisConnector() {
     // criarProcesso: "/processo-judicial",
     // criarAndamento: "/andamento",
     // criarPedido: "/processo/pedido/",
-    consultarTarefaComPaginacao: (registersAmount: number, order: "ASC" | "DESC") => {
-      return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=0&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
+    consultarTarefaComPaginacao: (pageNumber: number, registersAmount: number, order: "ASC" | "DESC") => {
+      return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=${pageNumber}&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
     },
     tarefaDetails: (codigoTarefaEvento: number, codigoProcesso: number) => {
       return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;

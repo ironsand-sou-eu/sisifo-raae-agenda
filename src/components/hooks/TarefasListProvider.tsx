@@ -16,17 +16,23 @@ import useProjurisTarefasConnector from "./useProjurisTarefasConnector";
 
 type TarefasListContext = {
   displayingTarefas: DisplayingTarefa[];
+  hasMore: boolean;
   isListLoading: boolean;
   loadList?: () => void;
+  pageNumber: number;
   selectedTarefas: DisplayingTarefa[];
+  setPageNumber: Dispatch<SetStateAction<number>>;
   setTarefas: Dispatch<SetStateAction<FetchedTarefa[]>>;
   toggleCheck: (codigoTarefaEvento: number) => void;
 };
 
 const TarefasListContext = createContext<Prettify<TarefasListContext>>({
   displayingTarefas: [],
+  hasMore: false,
   isListLoading: false,
+  pageNumber: 0,
   selectedTarefas: [],
+  setPageNumber: () => {},
   setTarefas: () => {},
   toggleCheck: () => {},
 });
@@ -38,22 +44,32 @@ export function useTarefasList() {
 export default function TarefasListProvider({ children }: PropsWithChildren) {
   const [tarefas, setTarefas] = useState<FetchedTarefa[]>([]);
   const [isListLoading, setIsListLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [pageNumber, setPageNumber] = useState(0);
 
   const { filters } = useFilters();
   const { show } = useAnimations();
   const { fetchTarefasFromFilter } = useProjurisTarefasConnector();
   const { adaptTarefasListToDisplayingType } = useTarefasAdapter();
 
-  useEffect(loadList, [filters?.currentFilter, show?.filter]);
+  useEffect(() => {
+    setPageNumber(0);
+    setTarefas([]);
+    loadList();
+  }, [filters?.currentFilter, show?.filter]);
+
+  useEffect(loadList, [pageNumber]);
+
   const displayingTarefas = useMemo(() => adaptTarefasListToDisplayingType(tarefas), [tarefas]);
   const selectedTarefas = useMemo(() => displayingTarefas?.filter(tarefa => tarefa.checked), [displayingTarefas]);
 
   function loadList() {
     if (show?.filter || !filters?.currentFilter) return;
     setIsListLoading(true);
-    fetchTarefasFromFilter(filters.currentFilter).then(tarefas => {
+    fetchTarefasFromFilter(filters.currentFilter, pageNumber).then(newTarefas => {
       setIsListLoading(false);
-      setTarefas(tarefas);
+      setHasMore(newTarefas.length > 0);
+      setTarefas(prevTarefas => [...prevTarefas, ...newTarefas]);
     });
   }
 
@@ -69,9 +85,12 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
 
   const contextContent = {
     displayingTarefas,
+    hasMore,
     isListLoading,
     loadList,
+    pageNumber,
     selectedTarefas,
+    setPageNumber,
     setTarefas,
     toggleCheck,
   };

@@ -45,8 +45,8 @@ export default function useProjurisTarefasConnector() {
     return await response.json();
   }
 
-  async function fetchTarefasFromFilter(filter: Filter): Promise<FetchedTarefa[]> {
-    const endpoint = endpoints.consultarTarefaComPaginacao(30, "ASC");
+  async function fetchTarefasFromFilter(filter: Filter, pageNumber: number): Promise<FetchedTarefa[]> {
+    const endpoint = endpoints.consultarTarefaComPaginacao(pageNumber, 20, "ASC");
     const body = createQueryBody(filter);
     const response = await makeProjurisRequest({ endpoint, method: "POST", body });
     return (await extractOptionsArray(response)) ?? [];
