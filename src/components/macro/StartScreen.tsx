@@ -41,17 +41,10 @@ export default function StartScreen() {
       <HeaderFilter />
       <main>
         {!!selectedTarefas.length && <FloatingCommandBar />}
-        {isListLoading ? (
-          <StartScreenSkeleton />
-        ) : (
-          displayingTarefas?.map(tarefaDisplayInfo => (
-            <TarefasSmallCard
-              key={tarefaDisplayInfo.codigoTarefaEvento}
-              {...{ tarefaDisplayInfo, setPrefetchDetails }}
-            />
-          ))
-        )}
-        {!isListLoading && <EndCard hasMore={hasMore} ref={pageEndRef} key={"dummy-key-to-avoid-error-kjhi4g5"} />}
+        {displayingTarefas?.map(tarefaDisplayInfo => (
+          <TarefasSmallCard key={tarefaDisplayInfo.codigoTarefaEvento} {...{ tarefaDisplayInfo, setPrefetchDetails }} />
+        ))}
+        {isListLoading ? <StartScreenSkeleton /> : <EndCard hasMore={hasMore} ref={pageEndRef} />}
         {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} {...{ setPrefetchDetails }} />}
         <Messenger />
       </main>
