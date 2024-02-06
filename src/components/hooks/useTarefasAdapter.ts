@@ -50,7 +50,7 @@ export default function useTarefasAdapter() {
       numeroProcesso: displayingNumeroProcesso,
       parteAtiva: displayingParteAtiva,
       partePassiva: displayingPartePassiva,
-      situacao,
+      situacao: situacao ?? "Não encontrada",
       usuarioResponsaveis,
       prazo: prazo ? prazo.toLocaleDateString("pt-BR") : "Não encontrado",
       processoUrl: codigoProcesso ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcesso : "",
