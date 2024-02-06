@@ -185,7 +185,7 @@ export default function useTarefasAdapter() {
       type,
       name: tarefaDetails.displayTitulo,
       codigoTarefaEvento,
-      kanbanFindingCode: { codigoQuadroKanban: tarefaDetails.quadroKanban.chave },
+      kanbanFindingCode: { codigoQuadroKanban: tarefaDetails.quadroKanban?.chave },
       reloadFunction,
     };
   }

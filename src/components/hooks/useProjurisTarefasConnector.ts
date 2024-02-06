@@ -115,6 +115,7 @@ export default function useProjurisTarefasConnector() {
     codigoTarefaEvento: number,
     param: KanbanFindingCode
   ) {
+    if ("codigoQuadroKanban" in param && !param.codigoQuadroKanban) return null;
     const quadroKanban =
       "codigoQuadroKanban" in param
         ? param.codigoQuadroKanban
