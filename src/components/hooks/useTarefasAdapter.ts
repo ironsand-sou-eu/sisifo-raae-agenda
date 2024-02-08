@@ -5,7 +5,7 @@ import {
   FetchedTarefa,
   WritingTarefaDetails,
 } from "../../global";
-import { projurisApiBase } from "../../hardcoded";
+import { projurisSiteBase } from "../../hardcoded";
 import useProjurisConnector from "./useProjurisConnector";
 import { TarefaUpdateActions, TarefaUpdateParams } from "./useProjurisTarefasConnector";
 
@@ -53,7 +53,7 @@ export default function useTarefasAdapter() {
       situacao: situacao ?? "Não encontrada",
       usuarioResponsaveis,
       prazo: prazo ? prazo.toLocaleDateString("pt-BR") : "Não encontrado",
-      processoUrl: codigoProcesso ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcesso : "",
+      processoUrl: codigoProcesso ? projurisSiteBase + endpoints.processoVisaoCompleta(codigoProcesso) : "",
       prazoColorCssVariable: getPrazoColorCssVariable(prazo, flagSituacaoConcluida),
     };
   }
@@ -104,7 +104,7 @@ export default function useTarefasAdapter() {
       tarefaColor: tarefaColor ?? "#fff9",
       codigoProcessoProjuris,
       processoUrl: codigoProcessoProjuris
-        ? projurisApiBase + endpoints.processoVisaoCompleta + codigoProcessoProjuris
+        ? projurisSiteBase + endpoints.processoVisaoCompleta(codigoProcessoProjuris)
         : "",
       descricaoTarefa,
       usuariosResponsaveis: usuariosResponsaveis ?? [],
