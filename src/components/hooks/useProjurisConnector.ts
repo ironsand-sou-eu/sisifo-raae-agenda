@@ -33,55 +33,45 @@ type DocumentWithParent = SimpleDocument & { parent?: string };
 export default function useProjurisConnector() {
   const { getProjurisAuthTokenWithinExpiration } = useProjurisAuthConnector();
   const endpoints = {
-    processoVisaoCompleta: "casos/processo/visao-completa/",
-    // assuntosProjuris: "/assunto/consulta/",
-    // assuntosCnj: "/processo/assunto/",
-    // tiposJustica: "/tipo?chave-tipo=processo-justica",
-    // orgaoJudicial: "/tipo?chave-tipo=processo-orgao-judicial",
-    // varas: "/processo/vara-numero/",
-    // tiposVara: "/processo/vara-tipo/",
-    // areas: "/processo/area/",
-    // fases: "/processo/fase/",
-    gruposTrabalho: "/grupo/",
-    responsaveis: "/usuario/",
-    marcadores: "/marcador/consulta/",
-    // instanciasCnj: "/processo/instancia-cnj/",
+    // buscarProcessoPorNumero: "/processo/consulta?filtro-geral=",
     // camposDinamicos: "/campo-dinamico/3/13",
-    // tiposParticipacao: "/processo/participacao-tipo/obter-arvore-completa/",
-    tiposTarefa: "/tipo?chave-tipo=tarefa-tipo",
+    criarAndamento: "/andamento",
+    gruposTrabalho: "/grupo/",
+    marcadores: "/marcador/consulta/",
+    responsaveis: "/usuario/",
     situacoesTarefa: "/tipo?chave-tipo=tarefa-evento-situacao(chaveModulo:null)",
     tiposAndamento: "/andamento-tipo/consulta?",
-    // pedidos: "/processo/pedido/consultar-por-nome?nome-pedido=",
-    // bancos: "/financeiro/conta/consulta",
-    // buscarPessoa: "/pessoa/consulta",
-    // criarPessoa: "/pessoa",
-    // vincularPessoaProcesso: "/processo/envolvido/",
-    // buscarProcessoPorNumero: "/processo/consulta?filtro-geral=",
-    // criarProcesso: "/processo-judicial",
-    // criarAndamento: "/andamento",
-    // criarPedido: "/processo/pedido/",
-    consultarTarefaComPaginacao: (pageNumber: number, registersAmount: number, order: "ASC" | "DESC") => {
-      return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=${pageNumber}&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
-    },
-    tarefaDetails: (codigoTarefaEvento: number, codigoProcesso: number) => {
-      return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
-    },
-    quadrosKanban: (codigoUsuario?: number) => {
-      if (!codigoUsuario) return "";
-      return `/tipo?chave-tipo=kanbanTarefa(codigoUsuario:${codigoUsuario})`;
+    tiposTarefa: "/tipo?chave-tipo=tarefa-tipo",
+    alterarColunaKanbanTarefa: (codigoTarefaEvento?: number) => {
+      if (!codigoTarefaEvento) return "";
+      return `/v2/tarefa/${codigoTarefaEvento}/alterar-coluna-kanban`;
     },
     colunasKanban: (codigoQuadroKanban?: number) => {
       if (!codigoQuadroKanban) return "";
       return `/kanban/tarefa/${codigoQuadroKanban}`;
     },
-    updateTarefa: (action: TarefaUpdateActions, codigoTarefaEvento?: number) => {
-      if (action !== "salvar" && !codigoTarefaEvento) return "";
-      if (action === "salvar") return "/tarefa";
-      return `/v2/tarefa/alterar-situacao/${codigoTarefaEvento}/situacao/${tarefaActions[action].code}`;
+    consultarTarefaComPaginacao: (pageNumber: number, registersAmount: number, order: "ASC" | "DESC") => {
+      return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=${pageNumber}&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
     },
-    alterarColunaKanbanTarefa: (codigoTarefaEvento?: number) => {
+    criarTimesheet: (codigoProcesso: number) => {
+      if (!codigoProcesso) return "";
+      return `/processo/${codigoProcesso}/apontamento-horas`;
+    },
+    processoVisaoCompleta: (codigoProcesso: number) => {
+      if (!codigoProcesso) return "";
+      return `casos/processo/visao-completa/${codigoProcesso}`;
+    },
+    quadrosKanban: (codigoUsuario?: number) => {
+      if (!codigoUsuario) return "";
+      return `/tipo?chave-tipo=kanbanTarefa(codigoUsuario:${codigoUsuario})`;
+    },
+    tarefaDetails: (codigoTarefaEvento: number, codigoProcesso: number) => {
+      return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
+    },
+    updateTarefa: (action: TarefaUpdateActions, codigoTarefaEvento?: number) => {
+      if (action === "salvar") return "/tarefa";
       if (!codigoTarefaEvento) return "";
-      return `/v2/tarefa/${codigoTarefaEvento}/alterar-coluna-kanban`;
+      return `/v2/tarefa/alterar-situacao/${codigoTarefaEvento}/situacao/${tarefaActions[action].code}`;
     },
   };
 
