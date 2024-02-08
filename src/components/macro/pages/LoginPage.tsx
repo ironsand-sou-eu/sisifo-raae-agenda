@@ -1,4 +1,4 @@
-import Messenger from "./Messenger";
+import Messenger from "../blocks/Messenger";
 
 export default function LoginScreen() {
   return (

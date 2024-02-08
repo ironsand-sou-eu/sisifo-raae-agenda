@@ -4,7 +4,7 @@
   "name": "Sísifo Ruy Andrade - Agenda",
   "description": "Esta extensão facilita o acesso à agenda de tarefas do escritório Ruy Andrade Advocacia Empresarial",
   "author": "César Rodriguez",
-  "version": "1.0.0",
+  "version": "1.0.1",
 
   "action": {
     "default_icon": {
@@ -24,6 +24,11 @@
   },
 
   "permissions": ["identity", "storage", "sidePanel"],
+
+  "background": {
+    "service_worker": "worker.js",
+    "type": "module"
+  },
 
   "side_panel": {
     "default_path": "index.html"

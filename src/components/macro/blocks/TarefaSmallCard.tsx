@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import TarefaSmallCardHeader from "./TarefaSmallCardHeader";
-import { DisplayingTarefa } from "../../global";
-import useTarefasAdapter from "../hooks/useTarefasAdapter";
-import { useTarefasList } from "../hooks/TarefasListProvider";
+import { DisplayingTarefa } from "../../../global";
+import useTarefasAdapter from "../../hooks/useTarefasAdapter";
+import { useTarefasList } from "../../hooks/TarefasListProvider";
 
 type TarefaSmallCardProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -54,7 +54,9 @@ export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails 
       >{`Prazo: ${prazo} - Situação: ${situacao}`}</p>
       <div className="processo-info">
         {`${parteAtiva} x ${partePassiva} - `}
-        <a href={processoUrl}>{numeroProcesso}</a>
+        <a target="_blank" href={processoUrl}>
+          {numeroProcesso}
+        </a>
       </div>
       <p>Descrição: {descricao}</p>
       <footer className="tarefa-card-footer">{`${usuarioResponsaveis} - ${gruposResponsaveis}`}</footer>

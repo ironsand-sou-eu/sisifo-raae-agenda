@@ -1,8 +1,8 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
-import HeaderButton from "../micro/HeaderButton";
-import { useTarefasList } from "../hooks/TarefasListProvider";
-import useProjurisTarefasConnector, { TarefaUpdateParams } from "../hooks/useProjurisTarefasConnector";
+import HeaderButton from "../../micro/HeaderButton";
+import { useTarefasList } from "../../hooks/TarefasListProvider";
+import useProjurisTarefasConnector, { TarefaUpdateParams } from "../../hooks/useProjurisTarefasConnector";
 
 type TarefaSmallCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;

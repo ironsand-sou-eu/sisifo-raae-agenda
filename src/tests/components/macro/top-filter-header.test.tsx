@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/";
 import { render, screen } from "@testing-library/react";
-import HeaderFilterHeader from "../../../components/macro/HeaderFilterHeader";
+import HeaderFilterHeader from "../../../components/macro/blocks/HeaderFilterHeader";
 
 describe("HeaderFilterHeader", () => {
   it("should render a paragraph containing the three deadlines in pt-BR locale string", () => {

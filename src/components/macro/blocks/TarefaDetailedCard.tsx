@@ -1,18 +1,18 @@
 import { Dispatch, FunctionComponent, SetStateAction } from "react";
-import useProjurisConnector from "../hooks/useProjurisConnector";
-import FetchingSelect from "../micro/FetchingSelect";
-import { codigoUsuario } from "../../hardcoded";
-import Textarea from "../micro/Textarea";
-import ProcessoInfo from "../micro/ProcessoInfoCard";
+import useProjurisConnector from "../../hooks/useProjurisConnector";
+import FetchingSelect from "../../micro/FetchingSelect";
+import { codigoUsuario } from "../../../hardcoded";
+import Textarea from "../../micro/Textarea";
+import ProcessoInfo from "../../micro/ProcessoInfoCard";
 import TarefaDetailedCardHeader from "./TarefaDetailedCardHeader";
-import PrazosCard from "../micro/PrazosCard";
-import Button from "../micro/Button";
-import useTarefaDetails from "../hooks/useTarefaDetails";
-import TarefaDetailedCardSkeleton from "./skeletons/TarefaDetailedCardSkeleton";
-import { useAnimations } from "../hooks/AnimationsProvider";
-import AnimatableFetchingSelect from "../micro/AnimatableFetchingSelect";
-import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../global";
-import useTarefasAdapter from "../hooks/useTarefasAdapter";
+import PrazosCard from "../../micro/PrazosCard";
+import Button from "../../micro/Button";
+import useTarefaDetails from "../../hooks/useTarefaDetails";
+import TarefaDetailedCardSkeleton from "../skeletons/TarefaDetailedCardSkeleton";
+import { useAnimations } from "../../hooks/AnimationsProvider";
+import AnimatableFetchingSelect from "../../micro/AnimatableFetchingSelect";
+import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../../global";
+import useTarefasAdapter from "../../hooks/useTarefasAdapter";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;

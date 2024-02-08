@@ -3,9 +3,9 @@ import AnimationsProvider from "../hooks/AnimationsProvider";
 import FiltersProvider from "../hooks/FiltersProvider";
 import NotificationsProvider from "../hooks/NotificationsProvider";
 import TarefasListProvider from "../hooks/TarefasListProvider";
-import StartScreen from "./StartScreen";
+import StartPage from "./pages/StartPage";
 import useGoogleConnector from "../hooks/useGoogleConnector";
-import LoginScreen from "./LoginScreen";
+import LoginScreen from "./pages/LoginPage";
 import "../../styles.css";
 
 export default function App() {
@@ -20,7 +20,7 @@ export default function App() {
     <AnimationsProvider>
       <FiltersProvider>
         <TarefasListProvider>
-          <NotificationsProvider>{isAuthenticated ? <StartScreen /> : <LoginScreen />}</NotificationsProvider>
+          <NotificationsProvider>{isAuthenticated ? <StartPage /> : <LoginScreen />}</NotificationsProvider>
         </TarefasListProvider>
       </FiltersProvider>
     </AnimationsProvider>

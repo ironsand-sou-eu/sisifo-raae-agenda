@@ -1,6 +1,6 @@
 import TarefaSmallCardSkeleton from "./TarefaSmallCardSkeleton";
 
-export default function StartScreenSkeleton() {
+export default function StartPageSkeleton() {
   return (
     <>
       {[1, 2, 3].map(key => (
