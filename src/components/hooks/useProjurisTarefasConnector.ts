@@ -95,18 +95,24 @@ export default function useProjurisTarefasConnector() {
       type !== "salvar" ? params : { codigoTarefaEvento: undefined, kanbanFindingCode: undefined };
     if (name === undefined) return;
     if ((type === "salvar" && !tarefa) || (type !== "salvar" && !codigoTarefaEvento)) return;
-    const progressMsg = generateNotification.progress(type);
+    const progressMsg = generateNotification.progress(type, "tarefa");
     addNotification(progressMsg);
     const bodyObj =
       type === "salvar" ? tarefa : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, kanbanFindingCode!);
-    const { responseAction, responseKanban } = await makeRequestsForUpdatingTarefa(
+    const { mainResponse, kanbanResponse } = await makeRequestsForUpdatingTarefa(
       type,
       JSON.stringify(bodyObj),
       codigoTarefaEvento
     );
     removeNotification(progressMsg);
     if (reloadFunction) reloadFunction();
-    const msg = generateNotification.response(name, type, responseAction, responseKanban);
+    const msg = generateNotification.response({
+      action: type,
+      entityName: name,
+      entityType: "tarefa",
+      mainResponse,
+      kanbanResponse,
+    });
     addNotification(msg);
   }
 
@@ -153,15 +159,15 @@ export default function useProjurisTarefasConnector() {
       addNotification(errorMsg);
       throw new Error(errorMsg.text);
     }
-    const responseKanban = endpointKanban
+    const kanbanResponse = endpointKanban
       ? await makeProjurisRequest({ method: "PUT", endpoint: endpointKanban, body })
       : new Response();
-    const responseAction = await makeProjurisRequest({
+    const mainResponse = await makeProjurisRequest({
       method: "PUT",
       endpoint: endpointAction,
       body: type === "salvar" ? body : "",
     });
-    return { responseAction, responseKanban };
+    return { mainResponse, kanbanResponse };
   }
 
   return {
