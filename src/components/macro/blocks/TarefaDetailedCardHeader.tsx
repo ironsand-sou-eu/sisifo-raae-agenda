@@ -2,17 +2,18 @@ import { Dispatch, SetStateAction } from "react";
 import HeaderButton from "../../micro/HeaderButton";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../../hooks/useProjurisTarefasConnector";
+import DetailedCardHeader from "./DetailedCardHeader";
 
 type TarefaDetailedCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
-  tarefaColor?: string;
+  circleColor?: string;
   displayTitulo?: string;
   updateParams?: TarefaUpdateParams;
 };
 
 export default function TarefaDetailedCardHeader({
   setPrefetchDetails,
-  tarefaColor,
+  circleColor,
   displayTitulo,
   updateParams,
 }: TarefaDetailedCardHeaderProps): JSX.Element {
@@ -25,20 +26,22 @@ export default function TarefaDetailedCardHeader({
     dispatchBackendTarefaUpdate(clickedUpdateParams);
   }
 
+  const buttonsDiv = (
+    <div>
+      <HeaderButton type="cancel" onClick={() => handleClick(cancelParams)} />
+      <HeaderButton type="timesheet" disabled={true} onClick={() => {}} />
+      <HeaderButton type="conclude" onClick={() => handleClick(concludeParams)} />
+    </div>
+  );
+
   return (
-    <header className="tarefa-card-titulo">
-      <div onClick={() => setPrefetchDetails(undefined)} className="close-btn">
-        +
-      </div>
-      <div>
-        <div style={{ backgroundColor: tarefaColor }} className="circle" />
-        <h2>{displayTitulo}</h2>
-      </div>
-      <div>
-        <HeaderButton type="cancel" onClick={() => handleClick(cancelParams)} />
-        <HeaderButton type="timesheet" disabled={true} onClick={() => {}} />
-        <HeaderButton type="conclude" onClick={() => handleClick(concludeParams)} />
-      </div>
-    </header>
+    <DetailedCardHeader
+      {...{
+        caption: displayTitulo,
+        circleColor,
+        rightDiv: buttonsDiv,
+        closeFunction: () => setPrefetchDetails(undefined),
+      }}
+    />
   );
 }

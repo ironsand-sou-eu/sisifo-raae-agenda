@@ -81,7 +81,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         {...{
           displayTitulo,
           setPrefetchDetails,
-          tarefaColor,
+          circleColor: tarefaColor,
           codigoQuadroKanban: quadroKanban?.chave,
           codigoTarefaEvento,
           loadDetails,
