@@ -61,3 +61,17 @@ export function debounce(cb: (...args: any[]) => void, delay = 300) {
     }, delay);
   };
 }
+
+export function maskNumbersString(str: string, mask: string): string {
+  const onlyNumbersFromValue = str.split("").filter(char => isNumeric(char));
+  const backwardsMask = mask.split("").toReversed();
+  const maskedReverse = backwardsMask.map(maskChar => {
+    if (!isNumeric(maskChar)) return maskChar;
+    return onlyNumbersFromValue.pop() ?? "0";
+  });
+  return maskedReverse.toReversed().join("");
+}
+
+function isNumeric(char: string) {
+  return "1234567890".split("").includes(char);
+}
