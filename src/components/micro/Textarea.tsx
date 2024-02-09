@@ -1,22 +1,17 @@
-type TextareaProps = {
-  nameAndId: string;
-  label: string;
-  onChange: (newValue: string) => void;
+import { ComponentPropsWithoutRef } from "react";
+
+type TextareaProps = ComponentPropsWithoutRef<"textarea"> & {
+  label?: string;
   content?: string;
 };
 
-export default function Textarea({ nameAndId, label, content, onChange }: TextareaProps): JSX.Element {
+export default function Textarea({ name, content, label, ...rest }: TextareaProps): JSX.Element {
   return (
     <div>
-      <label className="sisifo-label" htmlFor={nameAndId}>
+      <label className="sisifo-label" htmlFor={name}>
         {label}
       </label>
-      <textarea
-        id={nameAndId}
-        name={nameAndId}
-        value={content ?? ""}
-        onChange={({ target }) => onChange(target.value)}
-      />
+      <textarea id={name} value={content ?? ""} {...rest} />
     </div>
   );
 }

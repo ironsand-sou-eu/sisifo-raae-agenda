@@ -95,9 +95,9 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
       />
       <ProcessoInfo {...{ parteAtiva, partePassiva, numeroProcesso, processoUrl }} />
       <Textarea
-        nameAndId="descricao"
+        name="descricao"
         label="Descrição"
-        onChange={newValue => updateTarefaDetails({ descricaoTarefa: newValue })}
+        onChange={ev => updateTarefaDetails({ descricaoTarefa: ev.target.value })}
         content={descricaoTarefa}
       />
       <FetchingSelect
