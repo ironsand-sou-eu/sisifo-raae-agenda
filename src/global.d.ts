@@ -23,6 +23,64 @@ type Modulo = {
   vinculoPrincipal: boolean;
 };
 
+type Notification = {
+  text: string;
+  type: "success" | "error" | "progress";
+};
+
+export type DisplayingAndamento = {
+  descricaoAndamento: string;
+  dataHoraAndamento: Date | null;
+  tipoAndamento: SimpleDocument;
+  responsaveis: SimpleDocument[];
+  privado: boolean;
+};
+
+export type DisplayingTarefa = {
+  checked?: boolean;
+  codigoProcesso: number;
+  codigoTarefaEvento: number;
+  descricao: string;
+  gruposResponsaveis: string;
+  nomeTarefaTipo: string;
+  numeroProcesso: string;
+  parteAtiva: string;
+  partePassiva: string;
+  prazo: string;
+  prazoColorCssVariable: string;
+  processoUrl: string;
+  situacao: string;
+  tarefaColor: string;
+  usuarioResponsaveis: string;
+};
+
+export type DisplayingTarefaDetails = {
+  codigoProcessoProjuris?: number;
+  colunaKanban: SimpleDocument;
+  descricaoTarefa?: string;
+  dataConclusao: Date | null;
+  dataConclusaoPrevista: Date | null;
+  dataLimite: Date | null;
+  displayTitulo: string;
+  gruposResponsaveis: SimpleDocument[];
+  marcadorWs: Marcador[];
+  prazoColorCssVariable: string;
+  processoUrl: string;
+  quadroKanban: SimpleDocument;
+  tarefaColor: string;
+  usuariosResponsaveis: SimpleDocument[];
+};
+
+export type DisplayingTimesheet = {
+  dataHoraApontamento: Date | null;
+  descricaoApontamento: string;
+  faturar: boolean;
+  privado: boolean;
+  qtdHoras: string;
+  responsavel: SimpleDocument;
+  tipoLancamento: SimpleDocument;
+};
+
 export type FetchedTarefa = {
   checked?: boolean;
   codigoTarefa: number;
@@ -62,24 +120,6 @@ export type FetchedTarefa = {
   dataInclusao: number;
 };
 
-export type DisplayingTarefa = {
-  checked?: boolean;
-  codigoTarefaEvento: number;
-  tarefaColor: string;
-  descricao: string;
-  gruposResponsaveis: string;
-  codigoProcesso: number;
-  nomeTarefaTipo: string;
-  numeroProcesso: string;
-  parteAtiva: string;
-  partePassiva: string;
-  situacao: string;
-  usuarioResponsaveis: string;
-  prazo: string;
-  processoUrl: string;
-  prazoColorCssVariable: string;
-};
-
 export type FetchedTarefaDetails = {
   modulos: Modulo[];
   codigoTarefa: number;
@@ -111,6 +151,16 @@ export type FetchedTarefaDetails = {
   };
 };
 
+export type WritingAndamento = {
+  modulos: Modulo[];
+  descricaoAndamento: string;
+  dataAndamento: string; //"2024-02-09T23:04:00.000Z";
+  horaAndamento: string; //"2024-02-09T23:04:00.000Z";
+  codigoTipoAndamento: number;
+  responsaveis: SimpleDocument[];
+  privado: boolean;
+};
+
 export type WritingTarefaDetails = {
   codigoTarefaEvento: number;
   descricaoTarefa: string;
@@ -133,24 +183,20 @@ export type WritingTarefaDetails = {
   colunaKanban: SimpleDocument;
 };
 
-export type DisplayingTarefaDetails = {
-  codigoProcessoProjuris?: number;
-  colunaKanban: SimpleDocument;
-  descricaoTarefa?: string;
-  dataConclusao: Date | null;
-  dataConclusaoPrevista: Date | null;
-  dataLimite: Date | null;
-  displayTitulo: string;
-  gruposResponsaveis: SimpleDocument[];
-  marcadorWs: Marcador[];
-  prazoColorCssVariable: string;
-  processoUrl: string;
-  quadroKanban: SimpleDocument;
-  tarefaColor: string;
-  usuariosResponsaveis: SimpleDocument[];
-};
-
-type Notification = {
-  text: string;
-  type: "success" | "error" | "progress";
+export type WritingTimesheet = {
+  apontamentoHoraTipoWs: {
+    codigoTipoApontamentoHora: number;
+  };
+  descricaoApontamentoHoras: string;
+  privado: boolean;
+  faturarApontamentoHoras: boolean;
+  responsavelApontamentoHoras: SimpleDocument;
+  horaApontamento: [
+    {
+      codigoHoraApontamento: null;
+      dataApontamento: string; //"2024-02-09T23:04:00.000Z";
+      horasApontamento: string; //"03:00";
+      descricaoApontamento: string;
+    }
+  ];
 };

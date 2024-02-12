@@ -66,11 +66,13 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
   function loadList() {
     if (show?.filter || !filters?.currentFilter) return;
     setIsListLoading(true);
-    fetchTarefasFromFilter(filters.currentFilter, pageNumber).then(newTarefas => {
-      setIsListLoading(false);
-      setHasMore(newTarefas.length > 0);
-      setTarefas(prevTarefas => [...prevTarefas, ...newTarefas]);
-    });
+    fetchTarefasFromFilter(filters.currentFilter, pageNumber)
+      .then(newTarefas => {
+        setIsListLoading(false);
+        setHasMore(newTarefas.length > 0);
+        setTarefas(prevTarefas => [...prevTarefas, ...newTarefas]);
+      })
+      .catch(e => console.error(e));
   }
 
   function toggleCheck(codigoTarefaEvento: number) {

@@ -9,10 +9,13 @@ import "react-datepicker/dist/react-datepicker.min.css";
 import Messenger from "../blocks/Messenger";
 import { useAnimations } from "../../hooks/AnimationsProvider";
 import EndCard from "../blocks/EndCard";
+import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
+import AndamentosTimesheetCard from "../blocks/AndamentosTimesheetCard";
 
 export default function StartPage() {
   const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
   const { displayingTarefas, selectedTarefas, hasMore, pageNumber, setPageNumber, isListLoading } = useTarefasList();
+  const { showAndamentosTarefasPanel } = useAndamentosTimesheets();
   const { toggleVisibility } = useAnimations();
   const pageEndRef = useRef<HTMLDivElement>(null);
 
@@ -46,6 +49,7 @@ export default function StartPage() {
         ))}
         {isListLoading ? <StartPageSkeleton /> : <EndCard hasMore={hasMore} ref={pageEndRef} />}
         {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} {...{ setPrefetchDetails }} />}
+        {showAndamentosTarefasPanel && <AndamentosTimesheetCard />}
         <Messenger />
       </main>
     </>

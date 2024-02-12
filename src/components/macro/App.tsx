@@ -23,7 +23,11 @@ export default function App() {
       <FiltersProvider>
         <TarefasListProvider>
           <TarefaDetailsProvider>
-            <NotificationsProvider>{isAuthenticated ? <StartPage /> : <LoginScreen />}</NotificationsProvider>
+            <NotificationsProvider>
+              <AndamentosTimesheetsProvider>
+                {isAuthenticated ? <StartPage /> : <LoginScreen />}
+              </AndamentosTimesheetsProvider>
+            </NotificationsProvider>
           </TarefaDetailsProvider>
         </TarefasListProvider>
       </FiltersProvider>

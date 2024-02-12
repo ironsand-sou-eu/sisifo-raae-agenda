@@ -267,6 +267,15 @@ div:has(> .circle),
   box-sizing: border-box;
 }
 
+.tarefa-detailed-card h3 {
+  margin-block-end: 0;
+  text-align: center;
+}
+
+.tarefa-detailed-card header + * > h3:first-child {
+  margin-block-start: 0;
+}
+
 div.prazos-card {
   display: flex;
   justify-content: space-around;
@@ -605,6 +614,10 @@ footer.skeleton-text {
 
 .skeleton-text:last-child {
   width: 75%;
+}
+
+.pad-block-sm {
+  padding-block: var(--small-padding);
 }
 
 @keyframes skeleton {

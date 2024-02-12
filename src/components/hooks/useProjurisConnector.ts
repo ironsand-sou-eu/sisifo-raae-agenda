@@ -40,7 +40,8 @@ export default function useProjurisConnector() {
     marcadores: "/marcador/consulta/",
     responsaveis: "/usuario/",
     situacoesTarefa: "/tipo?chave-tipo=tarefa-evento-situacao(chaveModulo:null)",
-    tiposAndamento: "/andamento-tipo/consulta?",
+    tiposAndamento: "/andamento-tipo/",
+    tiposLancamentoTimesheet: "/tipo?chave-tipo=apontamento-hora-tipo",
     tiposTarefa: "/tipo?chave-tipo=tarefa-tipo",
     alterarColunaKanbanTarefa: (codigoTarefaEvento?: number) => {
       if (!codigoTarefaEvento) return "";
@@ -52,6 +53,10 @@ export default function useProjurisConnector() {
     },
     consultarTarefaComPaginacao: (pageNumber: number, registersAmount: number, order: "ASC" | "DESC") => {
       return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=${pageNumber}&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
+    },
+    consultarTipoAndamentoPorCodigo: (codigoTipoAndamento: number) => {
+      if (!codigoTipoAndamento) return "";
+      return `/andamento-tipo/${codigoTipoAndamento}`;
     },
     criarTimesheet: (codigoProcesso: number) => {
       if (!codigoProcesso) return "";
