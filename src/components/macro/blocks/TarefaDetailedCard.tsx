@@ -1,4 +1,4 @@
-import { Dispatch, FunctionComponent, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import useProjurisConnector from "../../hooks/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import { codigoUsuario } from "../../../hardcoded";
@@ -7,12 +7,11 @@ import ProcessoInfo from "../../micro/ProcessoInfoCard";
 import TarefaDetailedCardHeader from "./TarefaDetailedCardHeader";
 import PrazosCard from "../../micro/PrazosCard";
 import Button from "../../micro/Button";
-import useTarefaDetails from "../../hooks/useTarefaDetails";
 import TarefaDetailedCardSkeleton from "../skeletons/TarefaDetailedCardSkeleton";
 import { useAnimations } from "../../hooks/AnimationsProvider";
 import AnimatableFetchingSelect from "../../micro/AnimatableFetchingSelect";
 import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../../global";
-import useTarefasAdapter from "../../hooks/useTarefasAdapter";
+import { useTarefaDetails } from "../../hooks/TarefaDetailsProvider";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -27,7 +26,7 @@ export type TarefaDetailedCardProps = TarefaPrefetchDetails & {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
 };
 
-const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
+export default function TarefaDetailedCard({
   codigoTarefaEvento,
   codigoProcesso,
   parteAtiva,
@@ -35,21 +34,20 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
   numeroProcesso,
   tarefaColor,
   setPrefetchDetails,
-}: TarefaDetailedCardProps) => {
+}: TarefaDetailedCardProps) {
+  const { setHidingAnimation } = useAnimations();
   const { endpoints } = useProjurisConnector();
   const {
     displayingTarefaDetails,
     isDetailLoading,
+    updateParams,
     updateTarefaDetails,
     saveTarefa,
+    setTarefaLoadingDetails,
     loadDetails,
     updatesOnColunaKanbanChange,
-  } = useTarefaDetails(codigoTarefaEvento, codigoProcesso, tarefaColor);
-  const { setHidingAnimation } = useAnimations();
-  const { adaptTarefaDetailsToUpdatingParams } = useTarefasAdapter();
-  const updateParams = displayingTarefaDetails
-    ? adaptTarefaDetailsToUpdatingParams(displayingTarefaDetails, codigoTarefaEvento, "cancelar", loadDetails)
-    : undefined;
+  } = useTarefaDetails();
+
   const {
     displayTitulo,
     processoUrl,
@@ -64,6 +62,10 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
     quadroKanban,
     prazoColorCssVariable,
   } = displayingTarefaDetails ?? ({} as DisplayingTarefaDetails);
+
+  useEffect(() => {
+    setTarefaLoadingDetails({ codigoTarefaEvento, codigoProcesso, tarefaColor });
+  }, [codigoTarefaEvento, codigoProcesso, tarefaColor]);
 
   function handleQuadroKanbanChange(newValue: unknown) {
     if (!newValue) {
@@ -84,6 +86,7 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
           circleColor: tarefaColor,
           codigoQuadroKanban: quadroKanban?.chave,
           codigoTarefaEvento,
+          codigoProcesso,
           loadDetails,
           updateParams,
         }}
@@ -148,17 +151,9 @@ const TarefaDetailedCard: FunctionComponent<TarefaDetailedCardProps> = ({
         isMulti={false}
       />
       <div className="btn-container">
-        <Button
-          name="create-tarefa"
-          caption="Criar andamento"
-          className="btn new-andamento-button"
-          onClick={() => {}}
-        />
-        <Button name="salvar" caption="Salvar alterações" className="btn save-btn" onClick={saveTarefa} />
+        <Button name="salvar-tarefa" caption="Salvar alterações" className="btn save-btn" onClick={saveTarefa} />
       </div>
       <footer className="tarefa-card-footer">{}</footer>
     </section>
   );
-};
-
-export default TarefaDetailedCard;
+}

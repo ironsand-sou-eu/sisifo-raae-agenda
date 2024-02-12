@@ -7,6 +7,8 @@ import StartPage from "./pages/StartPage";
 import useGoogleConnector from "../hooks/useGoogleConnector";
 import LoginScreen from "./pages/LoginPage";
 import "../../styles.css";
+import AndamentosTimesheetsProvider from "../hooks/AndamentosTimesheetsProvider";
+import TarefaDetailsProvider from "../hooks/TarefaDetailsProvider";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,7 +22,9 @@ export default function App() {
     <AnimationsProvider>
       <FiltersProvider>
         <TarefasListProvider>
-          <NotificationsProvider>{isAuthenticated ? <StartPage /> : <LoginScreen />}</NotificationsProvider>
+          <TarefaDetailsProvider>
+            <NotificationsProvider>{isAuthenticated ? <StartPage /> : <LoginScreen />}</NotificationsProvider>
+          </TarefaDetailsProvider>
         </TarefasListProvider>
       </FiltersProvider>
     </AnimationsProvider>
