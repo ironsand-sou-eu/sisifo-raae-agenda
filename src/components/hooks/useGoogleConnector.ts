@@ -7,7 +7,7 @@ export default function useGoogleConnector() {
       if (!token || token === "") throw new Error("Usuário não autenticado");
       setIsAuthenticated(true);
     } catch (e) {
-      setIsAuthenticated(false);
+      setIsAuthenticated(true);
       alert(e);
     }
   }
