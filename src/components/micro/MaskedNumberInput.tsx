@@ -1,17 +1,29 @@
 import { ComponentPropsWithoutRef } from "react";
+import ErrorDiv from "./ErrorDiv";
 
 type MaskedNumberInputProps = ComponentPropsWithoutRef<"input"> & {
+  error?: string;
   label: string;
   mask: string;
 };
 
-export default function MaskedNumberInput({ label, name, mask, value, ...rest }: MaskedNumberInputProps): JSX.Element {
+export default function MaskedNumberInput({
+  error,
+  label,
+  name,
+  mask,
+  value,
+  ...rest
+}: MaskedNumberInputProps): JSX.Element {
+  const style = error ? { borderColor: "var(--fill-color-red)" } : undefined;
+
   return (
     <div>
       <label className="sisifo-label" htmlFor={name}>
         {label}
       </label>
-      <input {...rest} type="text" value={value ?? ""} id={name} name={name} maxLength={mask.length + 1} />
+      <ErrorDiv error={error} />
+      <input {...{ ...rest, style, name }} type="text" value={value ?? ""} id={name} maxLength={mask.length + 1} />
     </div>
   );
 }

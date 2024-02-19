@@ -159,9 +159,13 @@ div:has(> .circle),
   -webkit-appearance: none;
   appearance: none;
   position: relative;
-  /* top: 0;
-  left: 0.1em; */
   transition: 200ms ease-in-out;
+}
+
+.tarefa-card-button.small-button {
+  width: 1rem;
+  height: 1rem;
+  display: flex;
 }
 
 .tarefa-card-button[aria-disabled] {
@@ -231,26 +235,6 @@ div:has(> .circle),
   align-self: center;
 }
 
-/* .lost {
-  background-color: var(--fill-color-black);
-}
-
-.danger {
-  background-color: var(--fill-color-red);
-}
-
-.warning {
-  background-color: var(--fill-color-orange);
-}
-
-.done {
-  background-color: var(--fill-color-blue);
-} */
-
-/* .normal {
-  background-color: var(--fill-color-green);
-} */
-
 .tarefa-detailed-card {
   position: absolute;
   top: calc(var(--header-height) + var(--small-gap));
@@ -267,8 +251,17 @@ div:has(> .circle),
   box-sizing: border-box;
 }
 
+.tarefa-detailed-card header:has(> h3) {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-block-start: var(--big-gap);
+}
+
 .tarefa-detailed-card h3 {
-  margin-block-end: 0;
+  margin-block: 0;
   text-align: center;
 }
 
@@ -292,6 +285,7 @@ div.prazos-card {
 }
 
 .prazos-card .sisifo-label,
+.text-center,
 .text-center input {
   text-align: center;
 }
@@ -421,7 +415,7 @@ div.select-control:hover,
   cursor: pointer;
 }
 
-.save-btn {
+.save-btn:not([disabled]) {
   background: rgb(23, 96, 0);
   background: linear-gradient(
     135deg,
@@ -433,7 +427,12 @@ div.select-control:hover,
   border: 1px solid #037b01;
 }
 
-.save-btn:hover {
+.save-btn[disabled] {
+  background: #bbbb;
+  cursor: not-allowed;
+}
+
+.save-btn:not([disabled]):hover {
   box-shadow: inset 0px 0px 9px 1px #008000de;
 }
 
@@ -618,6 +617,12 @@ footer.skeleton-text {
 
 .pad-block-sm {
   padding-block: var(--small-padding);
+}
+
+.validation-error {
+  text-align: right;
+  border-color: var(--fill-color-red);
+  color: var(--fill-color-red);
 }
 
 @keyframes skeleton {

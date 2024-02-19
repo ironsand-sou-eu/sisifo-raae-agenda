@@ -1,31 +1,37 @@
-import DatePicker from "react-datepicker";
+import DatePicker, { ReactDatePickerProps } from "react-datepicker";
+import ErrorDiv from "./ErrorDiv";
 
-export type SingleDatePickerProps = {
-  label: string;
-  onChange: (newValue: any) => void;
+export type SingleDatePickerProps = ReactDatePickerProps & {
   date?: Date | null;
-  readonly?: boolean;
+  error?: string;
+  label: string;
 };
 
-export default function SingleDatePicker({ label, onChange, date, readonly }: SingleDatePickerProps): JSX.Element {
-  const datePickerId = `filter-datepicker-${label.toLowerCase().replaceAll(" ", "")}`;
+export default function SingleDatePicker({
+  error,
+  id,
+  label,
+  onChange,
+  date,
+  ...rest
+}: SingleDatePickerProps): JSX.Element {
+  const datePickerId = id ?? `filter-datepicker-${label.toLowerCase().replaceAll(" ", "")}`;
   return (
     <div>
       <label className="sisifo-label" htmlFor={datePickerId}>
         {label}
       </label>
+      <ErrorDiv error={error} />
       <DatePicker
         id={datePickerId}
         selected={date}
         onChange={onChange}
         wrapperClassName="datepicker-wrapper text-center"
-        className="datepicker-input"
-        dateFormat={"dd/MM/yyyy"}
+        className={`datepicker-input${error ? " validation-error" : ""}`}
+        dateFormat="P"
         closeOnScroll
-        readOnly={readonly}
+        {...rest}
       />
     </div>
   );
 }
-
-// TODO: codigoUsuarioCriador: 89323

@@ -1,17 +1,22 @@
 import { ComponentPropsWithoutRef } from "react";
+import ErrorDiv from "./ErrorDiv";
 
 type TextareaProps = ComponentPropsWithoutRef<"textarea"> & {
-  label?: string;
   content?: string;
+  error?: string;
+  label?: string;
 };
 
-export default function Textarea({ name, content, label, ...rest }: TextareaProps): JSX.Element {
+export default function Textarea({ content, error, label, name, ...rest }: TextareaProps): JSX.Element {
+  const style = error ? { borderColor: "var(--fill-color-red)" } : undefined;
+
   return (
     <div>
       <label className="sisifo-label" htmlFor={name}>
         {label}
       </label>
-      <textarea id={name} value={content ?? ""} {...rest} />
+      <ErrorDiv error={error} />
+      <textarea id={name} value={content ?? ""} {...{ ...rest, style }} />
     </div>
   );
 }
