@@ -53,7 +53,7 @@ export default function HeaderFilterBody(): JSX.Element {
       <FetchingSelect
         optionsEndpoint={endpoints.situacoesTarefa}
         hasMultiLevelSource={false}
-        values={situacao ? [situacao] : undefined}
+        values={situacao}
         onChange={newValues => changeCurrentFilter(newValues, "situacao")}
         name="situacao"
         label="Situação da tarefa"
@@ -62,7 +62,7 @@ export default function HeaderFilterBody(): JSX.Element {
       <FetchingSelect
         optionsEndpoint={endpoints.quadrosKanban(envVars.CODIGO_USUARIO)}
         hasMultiLevelSource={false}
-        values={quadroKanban ? [quadroKanban] : undefined}
+        values={quadroKanban}
         onChange={newValues => changeCurrentFilter(newValues, "quadroKanban")}
         name="quadro-kanban"
         label="Quadro kanban"

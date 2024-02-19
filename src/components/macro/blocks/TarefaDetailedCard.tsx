@@ -134,7 +134,7 @@ export default function TarefaDetailedCard({
       <FetchingSelect
         optionsEndpoint={endpoints.quadrosKanban(codigoUsuario)}
         hasMultiLevelSource={false}
-        values={quadroKanban ? [quadroKanban] : undefined}
+        values={quadroKanban}
         onChange={handleQuadroKanbanChange}
         name="quadro-kanban"
         label="Quadro kanban"
@@ -144,7 +144,7 @@ export default function TarefaDetailedCard({
         condition={!!quadroKanban}
         optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
         hasMultiLevelSource={false}
-        values={colunaKanban ? [colunaKanban] : undefined}
+        values={colunaKanban}
         onChange={newValue => updatesOnColunaKanbanChange(newValue as SimpleDocument)}
         name="coluna-kanban"
         label="Coluna kanban"
