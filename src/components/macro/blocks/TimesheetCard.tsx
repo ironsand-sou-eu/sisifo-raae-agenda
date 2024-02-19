@@ -1,85 +1,76 @@
 import useProjurisConnector from "../../hooks/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import Textarea from "../../micro/Textarea";
-import DatePicker from "react-datepicker";
-import { DisplayingTimesheet } from "../../../global";
+import { SimpleDocument } from "../../../global";
 import MaskedNumberInput from "../../micro/MaskedNumberInput";
 import { maskNumbersString } from "../../../utils/utils";
 import Checkbox from "../../micro/Checkbox";
+import SingleDatePicker from "../../micro/SingleDatePicker";
+import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
+import HeaderButton from "../../micro/HeaderButton";
 
-export type TimesheetCardProps = (Partial<DisplayingTimesheet> | undefined) & {
-  updateTimesheetDetails: (newProps: Partial<DisplayingTimesheet>) => void;
-};
-
-export default function TimesheetCard({
-  dataHoraApontamento,
-  descricaoApontamento,
-  faturar,
-  tipoLancamento,
-  responsavel,
-  qtdHoras,
-  updateTimesheetDetails,
-}: TimesheetCardProps) {
+export default function TimesheetCard() {
+  const { timesheet, timesheetValidation, clearTimesheet, updateTimesheet } = useAndamentosTimesheets();
   const { endpoints } = useProjurisConnector();
   const timesheetHoursAmountMask = "00:00";
+  const { dataHoraApontamento, descricaoApontamento, faturar, tipoLancamento, responsavel, qtdHoras } = timesheet ?? {};
 
   return (
     <section>
-      <h3 title="Você pode criar apenas andamento, apenas timesheet ou ambos">Timesheet</h3>
+      <header>
+        <h3 title="Você pode criar apenas andamento, apenas timesheet ou ambos">Timesheet</h3>
+        <HeaderButton type="delete" onClick={clearTimesheet} className="small-button" title="Limpar timesheet" />
+      </header>
       <FetchingSelect
         optionsEndpoint={endpoints.tiposLancamentoTimesheet}
         hasMultiLevelSource={false}
-        values={tipoLancamento ? [tipoLancamento] : undefined}
-        onChange={newValue => updateTimesheetDetails({ tipoLancamento: newValue })}
+        values={tipoLancamento}
+        onChange={newValue => updateTimesheet({ tipoLancamento: newValue as SimpleDocument })}
+        error={timesheetValidation?.errors.tipoLancamento}
         name="tipo-timesheet"
         label="Tipo de lançamento"
         isMulti={false}
       />
 
-      <div>
-        <label className="sisifo-label" htmlFor="andamento-datepicker">
-          Data e hora
-        </label>
-        <DatePicker
-          id="andamento-datepicker"
-          selected={dataHoraApontamento}
-          locale={"pt-BR"}
-          onChange={newValue => updateTimesheetDetails({ dataHoraApontamento: newValue })}
-          wrapperClassName="datepicker-wrapper"
-          className="datepicker-input"
-          dateFormat={"dd/MM/yyyy"}
-          showTimeInput
-          timeInputLabel="Hora:"
-          timeFormat="p"
-          showIcon
-          closeOnScroll
-        />
-      </div>
+      <SingleDatePicker
+        label="Data e hora"
+        id="timesheet-datepicker"
+        date={dataHoraApontamento}
+        onChange={newValue => updateTimesheet({ dataHoraApontamento: newValue })}
+        error={timesheetValidation?.errors?.dataHoraApontamento}
+        dateFormat="dd/MM/yyyy HH:mm"
+        showTimeInput
+        timeInputLabel="Hora:"
+        timeFormat="p"
+        showIcon
+        closeOnScroll
+      />
 
       <MaskedNumberInput
         label={"Quantidade de horas"}
-        className="datepicker-input"
+        className="datepicker-input text-center"
         mask={timesheetHoursAmountMask}
         placeholder={timesheetHoursAmountMask}
         name={"qtd-horas"}
         value={qtdHoras}
-        onChange={ev =>
-          updateTimesheetDetails({ qtdHoras: maskNumbersString(ev.target.value, timesheetHoursAmountMask) })
-        }
+        onChange={ev => updateTimesheet({ qtdHoras: maskNumbersString(ev.target.value, timesheetHoursAmountMask) })}
+        error={timesheetValidation?.errors?.qtdHoras}
       />
 
       <Textarea
         name="descricao-timesheet"
         label="Descrição"
-        onChange={ev => updateTimesheetDetails({ descricaoApontamento: ev.target.value })}
+        onChange={ev => updateTimesheet({ descricaoApontamento: ev.target.value })}
         content={descricaoApontamento}
+        error={timesheetValidation?.errors?.descricaoApontamento}
       />
 
       <FetchingSelect
         optionsEndpoint={endpoints.responsaveis}
         hasMultiLevelSource={false}
         values={responsavel}
-        onChange={newValue => updateTimesheetDetails({ responsavel: newValue })}
+        onChange={newValue => updateTimesheet({ responsavel: newValue as SimpleDocument })}
+        error={timesheetValidation?.errors?.responsavel}
         name="responsavel"
         label="Responsável"
         isMulti={false}
@@ -89,7 +80,7 @@ export default function TimesheetCard({
         name="faturar"
         label="Pronto para faturar"
         checked={faturar}
-        onChange={ev => updateTimesheetDetails({ faturar: ev.target.checked })}
+        onChange={ev => updateTimesheet({ faturar: ev.target.checked })}
       />
     </section>
   );

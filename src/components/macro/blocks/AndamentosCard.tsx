@@ -1,65 +1,62 @@
 import useProjurisConnector from "../../hooks/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import Textarea from "../../micro/Textarea";
-import DatePicker from "react-datepicker";
-import { SimpleDocument, DisplayingAndamento } from "../../../global";
+import { SimpleDocument } from "../../../global";
+import SingleDatePicker from "../../micro/SingleDatePicker";
+import HeaderButton from "../../micro/HeaderButton";
+import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
 
-export type AndamentosCardProps = (Partial<DisplayingAndamento> | undefined) & {
-  updateAndamentoDetails: (newProps: Partial<DisplayingAndamento>) => void;
-};
-
-export default function AndamentosCard({
-  dataHoraAndamento,
-  descricaoAndamento,
-  responsaveis,
-  tipoAndamento,
-  updateAndamentoDetails,
-}: AndamentosCardProps) {
+export default function AndamentosCard() {
+  const { andamento, andamentoValidation, clearAndamento, updateAndamento } = useAndamentosTimesheets();
   const { endpoints } = useProjurisConnector();
+
+  const { dataHoraAndamento, descricaoAndamento, responsaveis, tipoAndamento } = andamento ?? {};
 
   return (
     <section>
-      <h3 title="Você pode criar apenas andamento, apenas timesheet ou ambos">Andamento</h3>
+      <header>
+        <h3 title="Você pode criar apenas andamento, apenas timesheet ou ambos">Andamento</h3>
+        <HeaderButton type="delete" onClick={clearAndamento} className="small-button" title="Limpar andamento" />
+      </header>
       <FetchingSelect
         optionsEndpoint={endpoints.tiposAndamento}
         hasMultiLevelSource={false}
-        values={tipoAndamento ? [tipoAndamento] : undefined}
-        onChange={newValue => updateAndamentoDetails({ tipoAndamento: newValue })}
+        values={tipoAndamento}
+        onChange={newValue => updateAndamento({ tipoAndamento: newValue as SimpleDocument })}
         name="tipo-andamento"
         label="Tipo de andamento"
+        error={andamentoValidation?.errors?.tipoAndamento}
         isMulti={false}
       />
-      <div>
-        <label className="sisifo-label" htmlFor="andamento-datepicker">
-          Data e hora
-        </label>
-        <DatePicker
-          id="andamento-datepicker"
-          selected={dataHoraAndamento}
-          locale={"pt-BR"}
-          onChange={newValue => updateAndamentoDetails({ dataHoraAndamento: newValue })}
-          wrapperClassName="datepicker-wrapper"
-          className="datepicker-input"
-          dateFormat={"dd/MM/yyyy"}
-          showTimeInput
-          timeInputLabel="Hora:"
-          timeFormat="p"
-          showIcon
-          closeOnScroll
-        />
-      </div>
+
+      <SingleDatePicker
+        label="Data e hora"
+        id="andamento-datepicker"
+        date={dataHoraAndamento}
+        onChange={newValue => updateAndamento({ dataHoraAndamento: newValue })}
+        error={andamentoValidation?.errors?.dataHoraAndamento}
+        showTimeInput
+        dateFormat="dd/MM/yyyy HH:mm"
+        timeInputLabel="Hora:"
+        timeFormat="p"
+        showIcon
+        closeOnScroll
+      />
 
       <Textarea
         name="descricao-andamento"
         label="Descrição"
-        onChange={ev => updateAndamentoDetails({ descricaoAndamento: ev.target.value })}
+        onChange={ev => updateAndamento({ descricaoAndamento: ev.target.value })}
         content={descricaoAndamento}
+        error={andamentoValidation?.errors?.descricaoAndamento}
       />
+
       <FetchingSelect
         optionsEndpoint={endpoints.responsaveis}
         hasMultiLevelSource={false}
         values={responsaveis}
-        onChange={newValue => updateAndamentoDetails({ responsaveis: newValue as SimpleDocument[] })}
+        onChange={newValue => updateAndamento({ responsaveis: newValue as [SimpleDocument, ...SimpleDocument[]] })}
+        error={andamentoValidation?.errors?.responsaveis}
         name="responsaveis"
         label="Responsáveis"
         isMulti={true}
