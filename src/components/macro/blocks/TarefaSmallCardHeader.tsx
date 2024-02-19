@@ -3,6 +3,7 @@ import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import HeaderButton from "../../micro/HeaderButton";
 import { useTarefasList } from "../../hooks/TarefasListProvider";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../../hooks/useProjurisTarefasConnector";
+import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
 
 type TarefaSmallCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -31,6 +32,7 @@ export default function TarefaSmallCardHeader({
 }: TarefaSmallCardHeaderProps): JSX.Element {
   const { toggleCheck } = useTarefasList();
   const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
+  const { setAndamentosTarefasPanelVisibility } = useAndamentosTimesheets();
   function renderDetails(): void {
     setPrefetchDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
   }
@@ -67,7 +69,12 @@ export default function TarefaSmallCardHeader({
       </div>
       <div>
         <HeaderButton type="cancel" onClick={() => dispatchBackendTarefaUpdate(cancelParams)} />
-        <HeaderButton type="timesheet" disabled={true} onClick={() => {}} />
+        <HeaderButton
+          type="timesheet"
+          onClick={() => {
+            if (codigoProcesso) setAndamentosTarefasPanelVisibility({ visible: true, codigoProcesso });
+          }}
+        />
         <HeaderButton type="conclude" onClick={() => dispatchBackendTarefaUpdate(concludeParams)} />
       </div>
     </header>
