@@ -1,25 +1,31 @@
-import { PropsWithChildren, createContext, useContext, useState } from "react";
-import { Prettify, DisplayingAndamento, DisplayingTimesheet } from "../../global";
+import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
+import { Prettify, DisplayingAndamento, DisplayingTimesheet, PartialOrNullable } from "../../global";
+import useProjurisValidator, { Validation } from "./useProjurisValidator";
 
 type VisibilityOptions = { visible: false } | { visible: true; codigoProcesso: number };
 
 type AndamentosTimesheetsContext = {
   andamento?: DisplayingAndamento;
-  codigoProcesso?: number;
-  showAndamentosTarefasPanel: boolean;
   timesheet?: DisplayingTimesheet;
+  andamentoValidation?: Validation;
+  timesheetValidation?: Validation;
+  clearAndamento: () => void;
+  clearTimesheet: () => void;
+  updateAndamento: (keysToUpdate: PartialOrNullable<DisplayingAndamento>) => void;
+  updateTimesheet: (keysToUpdate: PartialOrNullable<DisplayingTimesheet>) => void;
   createAndamentoTimesheet: () => void;
+  showAndamentosTarefasPanel: boolean;
   setAndamentosTarefasPanelVisibility: (options: VisibilityOptions) => void;
-  updateAndamentoDetails: (keysToUpdate: Partial<DisplayingAndamento>) => void;
-  updateTimesheetDetails: (keysToUpdate: Partial<DisplayingTimesheet>) => void;
 };
 
 const AndamentosTimesheetsContext = createContext<Prettify<AndamentosTimesheetsContext>>({
   showAndamentosTarefasPanel: false,
+  clearAndamento: () => {},
+  clearTimesheet: () => {},
+  updateAndamento: () => {},
+  updateTimesheet: () => {},
   createAndamentoTimesheet: () => {},
   setAndamentosTarefasPanelVisibility: () => {},
-  updateAndamentoDetails: () => {},
-  updateTimesheetDetails: () => {},
 });
 
 export function useAndamentosTimesheets() {
@@ -27,17 +33,41 @@ export function useAndamentosTimesheets() {
 }
 
 export default function AndamentosTimesheetsProvider({ children }: PropsWithChildren) {
-  const [andamento, setAndamento] = useState<DisplayingAndamento>();
+  const { validateAndamento, validateTimesheet } = useProjurisValidator();
   const [codigoProcesso, setCodigoProcesso] = useState(0);
+  const [andamento, setAndamento] = useState<DisplayingAndamento>();
+  const [andamentoValidation, setAndamentoValidation] = useState<Validation>();
   const [timesheet, setTimesheet] = useState<DisplayingTimesheet>();
+  const [timesheetValidation, setTimesheetValidation] = useState<Validation>();
   const [showAndamentosTarefasPanel, setShowAndamentosTarefasPanel] = useState(false);
 
-  function updateAndamentoDetails(keysToUpdate: Partial<DisplayingAndamento>): void {
+  useEffect(() => {
+    const andamentoValidation = andamento ? validateAndamento(andamento) : undefined;
+    setAndamentoValidation(andamentoValidation);
+  }, [andamento]);
+
+  useEffect(() => {
+    const timesheetValidation = timesheet ? validateTimesheet(timesheet) : undefined;
+    setTimesheetValidation(timesheetValidation);
+  }, [timesheet]);
+
+  function updateAndamento(keysToUpdate: PartialOrNullable<DisplayingAndamento>): void {
     setAndamento(prevValues => ({ ...prevValues, ...keysToUpdate } as DisplayingAndamento));
   }
 
-  function updateTimesheetDetails(keysToUpdate: Partial<DisplayingTimesheet>): void {
-    setTimesheet(prevValues => ({ ...prevValues, ...keysToUpdate } as DisplayingTimesheet));
+  function clearAndamento(): void {
+    setAndamento(undefined);
+  }
+
+  function updateTimesheet(keysToUpdate: PartialOrNullable<DisplayingTimesheet>): void {
+    setTimesheet(prevValues => {
+      if (!prevValues?.faturar) return { ...prevValues, faturar: false, ...keysToUpdate } as DisplayingTimesheet;
+      return { ...prevValues, ...keysToUpdate } as DisplayingTimesheet;
+    });
+  }
+
+  function clearTimesheet(): void {
+    setTimesheet(undefined);
   }
 
   function createAndamentoTimesheet(): void {
@@ -52,11 +82,15 @@ export default function AndamentosTimesheetsProvider({ children }: PropsWithChil
   const contextContent = {
     andamento,
     timesheet,
-    showAndamentosTarefasPanel,
+    andamentoValidation,
+    timesheetValidation,
+    clearAndamento,
+    clearTimesheet,
+    updateAndamento,
+    updateTimesheet,
     createAndamentoTimesheet,
+    showAndamentosTarefasPanel,
     setAndamentosTarefasPanelVisibility,
-    updateAndamentoDetails,
-    updateTimesheetDetails,
   };
 
   return <AndamentosTimesheetsContext.Provider value={contextContent}>{children}</AndamentosTimesheetsContext.Provider>;

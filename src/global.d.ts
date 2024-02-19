@@ -1,11 +1,8 @@
 import { SimpleDocument } from "./components/hooks/useProjurisConnector";
+export { DisplayingAndamento, DisplayingTimesheet, SimpleDocument, Marcador } from "./global.zod";
 
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
-
-export type SimpleDocument = {
-  chave: number;
-  valor: string;
-};
+export type PartialOrNullable<T> = { [P in keyof T]?: T[P] | undefined | null };
 
 export type Marcador = {
   codigoMarcador: number;
@@ -23,17 +20,9 @@ type Modulo = {
   vinculoPrincipal: boolean;
 };
 
-type Notification = {
+export type Notification = {
   text: string;
   type: "success" | "error" | "progress";
-};
-
-export type DisplayingAndamento = {
-  descricaoAndamento: string;
-  dataHoraAndamento: Date | null;
-  tipoAndamento: SimpleDocument;
-  responsaveis: SimpleDocument[];
-  privado: boolean;
 };
 
 export type DisplayingTarefa = {
@@ -69,16 +58,6 @@ export type DisplayingTarefaDetails = {
   quadroKanban: SimpleDocument;
   tarefaColor: string;
   usuariosResponsaveis: SimpleDocument[];
-};
-
-export type DisplayingTimesheet = {
-  dataHoraApontamento: Date | null;
-  descricaoApontamento: string;
-  faturar: boolean;
-  privado: boolean;
-  qtdHoras: string;
-  responsavel: SimpleDocument;
-  tipoLancamento: SimpleDocument;
 };
 
 export type FetchedTarefa = {
@@ -153,9 +132,9 @@ export type FetchedTarefaDetails = {
 
 export type WritingAndamento = {
   modulos: Modulo[];
-  descricaoAndamento: string;
-  dataAndamento: string; //"2024-02-09T23:04:00.000Z";
-  horaAndamento: string; //"2024-02-09T23:04:00.000Z";
+  descricaoAndamento?: string;
+  dataAndamento: string;
+  horaAndamento: string;
   codigoTipoAndamento: number;
   responsaveis: SimpleDocument[];
   privado: boolean;
@@ -191,12 +170,10 @@ export type WritingTimesheet = {
   privado: boolean;
   faturarApontamentoHoras: boolean;
   responsavelApontamentoHoras: SimpleDocument;
-  horaApontamento: [
-    {
-      codigoHoraApontamento: null;
-      dataApontamento: string; //"2024-02-09T23:04:00.000Z";
-      horasApontamento: string; //"03:00";
-      descricaoApontamento: string;
-    }
-  ];
+  horaApontamento: {
+    codigoHoraApontamento: null;
+    dataApontamento: string;
+    horasApontamento: string;
+    descricaoApontamento: string;
+  }[];
 };
