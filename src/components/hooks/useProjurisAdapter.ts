@@ -6,15 +6,17 @@ import { Marcador, SimpleDocument, SituacaoTarefa } from "../../global";
 export type InsertValueLabelParams = Prettify<SimpleDocument | Marcador | SituacaoTarefa | Filter>;
 
 export default function useProjurisAdapter() {
-  function insertValueLabel(projurisEntities?: InsertValueLabelParams | InsertValueLabelParams[]): SelectValue[] | undefined {
-    if (!projurisEntities) return undefined;
+  function insertValueLabel(
+    projurisEntities?: InsertValueLabelParams | InsertValueLabelParams[]
+  ): SelectValue[] | null {
+    if (!projurisEntities) return null;
     const projurisEntitiesArray = Array.isArray(projurisEntities) ? projurisEntities : [projurisEntities];
-    if (!projurisEntitiesArray.length) return undefined;
+    if (!projurisEntitiesArray.length) return null;
     if (projurisEntitiesArray.length === 1) {
-      if ("valor" in projurisEntitiesArray[0] && projurisEntitiesArray[0].valor === "") return undefined;
-      if ("filterName" in projurisEntitiesArray[0] && projurisEntitiesArray[0].filterName === "") return undefined;
-      if ("nomeMarcador" in projurisEntitiesArray[0] && projurisEntitiesArray[0].nomeMarcador === "") return undefined;
-      if ("nomeTipoTarefa" in projurisEntitiesArray[0] && projurisEntitiesArray[0].nomeTipoTarefa === "") return undefined;
+      if ("valor" in projurisEntitiesArray[0] && projurisEntitiesArray[0].valor === "") return null;
+      if ("filterName" in projurisEntitiesArray[0] && projurisEntitiesArray[0].filterName === "") return null;
+      if ("nomeMarcador" in projurisEntitiesArray[0] && projurisEntitiesArray[0].nomeMarcador === "") return null;
+      if ("nomeTipoTarefa" in projurisEntitiesArray[0] && projurisEntitiesArray[0].nomeTipoTarefa === "") return null;
     }
     return projurisEntitiesArray.map(obj => {
       let value, label;
