@@ -562,7 +562,7 @@ div.select-control:hover,
 
 .fadeout {
   opacity: 0;
-  transition: opacity linear 2500ms;
+  transition: opacity linear 4000ms;
 }
 
 .skeleton {

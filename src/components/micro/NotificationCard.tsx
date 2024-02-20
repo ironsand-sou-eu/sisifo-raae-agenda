@@ -10,7 +10,7 @@ export default function NotificationCard({ msg }: NotificationCardProps): JSX.El
   useEffect(() => {
     setTimeout(() => {
       liRef.current?.classList.add("fadeout");
-    }, 2500);
+    }, 4000);
   }, []);
 
   return (
