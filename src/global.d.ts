@@ -1,4 +1,4 @@
-import { SimpleDocument } from "./components/hooks/useProjurisConnector";
+import { SimpleDocument } from "./components/hooks/connectors/useProjurisConnector";
 export { DisplayingAndamento, DisplayingTimesheet, SimpleDocument, Marcador } from "./global.zod";
 
 export type Prettify<T> = { [K in keyof T]: T[K] } & {};
@@ -160,6 +160,34 @@ export type WritingTarefaDetails = {
   kanban: boolean;
   quadroKanban: SimpleDocument;
   colunaKanban: SimpleDocument;
+};
+
+export type WritingNewTarefa = {
+  tarefaEventoWs: {
+    descricaoTarefa: string;
+    dataBase: number | null;
+    dataConclusaoPrevista: number | null;
+    dataLimite: number | null;
+    usuariosResponsaveis: SimpleDocument[];
+    gruposResponsaveis: SimpleDocument[];
+    tipoTarefa: SimpleDocument;
+    marcadorWs: Marcador[];
+    tarefaEventoSituacaoWs: {
+      codigoTarefaEventoSituacao: number;
+      situacao: string;
+    };
+    privado: true;
+    titulo: string;
+    local: string;
+    kanban: boolean;
+    quadroKanban: SimpleDocument;
+    colunaKanban: SimpleDocument;
+    modulos: Modulo[];
+  };
+  compromisso: boolean;
+  possuiRecorrencia: boolean;
+  tarefaCompromissoEventoWs: null;
+  modulos: Modulo[];
 };
 
 export type WritingTimesheet = {

@@ -17,6 +17,25 @@ export const displayingAndamento = z.object({
   responsaveis: z.array(simpleDocument).nonempty(),
 });
 
+export const displayingNewTarefa = z.object({
+  descricaoTarefa: z.string().optional(),
+  dataConclusaoPrevista: z.date(),
+  dataLimite: z.date(),
+  usuariosResponsaveis: z.array(simpleDocument),
+  gruposResponsaveis: z.array(simpleDocument),
+  tipoTarefa: simpleDocument,
+  marcadorWs: z.array(marcador),
+  tarefaEventoSituacaoWs: z.object({
+    codigoTarefaEventoSituacao: z.number(),
+    situacao: z.string(),
+  }),
+  titulo: z.string().optional(),
+  local: z.string().optional(),
+  kanban: z.boolean(),
+  quadroKanban: simpleDocument,
+  colunaKanban: simpleDocument,
+});
+
 export const displayingTimesheet = z.object({
   dataHoraApontamento: z.date(),
   descricaoApontamento: z.string().optional(),
@@ -28,23 +47,6 @@ export const displayingTimesheet = z.object({
   responsavel: simpleDocument,
   tipoLancamento: simpleDocument,
 });
-
-// export type DisplayingTarefaDetails = {
-//   codigoProcessoProjuris?: number;
-//   colunaKanban: SimpleDocument;
-//   descricaoTarefa?: string;
-//   dataConclusao: Date | null;
-//   dataConclusaoPrevista: Date | null;
-//   dataLimite: Date | null;
-//   displayTitulo: string;
-//   gruposResponsaveis: SimpleDocument[];
-//   marcadorWs: Marcador[];
-//   prazoColorCssVariable: string;
-//   processoUrl: string;
-//   quadroKanban: SimpleDocument;
-//   tarefaColor: string;
-//   usuariosResponsaveis: SimpleDocument[];
-// };
 
 export const errorMap: z.ZodErrorMap = (error, ctx) => {
   if (error.message) return { message: error.message };
@@ -60,7 +62,7 @@ export const errorMap: z.ZodErrorMap = (error, ctx) => {
 };
 
 export type DisplayingAndamento = z.infer<typeof displayingAndamento>;
-// export type WritingTarefa = z.infer<typeof writingTarefa>;
+export type DisplayingNewTarefa = z.infer<typeof displayingNewTarefa>;
 export type DisplayingTimesheet = z.infer<typeof displayingTimesheet>;
 export type SimpleDocument = z.infer<typeof simpleDocument>;
 export type Marcador = z.infer<typeof marcador>;
