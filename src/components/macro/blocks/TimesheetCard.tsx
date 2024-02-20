@@ -1,4 +1,4 @@
-import useProjurisConnector from "../../hooks/useProjurisConnector";
+import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import Textarea from "../../micro/Textarea";
 import { SimpleDocument } from "../../../global";
@@ -6,11 +6,11 @@ import MaskedNumberInput from "../../micro/MaskedNumberInput";
 import { maskNumbersString } from "../../../utils/utils";
 import Checkbox from "../../micro/Checkbox";
 import SingleDatePicker from "../../micro/SingleDatePicker";
-import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
+import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import HeaderButton from "../../micro/HeaderButton";
 
 export default function TimesheetCard() {
-  const { timesheet, timesheetValidation, clearTimesheet, updateTimesheet } = useAndamentosTimesheets();
+  const { timesheet, timesheetValidation, clearTimesheet, updateTimesheet } = useCreateEntities();
   const { endpoints } = useProjurisConnector();
   const timesheetHoursAmountMask = "00:00";
   const { dataHoraApontamento, descricaoApontamento, faturar, tipoLancamento, responsavel, qtdHoras } = timesheet ?? {};

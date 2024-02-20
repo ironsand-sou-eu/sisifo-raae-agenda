@@ -1,13 +1,13 @@
-import useProjurisConnector from "../../hooks/useProjurisConnector";
+import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import Textarea from "../../micro/Textarea";
 import { SimpleDocument } from "../../../global";
 import SingleDatePicker from "../../micro/SingleDatePicker";
 import HeaderButton from "../../micro/HeaderButton";
-import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
+import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 
 export default function AndamentosCard() {
-  const { andamento, andamentoValidation, clearAndamento, updateAndamento } = useAndamentosTimesheets();
+  const { andamento, andamentoValidation, clearAndamento, updateAndamento } = useCreateEntities();
   const { endpoints } = useProjurisConnector();
 
   const { dataHoraAndamento, descricaoAndamento, responsaveis, tipoAndamento } = andamento ?? {};

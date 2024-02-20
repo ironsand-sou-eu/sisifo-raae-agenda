@@ -1,6 +1,6 @@
-import { WritingTimesheet } from "../../global";
-import { useNotifications } from "./NotificationsProvider";
-import { useMessageGenerator } from "./useMessageGenerator";
+import { WritingTimesheet } from "../../../global";
+import { useNotifications } from "../providers/NotificationsProvider";
+import { useMessageGenerator } from "../useMessageGenerator";
 import useProjurisConnector from "./useProjurisConnector";
 
 export type TimesheetUpdateActions = "criar";
@@ -12,17 +12,22 @@ export default function useProjurisTimesheetConnector() {
 
   async function dispatchBackendTimesheetCreation(
     timesheets: WritingTimesheet | WritingTimesheet[],
-    codigoProcesso: number
+    codigoProcesso: number,
+    onSuccessCb?: CallableFunction
   ): Promise<void> {
     const entries = Array.isArray(timesheets) ? timesheets : [timesheets];
     entries.forEach(async timesheet => {
       setTimeout(() => {
-        singleBackendTimesheetCreation(timesheet, codigoProcesso);
+        singleBackendTimesheetCreation(timesheet, codigoProcesso, onSuccessCb);
       }, 200);
     });
   }
 
-  async function singleBackendTimesheetCreation(timesheet: WritingTimesheet, codigoProcesso: number): Promise<void> {
+  async function singleBackendTimesheetCreation(
+    timesheet: WritingTimesheet,
+    codigoProcesso: number,
+    onSuccessCb?: CallableFunction
+  ): Promise<void> {
     const progressMsg = generateNotification.progress("criar", "timesheet");
     addNotification(progressMsg);
     const mainResponse = await makeProjurisRequest({
@@ -31,8 +36,14 @@ export default function useProjurisTimesheetConnector() {
       body: JSON.stringify(timesheet),
     });
     removeNotification(progressMsg);
-    const msg = generateNotification.response({ action: "criar", entityType: "timesheet", mainResponse });
+    const msg = generateNotification.response({
+      action: "criar",
+      entityGender: "masculine",
+      entityType: "timesheet",
+      mainResponse,
+    });
     addNotification(msg);
+    if (onSuccessCb && mainResponse.ok) onSuccessCb();
   }
 
   return {

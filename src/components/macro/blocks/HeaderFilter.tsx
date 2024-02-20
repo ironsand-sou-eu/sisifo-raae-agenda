@@ -1,6 +1,6 @@
 import HeaderFilterHeader from "./HeaderFilterHeader";
 import HeaderFilterBody from "./HeaderFilterBody";
-import { useAnimations } from "../../hooks/AnimationsProvider";
+import { useAnimations } from "../../hooks/providers/AnimationsProvider";
 
 export default function HeaderFilter(): JSX.Element {
   const { show } = useAnimations();

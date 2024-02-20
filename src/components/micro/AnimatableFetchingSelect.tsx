@@ -1,6 +1,6 @@
-import { ProjurisOptionsFilter } from "../hooks/useProjurisConnector";
+import { ProjurisOptionsFilter } from "../hooks/connectors/useProjurisConnector";
 import { Marcador, Prettify, SimpleDocument, SituacaoTarefa } from "../../global";
-import { useAnimations } from "../hooks/AnimationsProvider";
+import { useAnimations } from "../hooks/providers/AnimationsProvider";
 import FetchingSelect from "./FetchingSelect";
 import { useEffect } from "react";
 

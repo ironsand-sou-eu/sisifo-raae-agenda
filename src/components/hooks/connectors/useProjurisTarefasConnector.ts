@@ -1,7 +1,7 @@
-import { FetchedTarefaDetails, SimpleDocument, FetchedTarefa, WritingTarefaDetails } from "../../global";
-import { Filter } from "./FiltersProvider";
-import { useNotifications } from "./NotificationsProvider";
-import { useMessageGenerator } from "./useMessageGenerator";
+import { FetchedTarefaDetails, SimpleDocument, FetchedTarefa, WritingTarefaDetails } from "../../../global";
+import { Filter } from "../providers/FiltersProvider";
+import { useNotifications } from "../providers/NotificationsProvider";
+import { useMessageGenerator } from "../useMessageGenerator";
 import useProjurisConnector from "./useProjurisConnector";
 
 export type TarefaUpdateActions = "concluir" | "cancelar" | "salvar";
@@ -108,6 +108,7 @@ export default function useProjurisTarefasConnector() {
     if (reloadFunction) reloadFunction();
     const msg = generateNotification.response({
       action: type,
+      entityGender: "feminine",
       entityName: name,
       entityType: "tarefa",
       mainResponse,

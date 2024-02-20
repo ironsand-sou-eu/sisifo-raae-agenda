@@ -1,6 +1,6 @@
 import AsyncSelect from "react-select/async";
-import useProjurisConnector, { ProjurisOptionsFilter } from "../hooks/useProjurisConnector";
-import useProjurisAdapter from "../hooks/useProjurisAdapter";
+import useProjurisConnector, { ProjurisOptionsFilter } from "../hooks/connectors/useProjurisConnector";
+import useProjurisToReactSelectAdapter from "../hooks/adapters/useProjurisToReactSelectAdapter";
 import { Marcador, Prettify, SimpleDocument, SituacaoTarefa } from "../../global";
 import { debounce } from "../../utils/utils";
 import ErrorDiv from "./ErrorDiv";
@@ -36,7 +36,7 @@ export default function FetchingSelect({
   values,
 }: FetchingSelectProps): JSX.Element {
   const { loadSimpleOptions, createFilterObject } = useProjurisConnector();
-  const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
+  const { insertValueLabel, removeValueLabel } = useProjurisToReactSelectAdapter();
 
   const filterFunction = debounce((input: string, callback) => {
     const selectFilter = createFilterObject({ val: input, flattenOptions: hasMultiLevelSource });

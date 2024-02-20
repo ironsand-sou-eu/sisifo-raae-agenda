@@ -1,9 +1,9 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import HeaderButton from "../../micro/HeaderButton";
-import { useTarefasList } from "../../hooks/TarefasListProvider";
-import useProjurisTarefasConnector, { TarefaUpdateParams } from "../../hooks/useProjurisTarefasConnector";
-import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
+import { useTarefasList } from "../../hooks/providers/TarefasListProvider";
+import useProjurisTarefasConnector, { TarefaUpdateParams } from "../../hooks/connectors/useProjurisTarefasConnector";
+import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 
 type TarefaSmallCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -32,7 +32,7 @@ export default function TarefaSmallCardHeader({
 }: TarefaSmallCardHeaderProps): JSX.Element {
   const { toggleCheck } = useTarefasList();
   const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
-  const { setAndamentosTarefasPanelVisibility } = useAndamentosTimesheets();
+  const { setAndamentoTimesheetPanelVisibility } = useCreateEntities();
   function renderDetails(): void {
     setPrefetchDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
   }
@@ -72,7 +72,7 @@ export default function TarefaSmallCardHeader({
         <HeaderButton
           type="timesheet"
           onClick={() => {
-            if (codigoProcesso) setAndamentosTarefasPanelVisibility({ visible: true, codigoProcesso });
+            if (codigoProcesso) setAndamentoTimesheetPanelVisibility({ visible: true, codigoProcesso });
           }}
         />
         <HeaderButton type="conclude" onClick={() => dispatchBackendTarefaUpdate(concludeParams)} />

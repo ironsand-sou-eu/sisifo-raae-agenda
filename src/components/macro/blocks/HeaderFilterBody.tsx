@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import DatePicker from "react-datepicker";
-import useProjurisConnector from "../../hooks/useProjurisConnector";
+import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import envVars from "../../../envVars";
-import { useAnimations } from "../../hooks/AnimationsProvider";
-import { useFilters } from "../../hooks/FiltersProvider";
+import { useAnimations } from "../../hooks/providers/AnimationsProvider";
+import { useFilters } from "../../hooks/providers/FiltersProvider";
 
 export default function HeaderFilterBody(): JSX.Element {
   const { filters, changeCurrentFilter } = useFilters();

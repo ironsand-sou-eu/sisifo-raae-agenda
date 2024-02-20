@@ -1,7 +1,7 @@
 import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useEffect, useState } from "react";
-import { DisplayingTarefaDetails, FetchedTarefaDetails, Prettify, SimpleDocument } from "../../global";
-import useTarefasAdapter from "./useTarefasAdapter";
-import useProjurisTarefasConnector, { TarefaUpdateParams } from "./useProjurisTarefasConnector";
+import { DisplayingTarefaDetails, FetchedTarefaDetails, Prettify, SimpleDocument } from "../../../global";
+import useTarefasAdapter from "../adapters/useTarefasAdapter";
+import useProjurisTarefasConnector, { TarefaUpdateParams } from "../connectors/useProjurisTarefasConnector";
 
 type KanbanValue = SimpleDocument & { situacao?: SimpleDocument };
 
@@ -15,7 +15,7 @@ type TarefaDetailsContext = {
   displayingTarefaDetails?: DisplayingTarefaDetails;
   isDetailLoading: boolean;
   updateParams?: TarefaUpdateParams;
-  updateTarefaDetails: (newProps: Partial<FetchedTarefaDetails["tarefaEventoWs"]>) => void;
+  updateTarefaDetails: (keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>) => void;
   updatesOnColunaKanbanChange: (colunaKanbanNewValue: KanbanValue) => Promise<void>;
   saveTarefa: () => void;
   setTarefaLoadingDetails: Dispatch<SetStateAction<TarefaLoadingDetails>>;
@@ -93,10 +93,10 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
     });
   }
 
-  function updateTarefaDetails(newProps: Partial<FetchedTarefaDetails["tarefaEventoWs"]>): void {
+  function updateTarefaDetails(keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>): void {
     setTarefaDetails(prevValues => {
       if (!prevValues) return;
-      const newTarefaEventoWs = { ...prevValues.tarefaEventoWs, ...newProps };
+      const newTarefaEventoWs = { ...prevValues.tarefaEventoWs, ...keysToUpdate };
       return { ...prevValues, tarefaEventoWs: newTarefaEventoWs };
     });
   }

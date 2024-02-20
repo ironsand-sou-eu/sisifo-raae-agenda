@@ -1,5 +1,5 @@
-import envVars from "../../envVars";
-import { projurisLoginUri } from "../../hardcoded";
+import envVars from "../../../envVars";
+import { projurisLoginUri } from "../../../hardcoded";
 
 type ProjurisAccessToken = {
   projurisToken?: string;

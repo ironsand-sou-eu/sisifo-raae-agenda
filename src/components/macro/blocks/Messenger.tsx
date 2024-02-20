@@ -1,4 +1,4 @@
-import { useNotifications } from "../../hooks/NotificationsProvider";
+import { useNotifications } from "../../hooks/providers/NotificationsProvider";
 import NotificationCard from "../../micro/NotificationCard";
 
 export default function Messenger(): JSX.Element {

@@ -8,11 +8,11 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Prettify, FetchedTarefa, DisplayingTarefa } from "../../global";
+import { Prettify, FetchedTarefa, DisplayingTarefa } from "../../../global";
 import { useFilters } from "./FiltersProvider";
 import { useAnimations } from "./AnimationsProvider";
-import useTarefasAdapter from "./useTarefasAdapter";
-import useProjurisTarefasConnector from "./useProjurisTarefasConnector";
+import useTarefasAdapter from "../adapters/useTarefasAdapter";
+import useProjurisTarefasConnector from "../connectors/useProjurisTarefasConnector";
 
 type TarefasListContext = {
   displayingTarefas: DisplayingTarefa[];

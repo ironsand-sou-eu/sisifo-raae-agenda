@@ -1,6 +1,8 @@
 import Select from "react-select";
 import { Marcador, SimpleDocument, SituacaoTarefa } from "../../global";
-import useProjurisAdapter, { InsertValueLabelParams } from "../hooks/useProjurisAdapter";
+import useProjurisToReactSelectAdapter, {
+  InsertValueLabelParams,
+} from "../hooks/adapters/useProjurisToReactSelectAdapter";
 import { Prettify } from "../../global";
 
 export type SelectValue = Prettify<
@@ -20,8 +22,16 @@ type FixedSelectProps = {
   isMulti: boolean;
 };
 
-export default function FixedSelect({ name, label, placeholder, options, values, onChange, isMulti }: FixedSelectProps): JSX.Element {
-  const { insertValueLabel, removeValueLabel } = useProjurisAdapter();
+export default function FixedSelect({
+  name,
+  label,
+  placeholder,
+  options,
+  values,
+  onChange,
+  isMulti,
+}: FixedSelectProps): JSX.Element {
+  const { insertValueLabel, removeValueLabel } = useProjurisToReactSelectAdapter();
 
   return (
     <>

@@ -1,5 +1,14 @@
-import { Dispatch, PropsWithChildren, RefObject, SetStateAction, createContext, useContext, useRef, useState } from "react";
-import { Prettify } from "../../global";
+import {
+  Dispatch,
+  PropsWithChildren,
+  RefObject,
+  SetStateAction,
+  createContext,
+  useContext,
+  useRef,
+  useState,
+} from "react";
+import { Prettify } from "../../../global";
 
 type AnimationsContext = {
   show?: Show;
@@ -48,7 +57,8 @@ export default function AnimationsProvider({ children }: PropsWithChildren) {
   const showStates: ShowStates = { filter: { ...emptyState }, colunaKanban: { ...emptyState } };
   const show: Show = { filter: false, colunaKanban: false };
   for (let prop in elementRef) {
-    ({ 0: showStates[prop as AnimatableObjects].show, 1: showStates[prop as AnimatableObjects].setShow } = useState<boolean>(false));
+    ({ 0: showStates[prop as AnimatableObjects].show, 1: showStates[prop as AnimatableObjects].setShow } =
+      useState<boolean>(false));
     show[prop as AnimatableObjects] = showStates[prop as AnimatableObjects].show;
   }
 

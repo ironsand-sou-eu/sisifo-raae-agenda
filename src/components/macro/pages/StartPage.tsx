@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useTarefasList } from "../../hooks/TarefasListProvider";
+import { useTarefasList } from "../../hooks/providers/TarefasListProvider";
 import HeaderFilter from "../blocks/HeaderFilter";
 import FloatingCommandBar from "../blocks/FloatingCommandBar";
 import TarefasSmallCard from "../blocks/TarefaSmallCard";
@@ -7,15 +7,15 @@ import TarefaDetailedCard, { TarefaPrefetchDetails } from "../blocks/TarefaDetai
 import StartPageSkeleton from "../skeletons/StartPageSkeleton";
 import "react-datepicker/dist/react-datepicker.min.css";
 import Messenger from "../blocks/Messenger";
-import { useAnimations } from "../../hooks/AnimationsProvider";
+import { useAnimations } from "../../hooks/providers/AnimationsProvider";
 import EndCard from "../blocks/EndCard";
-import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
+import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import AndamentosTimesheetCard from "../blocks/AndamentosTimesheetCard";
 
 export default function StartPage() {
   const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
   const { displayingTarefas, selectedTarefas, hasMore, pageNumber, setPageNumber, isListLoading } = useTarefasList();
-  const { showAndamentosTarefasPanel } = useAndamentosTimesheets();
+  const { showAndamentoTimesheetPanel } = useCreateEntities();
   const { toggleVisibility } = useAnimations();
   const pageEndRef = useRef<HTMLDivElement>(null);
 
@@ -49,7 +49,7 @@ export default function StartPage() {
         ))}
         {isListLoading ? <StartPageSkeleton /> : <EndCard hasMore={hasMore} ref={pageEndRef} />}
         {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} {...{ setPrefetchDetails }} />}
-        {showAndamentosTarefasPanel && <AndamentosTimesheetCard />}
+        {showAndamentoTimesheetPanel && <AndamentosTimesheetCard />}
         <Messenger />
       </main>
     </>

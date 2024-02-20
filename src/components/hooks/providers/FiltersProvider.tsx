@@ -1,8 +1,8 @@
 import { MouseEventHandler, PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
-import { SimpleDocument, SituacaoTarefa } from "../../global";
-import { areObjectsEqual } from "../../utils/utils";
-import { Prettify } from "../../global";
-import { useMessageGenerator } from "./useMessageGenerator";
+import { SimpleDocument, SituacaoTarefa } from "../../../global";
+import { areObjectsEqual } from "../../../utils/utils";
+import { Prettify } from "../../../global";
+import { useMessageGenerator } from "../useMessageGenerator";
 
 export type Filter = {
   categoria: "TAREFA" | "ANDAMENTO" | "TIMESHEET";

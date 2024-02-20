@@ -4,10 +4,10 @@ import {
   FetchedTarefaDetails,
   FetchedTarefa,
   WritingTarefaDetails,
-} from "../../global";
-import { projurisSiteBase } from "../../hardcoded";
-import useProjurisConnector from "./useProjurisConnector";
-import { TarefaUpdateActions, TarefaUpdateParams } from "./useProjurisTarefasConnector";
+} from "../../../global";
+import { projurisSiteBase } from "../../../hardcoded";
+import useProjurisConnector from "../connectors/useProjurisConnector";
+import { TarefaUpdateActions, TarefaUpdateParams } from "../connectors/useProjurisTarefasConnector";
 
 export default function useTarefasAdapter() {
   const { endpoints } = useProjurisConnector();

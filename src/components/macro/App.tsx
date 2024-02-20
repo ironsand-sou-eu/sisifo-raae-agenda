@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import AnimationsProvider from "../hooks/AnimationsProvider";
-import FiltersProvider from "../hooks/FiltersProvider";
-import NotificationsProvider from "../hooks/NotificationsProvider";
-import TarefasListProvider from "../hooks/TarefasListProvider";
+import AnimationsProvider from "../hooks/providers/AnimationsProvider";
+import FiltersProvider from "../hooks/providers/FiltersProvider";
+import NotificationsProvider from "../hooks/providers/NotificationsProvider";
+import TarefasListProvider from "../hooks/providers/TarefasListProvider";
 import StartPage from "./pages/StartPage";
-import useGoogleConnector from "../hooks/useGoogleConnector";
+import useGoogleConnector from "../hooks/connectors/useGoogleConnector";
 import LoginScreen from "./pages/LoginPage";
 import "../../styles.css";
-import AndamentosTimesheetsProvider from "../hooks/AndamentosTimesheetsProvider";
-import TarefaDetailsProvider from "../hooks/TarefaDetailsProvider";
+import CreateEntitiesProvider from "../hooks/providers/CreateEntitiesProvider";
+import TarefaDetailsProvider from "../hooks/providers/TarefaDetailsProvider";
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,9 +24,7 @@ export default function App() {
         <TarefasListProvider>
           <TarefaDetailsProvider>
             <NotificationsProvider>
-              <AndamentosTimesheetsProvider>
-                {isAuthenticated ? <StartPage /> : <LoginScreen />}
-              </AndamentosTimesheetsProvider>
+              <CreateEntitiesProvider>{isAuthenticated ? <StartPage /> : <LoginScreen />}</CreateEntitiesProvider>
             </NotificationsProvider>
           </TarefaDetailsProvider>
         </TarefasListProvider>

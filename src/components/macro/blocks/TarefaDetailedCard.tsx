@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
-import useProjurisConnector from "../../hooks/useProjurisConnector";
+import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import { codigoUsuario } from "../../../hardcoded";
 import Textarea from "../../micro/Textarea";
@@ -8,10 +8,10 @@ import TarefaDetailedCardHeader from "./TarefaDetailedCardHeader";
 import PrazosCard from "../../micro/PrazosCard";
 import Button from "../../micro/Button";
 import TarefaDetailedCardSkeleton from "../skeletons/TarefaDetailedCardSkeleton";
-import { useAnimations } from "../../hooks/AnimationsProvider";
+import { useAnimations } from "../../hooks/providers/AnimationsProvider";
 import AnimatableFetchingSelect from "../../micro/AnimatableFetchingSelect";
 import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../../global";
-import { useTarefaDetails } from "../../hooks/TarefaDetailsProvider";
+import { useTarefaDetails } from "../../hooks/providers/TarefaDetailsProvider";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -93,6 +93,7 @@ export default function TarefaDetailedCard({
       />
       <PrazosCard
         {...{ dataConclusao, dataConclusaoPrevista, dataLimite }}
+        dateAsNumber={true}
         onChange={updateTarefaDetails}
         prazoColorCssVariable={prazoColorCssVariable ?? ""}
       />

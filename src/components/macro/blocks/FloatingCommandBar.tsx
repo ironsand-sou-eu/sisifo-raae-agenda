@@ -1,6 +1,6 @@
-import { useTarefasList } from "../../hooks/TarefasListProvider";
-import useProjurisTarefasConnector from "../../hooks/useProjurisTarefasConnector";
-import useTarefasAdapter from "../../hooks/useTarefasAdapter";
+import { useTarefasList } from "../../hooks/providers/TarefasListProvider";
+import useProjurisTarefasConnector from "../../hooks/connectors/useProjurisTarefasConnector";
+import useTarefasAdapter from "../../hooks/adapters/useTarefasAdapter";
 import HeaderButton from "../../micro/HeaderButton";
 
 export default function FloatingCommandBar(): JSX.Element {

@@ -2,14 +2,14 @@ import DetailedCardHeader from "./DetailedCardHeader";
 import AndamentosCard from "./AndamentosCard";
 import TimesheetCard from "./TimesheetCard";
 import Button from "../../micro/Button";
-import { useAndamentosTimesheets } from "../../hooks/AndamentosTimesheetsProvider";
+import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import { useMemo } from "react";
 
 export type AndamentosTimesheetCardProps = {};
 
 export default function AndamentosTimesheetCard() {
-  const { createAndamentoTimesheet, setAndamentosTarefasPanelVisibility } = useAndamentosTimesheets();
-  const { andamentoValidation, timesheetValidation } = useAndamentosTimesheets();
+  const { createAndamentoTimesheet, setAndamentoTimesheetPanelVisibility } = useCreateEntities();
+  const { andamentoValidation, timesheetValidation } = useCreateEntities();
 
   const saveButtonDisabled = useMemo(() => {
     const andamentoReady = andamentoValidation && andamentoValidation.ok;
@@ -29,7 +29,7 @@ export default function AndamentosTimesheetCard() {
       <DetailedCardHeader
         caption={"Criar andamento e timesheet"}
         circleColor={"#9d37d3"}
-        closeFunction={() => setAndamentosTarefasPanelVisibility({ visible: false })}
+        closeFunction={() => setAndamentoTimesheetPanelVisibility({ visible: false })}
       />
       <AndamentosCard />
       <TimesheetCard />
@@ -39,7 +39,7 @@ export default function AndamentosTimesheetCard() {
           disabled={saveButtonDisabled}
           caption="Criar andamento/timesheet"
           className="btn save-btn"
-          onClick={() => createAndamentoTimesheet()}
+          onClick={createAndamentoTimesheet}
         />
       </div>
       <footer className="tarefa-card-footer">{}</footer>

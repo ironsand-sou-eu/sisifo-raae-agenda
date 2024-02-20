@@ -2,8 +2,8 @@ import { Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import TarefaSmallCardHeader from "./TarefaSmallCardHeader";
 import { DisplayingTarefa } from "../../../global";
-import useTarefasAdapter from "../../hooks/useTarefasAdapter";
-import { useTarefasList } from "../../hooks/TarefasListProvider";
+import useTarefasAdapter from "../../hooks/adapters/useTarefasAdapter";
+import { useTarefasList } from "../../hooks/providers/TarefasListProvider";
 
 type TarefaSmallCardProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;

@@ -1,4 +1,4 @@
-import { Filter } from "../components/hooks/FiltersProvider";
+import { Filter } from "../components/hooks/providers/FiltersProvider";
 
 const filterMock: Filter[] = [
   {

@@ -1,6 +1,6 @@
-import { SimpleDocument } from "../../global";
-import { projurisApiBase } from "../../hardcoded";
-import { Operator, compareWithOperator } from "../../utils/utils";
+import { SimpleDocument } from "../../../global";
+import { projurisApiBase } from "../../../hardcoded";
+import { Operator, compareWithOperator } from "../../../utils/utils";
 import useProjurisAuthConnector from "./useProjurisAuthConnector";
 import { TarefaUpdateActions, tarefaActions } from "./useProjurisTarefasConnector";
 

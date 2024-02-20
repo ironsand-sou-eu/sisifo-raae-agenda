@@ -1,5 +1,5 @@
 import { PropsWithChildren, createContext, useContext, useState } from "react";
-import { Notification, Prettify } from "../../global";
+import { Notification, Prettify } from "../../../global";
 
 type TNotificationsContext = {
   msgs: Notification[];

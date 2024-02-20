@@ -1,7 +1,7 @@
 import HeaderButton from "../../micro/HeaderButton";
 import FixedSelect from "../../micro/FixedSelect";
-import { useAnimations } from "../../hooks/AnimationsProvider";
-import { useFilters } from "../../hooks/FiltersProvider";
+import { useAnimations } from "../../hooks/providers/AnimationsProvider";
+import { useFilters } from "../../hooks/providers/FiltersProvider";
 
 export default function HeaderFilterHeader(): JSX.Element {
   // TODO: SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
