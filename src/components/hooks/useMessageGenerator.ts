@@ -1,7 +1,7 @@
 import { Notification } from "../../global";
 import { capitalizeFirstLetter } from "../../utils/utils";
-import { AndamentoUpdateActions } from "./useProjurisAndamentosConnector";
-import { TarefaUpdateActions } from "./useProjurisTarefasConnector";
+import { AndamentoUpdateActions } from "./connectors/useProjurisAndamentosConnector";
+import { TarefaUpdateActions } from "./connectors/useProjurisTarefasConnector";
 
 type PhrasalObject = "tarefa" | "andamento" | "timesheet";
 
@@ -30,6 +30,7 @@ export function useMessageGenerator() {
   type ResponseNotificationParams =
     | {
         action: TarefaUpdateActions;
+        entityGender: "feminine" | "masculine";
         entityName: string;
         entityType: Extract<PhrasalObject, "tarefa">;
         mainResponse: Response;
@@ -37,6 +38,7 @@ export function useMessageGenerator() {
       }
     | {
         action: AndamentoUpdateActions;
+        entityGender: "feminine" | "masculine";
         entityType: Exclude<PhrasalObject, "tarefa">;
         mainResponse: Response;
       };
@@ -58,19 +60,23 @@ export function useMessageGenerator() {
     },
 
     response: (params: ResponseNotificationParams): Notification => {
-      const { action, entityType, mainResponse, kanbanResponse, entityName } = {
-        entityName: "",
-        kanbanResponse: new Response(),
+      const { action, entityGender, entityName, entityType, mainResponse, kanbanResponse } = {
+        entityName: undefined,
+        kanbanResponse: undefined,
         ...params,
       };
-      const errorLocation = getErrorLocation([mainResponse, kanbanResponse]);
+
+      const responsesToCheck = [mainResponse];
+      if (kanbanResponse) responsesToCheck.push(kanbanResponse);
+      const errorLocation = getErrorLocation(responsesToCheck);
 
       if (!kanbanResponse) {
         if (mainResponse.ok) {
+          const entity = entityName ? ' "' + entityName + '"' : "";
           return {
             type: "success",
-            text: `${capitalizeFirstLetter(nouns[entityType].withoutArticle)} "${entityName}" ${
-              verbs[action].participle
+            text: `${capitalizeFirstLetter(nouns[entityType].withoutArticle)}${entity} ${
+              verbs[action].participle[entityGender]
             } com sucesso!`,
           };
         } else {
@@ -85,14 +91,14 @@ export function useMessageGenerator() {
           return {
             type: "success",
             text: `${capitalizeFirstLetter(nouns[entityType].withoutArticle)} "${entityName}" (com kanban) ${
-              verbs[action].participle
+              verbs[action].participle[entityGender]
             } com sucesso!`,
           };
         } else if (mainResponse.ok && !kanbanResponse.ok) {
           return {
             type: "error",
             text: `${capitalizeFirstLetter(nouns[entityType].withoutArticle)} ${entityName} ${
-              verbs[action].participle
+              verbs[action].participle[entityGender]
             } com sucesso, mas não foi possível ajustar o quadro kanban por erro ${errorLocation}.\n
             Erro: ${kanbanResponse.statusText}`,
           };
