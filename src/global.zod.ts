@@ -39,14 +39,14 @@ export const displayingTimesheet = z.object({
   qtdHoras: z
     .string()
     .regex(/^\d{2}:\d{2}$/)
-    .refine(str => str.trim() !== "00:00", { message: "Não é possível lançar um período vazio." }),
+    .refine(str => str.trim() !== "00:00", { message: "Não é possível lançar um período vazio" }),
   responsavel: simpleDocument,
   tipoLancamento: simpleDocument,
 });
 
 export const errorMap: z.ZodErrorMap = (error, ctx) => {
   if (error.message) return { message: error.message };
-  if (!ctx.data || (Array.isArray(ctx.data) && ctx.data.length === 0)) return { message: `Campo obrigatório.` };
+  if (!ctx.data || (Array.isArray(ctx.data) && ctx.data.length === 0)) return { message: `Obrigatório` };
   switch (error.code) {
     case z.ZodIssueCode.invalid_type:
       return { message: `O valor deve ser do tipo ${error.expected}, e não ${error.received}.` };
