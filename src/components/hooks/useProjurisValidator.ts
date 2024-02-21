@@ -1,6 +1,13 @@
 import { ZodType } from "zod";
 import { DisplayingAndamento } from "../../global";
-import { errorMap, displayingAndamento, DisplayingTimesheet, displayingTimesheet } from "../../global.zod";
+import {
+  errorMap,
+  displayingAndamento,
+  DisplayingTimesheet,
+  displayingTimesheet,
+  DisplayingNewTarefa,
+  displayingNewTarefa,
+} from "../../global.zod";
 
 export type Validation = { ok: boolean; errors: Record<string, string> };
 
@@ -9,7 +16,9 @@ export default function useProjurisValidator() {
     return validateEntity<DisplayingAndamento>(andamento, displayingAndamento);
   }
 
-  function validateTarefa() {}
+  function validateNewTarefa(newTarefa: Partial<DisplayingNewTarefa>) {
+    return validateEntity<DisplayingNewTarefa>(newTarefa, displayingNewTarefa);
+  }
 
   function validateTimesheet(timesheet: Partial<DisplayingTimesheet>) {
     return validateEntity<DisplayingTimesheet>(timesheet, displayingTimesheet);
@@ -27,5 +36,5 @@ export default function useProjurisValidator() {
     return { ok: parsed.success, errors };
   }
 
-  return { validateTarefa, validateAndamento, validateTimesheet };
+  return { validateNewTarefa, validateAndamento, validateTimesheet };
 }

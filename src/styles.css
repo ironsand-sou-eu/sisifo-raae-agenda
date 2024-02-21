@@ -27,7 +27,7 @@ p {
 }
 
 p:not(:last-child) {
-  margin-bottom: 0.5em;
+  margin-block-end: 0.5em;
 }
 
 body {
@@ -84,7 +84,7 @@ main {
   background-color: var(--fields-bg-color);
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(15px);
-  margin-bottom: var(--small-padding);
+  margin-block-end: var(--small-padding);
 }
 
 .tarefa-card {
@@ -273,10 +273,14 @@ div.prazos-card {
   display: flex;
   justify-content: space-around;
   gap: var(--medium-gap);
-  margin-bottom: var(--small-padding);
+  margin-block-end: var(--small-padding);
   padding: var(--small-padding);
   padding-top: var(--medium-gap);
   border-inline: var(--medium-gap) solid;
+}
+
+div.prazos-card:not(:nth-child(2)) {
+  margin-block-start: var(--small-padding);
 }
 
 .prazos-card > div {
@@ -310,6 +314,7 @@ div.prazos-card {
 
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea,
+.tarefa-detailed-card label > input,
 .prazos-card,
 div.select-control,
 .datepicker-input {
@@ -342,6 +347,8 @@ div.select-control,
 
 .tarefa-detailed-card textarea:focus,
 .tarefa-detailed-card textarea:hover,
+.tarefa-detailed-card label > input:focus,
+.tarefa-detailed-card label > input:hover,
 div.select-control:has(:focus),
 div.select-control:hover,
 .datepicker-input:focus,
@@ -351,7 +358,8 @@ div.select-control:hover,
 }
 
 .tarefa-detailed-card .processo-info,
-.tarefa-detailed-card textarea {
+.tarefa-detailed-card textarea,
+.tarefa-detailed-card label > input {
   padding: var(--small-padding);
   resize: vertical;
   width: -webkit-fill-available;
@@ -401,6 +409,7 @@ div.select-control:hover,
 
 .btn-container {
   display: flex;
+  gap: var(--big-gap);
   align-items: center;
   justify-content: space-evenly;
 }
@@ -415,6 +424,22 @@ div.select-control:hover,
   cursor: pointer;
 }
 
+.create-btn:not([disabled]) {
+  background: hsl(216deg 66.9% 64.77%);
+  background: linear-gradient(
+    135deg,
+    hsl(216deg 66.9% 64.77%) 0%,
+    hsl(216deg 72.62% 51.64%) 40%,
+    hsl(216deg 59.46% 61.51%) 100%
+  );
+  color: #2d1003;
+  border: 1px solid #037b01;
+}
+
+.create-btn:not([disabled]):hover {
+  box-shadow: inset 0px 0px 9px 1px hsl(216deg 72.62% 40%);
+}
+
 .save-btn:not([disabled]) {
   background: rgb(23, 96, 0);
   background: linear-gradient(
@@ -424,7 +449,7 @@ div.select-control:hover,
     hsl(159 100% 44% / 1) 100%
   );
   color: #2d1003;
-  border: 1px solid #037b01;
+  border: 1px solid #002a9f;
 }
 
 .save-btn[disabled] {

@@ -12,6 +12,7 @@ import { useAnimations } from "../../hooks/providers/AnimationsProvider";
 import AnimatableFetchingSelect from "../../micro/AnimatableFetchingSelect";
 import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../../global";
 import { useTarefaDetails } from "../../hooks/providers/TarefaDetailsProvider";
+import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -36,6 +37,7 @@ export default function TarefaDetailedCard({
   setPrefetchDetails,
 }: TarefaDetailedCardProps) {
   const { setHidingAnimation } = useAnimations();
+  const { setNewTarefaPanelVisibility } = useCreateEntities();
   const { endpoints } = useProjurisConnector();
   const {
     displayingTarefaDetails,
@@ -153,6 +155,14 @@ export default function TarefaDetailedCard({
         isMulti={false}
       />
       <div className="btn-container">
+        <Button
+          name="criar-tarefa"
+          caption="Nova tarefa neste processo..."
+          className="btn create-btn"
+          onClick={() => {
+            if (codigoProcesso) setNewTarefaPanelVisibility({ visible: true, codigoProcesso });
+          }}
+        />
         <Button name="salvar-tarefa" caption="Salvar alterações" className="btn save-btn" onClick={saveTarefa} />
       </div>
       <footer className="tarefa-card-footer">{}</footer>
