@@ -1,13 +1,12 @@
 import { ComponentPropsWithoutRef } from "react";
 import ErrorDiv from "./ErrorDiv";
 
-type TextareaProps = ComponentPropsWithoutRef<"textarea"> & {
-  content?: string;
+type InputTextProps = ComponentPropsWithoutRef<"input"> & {
   error?: string;
   label?: string;
 };
 
-export default function Textarea({ content, error, label, ...rest }: TextareaProps): JSX.Element {
+export default function InputText({ value, error, label, ...rest }: InputTextProps): JSX.Element {
   const style = error ? { borderColor: "var(--fill-color-red)" } : undefined;
 
   return (
@@ -15,7 +14,7 @@ export default function Textarea({ content, error, label, ...rest }: TextareaPro
       <label className="sisifo-label">
         {label}
         <ErrorDiv error={error} />
-        <textarea value={content ?? ""} {...{ ...rest, style }} />
+        <input type="text" value={value ?? ""} {...{ ...rest, style }} />
       </label>
     </div>
   );
