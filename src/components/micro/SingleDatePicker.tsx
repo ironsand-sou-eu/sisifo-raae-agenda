@@ -28,7 +28,7 @@ export default function SingleDatePicker({
         onChange={onChange}
         wrapperClassName="datepicker-wrapper text-center"
         className={`datepicker-input${error ? " validation-error" : ""}`}
-        dateFormat="P"
+        dateFormat="dd/MM/yyyy"
         closeOnScroll
         {...rest}
       />
