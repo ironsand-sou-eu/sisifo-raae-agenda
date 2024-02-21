@@ -25,13 +25,9 @@ export const displayingNewTarefa = z.object({
   gruposResponsaveis: z.array(simpleDocument),
   tipoTarefa: simpleDocument,
   marcadorWs: z.array(marcador),
-  tarefaEventoSituacaoWs: z.object({
-    codigoTarefaEventoSituacao: z.number(),
-    situacao: z.string(),
-  }),
+  tarefaEventoSituacaoWs: simpleDocument,
   titulo: z.string().optional(),
   local: z.string().optional(),
-  kanban: z.boolean(),
   quadroKanban: simpleDocument,
   colunaKanban: simpleDocument,
 });
