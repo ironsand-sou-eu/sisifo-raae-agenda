@@ -1,31 +1,16 @@
-import { ProjurisOptionsFilter } from "../hooks/connectors/useProjurisConnector";
-import { Marcador, Prettify, SimpleDocument, SituacaoTarefa } from "../../global";
 import { useAnimations } from "../hooks/providers/AnimationsProvider";
-import FetchingSelect from "./FetchingSelect";
+import FetchingSelect, { FetchingSelectProps } from "./FetchingSelect";
 import { useEffect } from "react";
 
-type AnimatableFetchingSelectProps = {
+type AnimatableFetchingSelectProps = FetchingSelectProps & {
   condition: boolean;
-  filterObject?: Prettify<Partial<ProjurisOptionsFilter>>;
-  hasMultiLevelSource: boolean;
-  isMulti: boolean;
-  label: string;
-  name: string;
-  onChange: (newValue: object) => void;
-  optionsEndpoint?: string;
-  values?: SimpleDocument[] | Marcador[] | SituacaoTarefa[];
+  refType: "colunaKanban" | "newTarefaColunaKanban";
 };
 
 export default function AnimatableFetchingSelect({
   condition,
-  filterObject,
-  hasMultiLevelSource,
-  isMulti,
-  label,
-  name,
-  onChange,
-  optionsEndpoint,
-  values,
+  refType,
+  ...rest
 }: AnimatableFetchingSelectProps): JSX.Element {
   const { elementRef, setDisplayingAnimation } = useAnimations();
 
@@ -34,11 +19,8 @@ export default function AnimatableFetchingSelect({
   return (
     <>
       {condition && (
-        <div ref={elementRef?.colunaKanban}>
-          <FetchingSelect
-            onChange={newValue => onChange(newValue)}
-            {...{ optionsEndpoint, hasMultiLevelSource, filterObject, values, name, label, isMulti }}
-          />
+        <div ref={elementRef ? elementRef[refType] : undefined}>
+          <FetchingSelect {...rest} />
         </div>
       )}
     </>

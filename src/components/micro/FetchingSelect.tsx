@@ -12,7 +12,7 @@ export type SelectValue = Prettify<
   } & (Partial<SimpleDocument> | Partial<Marcador> | Partial<SituacaoTarefa>)
 >;
 
-type FetchingSelectProps = {
+export type FetchingSelectProps = {
   filterObject?: Prettify<Partial<ProjurisOptionsFilter>>;
   hasMultiLevelSource: boolean;
   isMulti: boolean;

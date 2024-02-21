@@ -1,5 +1,6 @@
 import { FetchedTarefaDetails, PartialOrNullable } from "../../global";
 import { DisplayingNewTarefa } from "../../global.zod";
+import ErrorDiv from "./ErrorDiv";
 import SingleDatePicker from "./SingleDatePicker";
 
 export type PrazosCardProps = {
@@ -7,6 +8,7 @@ export type PrazosCardProps = {
   dataConclusaoPrevista?: Date | null;
   dataLimite?: Date | null;
   dateAsNumber: boolean;
+  error?: string;
   onChange:
     | ((keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>) => void)
     | ((keysToUpdate: PartialOrNullable<DisplayingNewTarefa>) => void);
@@ -18,6 +20,7 @@ export default function PrazosCard({
   dataConclusaoPrevista,
   dataLimite,
   dateAsNumber,
+  error,
   onChange,
   prazoColorCssVariable,
 }: PrazosCardProps): JSX.Element {
@@ -27,6 +30,7 @@ export default function PrazosCard({
 
   return (
     <div className={"prazos-card"} style={{ borderColor: `var(${prazoColorCssVariable})` }}>
+      <ErrorDiv error={error} />
       <SingleDatePicker
         label="Prazo"
         onChange={(newValue: Date) => handleChange(newValue, "dataConclusaoPrevista")}
