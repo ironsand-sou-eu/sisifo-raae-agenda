@@ -4,13 +4,11 @@ type CheckboxProps = ComponentPropsWithoutRef<"input"> & {
   label?: string;
 };
 
-export default function Checkbox({ label, ...rest }: CheckboxProps): JSX.Element {
+export default function Checkbox({ label, name, ...rest }: CheckboxProps): JSX.Element {
   return (
     <div className="pad-block-sm">
-      <label>
-        <input type="checkbox" {...rest} />
-        {label}
-      </label>
+      <input id={name} name={name} type="checkbox" {...rest} />
+      <label htmlFor={name}>{label}</label>
     </div>
   );
 }
