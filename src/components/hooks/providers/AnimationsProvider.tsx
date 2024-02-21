@@ -18,7 +18,7 @@ type AnimationsContext = {
   setHidingAnimation: (element: AnimatableObjects, dispatchedFunction: () => void) => void;
 };
 
-type AnimatableObjects = "filter" | "colunaKanban";
+type AnimatableObjects = "filter" | "colunaKanban" | "newTarefaColunaKanban";
 
 type ShowStates = {
   [key in AnimatableObjects]: {
@@ -27,7 +27,7 @@ type ShowStates = {
   };
 };
 
-type ElementRef = { filter: RefObject<HTMLDivElement>; colunaKanban: RefObject<HTMLDivElement> };
+type ElementRef = { [key in AnimatableObjects]: RefObject<HTMLDivElement> };
 
 type Show = { [key in AnimatableObjects]: boolean };
 
@@ -47,6 +47,7 @@ export default function AnimationsProvider({ children }: PropsWithChildren) {
   const elementRef: ElementRef = {
     filter: useRef<HTMLDivElement>(null),
     colunaKanban: useRef<HTMLDivElement>(null),
+    newTarefaColunaKanban: useRef<HTMLDivElement>(null),
   };
 
   const emptyState = {
@@ -54,8 +55,12 @@ export default function AnimationsProvider({ children }: PropsWithChildren) {
     setShow: () => {},
   };
 
-  const showStates: ShowStates = { filter: { ...emptyState }, colunaKanban: { ...emptyState } };
-  const show: Show = { filter: false, colunaKanban: false };
+  const showStates: ShowStates = {
+    filter: { ...emptyState },
+    colunaKanban: { ...emptyState },
+    newTarefaColunaKanban: { ...emptyState },
+  };
+  const show: Show = { filter: false, colunaKanban: false, newTarefaColunaKanban: false };
   for (let prop in elementRef) {
     ({ 0: showStates[prop as AnimatableObjects].show, 1: showStates[prop as AnimatableObjects].setShow } =
       useState<boolean>(false));

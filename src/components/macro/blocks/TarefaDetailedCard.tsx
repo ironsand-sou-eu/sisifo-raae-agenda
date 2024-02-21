@@ -147,6 +147,7 @@ export default function TarefaDetailedCard({
         hasMultiLevelSource={false}
         values={colunaKanban}
         onChange={newValue => updatesOnColunaKanbanChange(newValue as SimpleDocument)}
+        refType="colunaKanban"
         name="coluna-kanban"
         label="Coluna kanban"
         isMulti={false}
