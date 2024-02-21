@@ -11,11 +11,12 @@ import { useAnimations } from "../../hooks/providers/AnimationsProvider";
 import EndCard from "../blocks/EndCard";
 import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import AndamentosTimesheetCard from "../blocks/AndamentosTimesheetCard";
+import NewTarefaCard from "../blocks/NewTarefaCard";
 
 export default function StartPage() {
   const [prefetchDetails, setPrefetchDetails] = useState<TarefaPrefetchDetails | undefined>();
   const { displayingTarefas, selectedTarefas, hasMore, pageNumber, setPageNumber, isListLoading } = useTarefasList();
-  const { showAndamentoTimesheetPanel } = useCreateEntities();
+  const { showAndamentoTimesheetPanel, showNewTarefaPanel } = useCreateEntities();
   const { toggleVisibility } = useAnimations();
   const pageEndRef = useRef<HTMLDivElement>(null);
 
@@ -50,6 +51,7 @@ export default function StartPage() {
         {isListLoading ? <StartPageSkeleton /> : <EndCard hasMore={hasMore} ref={pageEndRef} />}
         {prefetchDetails && <TarefaDetailedCard {...prefetchDetails} {...{ setPrefetchDetails }} />}
         {showAndamentoTimesheetPanel && <AndamentosTimesheetCard />}
+        {showNewTarefaPanel && <NewTarefaCard />}
         <Messenger />
       </main>
     </>
