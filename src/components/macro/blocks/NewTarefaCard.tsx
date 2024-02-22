@@ -11,6 +11,7 @@ import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider"
 import DetailedCardHeader from "./DetailedCardHeader";
 import InputText from "../../micro/InputText";
 import HeaderButton from "../../micro/HeaderButton";
+import { useMemo } from "react";
 
 export default function NewTarefaCard() {
   const {
@@ -46,6 +47,11 @@ export default function NewTarefaCard() {
       updateNewTarefa({ quadroKanban: newValue as SimpleDocument });
     }
   }
+
+  const saveButtonDisabled = useMemo(() => {
+    if (newTarefaValidation && newTarefaValidation.ok) return false;
+    return true;
+  }, [newTarefaValidation]);
 
   return (
     <section className="card tarefa-card tarefa-detailed-card">
@@ -153,7 +159,7 @@ export default function NewTarefaCard() {
         optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
         hasMultiLevelSource={false}
         values={colunaKanban}
-        onChange={newValue => updateNewTarefa({ quadroKanban: newValue as SimpleDocument })}
+        onChange={newValue => updateNewTarefa({ colunaKanban: newValue as SimpleDocument })}
         error={newTarefaValidation?.errors.colunaKanban}
         refType="newTarefaColunaKanban"
         name="coluna-kanban"
@@ -161,7 +167,13 @@ export default function NewTarefaCard() {
         isMulti={false}
       />
       <div className="btn-container">
-        <Button name="salvar-tarefa" caption="Criar tarefa nova" className="btn save-btn" onClick={createNewTarefa} />
+        <Button
+          name="criar-nova-tarefa"
+          disabled={saveButtonDisabled}
+          caption="Criar tarefa nova"
+          className="btn save-btn"
+          onClick={createNewTarefa}
+        />
       </div>
       <footer className="tarefa-card-footer" />
     </section>

@@ -24,7 +24,7 @@ export const displayingNewTarefa = z.object({
   usuariosResponsaveis: z.array(simpleDocument),
   gruposResponsaveis: z.array(simpleDocument),
   tipoTarefa: simpleDocument,
-  marcadorWs: z.array(marcador),
+  marcadorWs: z.array(marcador).optional(),
   tarefaEventoSituacaoWs: simpleDocument,
   titulo: z.string().optional(),
   local: z.string().optional(),
@@ -46,7 +46,7 @@ export const displayingTimesheet = z.object({
 
 export const errorMap: z.ZodErrorMap = (error, ctx) => {
   if (error.message) return { message: error.message };
-  if (!ctx.data || (Array.isArray(ctx.data) && ctx.data.length === 0)) return { message: `Obrigatório` };
+  if (!ctx.data || (Array.isArray(ctx.data) && ctx.data.length === 0)) return { message: `*` };
   switch (error.code) {
     case z.ZodIssueCode.invalid_type:
       return { message: `O valor deve ser do tipo ${error.expected}, e não ${error.received}.` };

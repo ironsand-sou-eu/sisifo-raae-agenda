@@ -171,7 +171,7 @@ export type WritingNewTarefa = {
     usuariosResponsaveis: SimpleDocument[];
     gruposResponsaveis: SimpleDocument[];
     tipoTarefa: SimpleDocument;
-    marcadorWs: Marcador[];
+    marcadorWs?: Marcador[];
     tarefaEventoSituacaoWs: {
       codigoTarefaEventoSituacao: number;
       situacao: string;
