@@ -20,15 +20,15 @@ export default function App() {
 
   return (
     <AnimationsProvider>
-      <FiltersProvider>
-        <TarefasListProvider>
-          <TarefaDetailsProvider>
-            <NotificationsProvider>
+      <NotificationsProvider>
+        <FiltersProvider>
+          <TarefasListProvider>
+            <TarefaDetailsProvider>
               <CreateEntitiesProvider>{isAuthenticated ? <StartPage /> : <LoginScreen />}</CreateEntitiesProvider>
-            </NotificationsProvider>
-          </TarefaDetailsProvider>
-        </TarefasListProvider>
-      </FiltersProvider>
+            </TarefaDetailsProvider>
+          </TarefasListProvider>
+        </FiltersProvider>
+      </NotificationsProvider>
     </AnimationsProvider>
   );
 }

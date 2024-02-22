@@ -106,9 +106,8 @@ export default function useProjurisTarefasConnector() {
     );
     removeNotification(progressMsg);
     if (reloadFunction) reloadFunction();
-    const msg = generateNotification.response({
+    const msg = await generateNotification.response({
       action: type,
-      entityGender: "feminine",
       entityName: name,
       entityType: "tarefa",
       mainResponse,

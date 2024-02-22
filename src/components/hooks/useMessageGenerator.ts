@@ -1,15 +1,18 @@
 import { Notification } from "../../global";
 import { capitalizeFirstLetter } from "../../utils/utils";
-import { AndamentoUpdateActions } from "./connectors/useProjurisAndamentosConnector";
+import { CreatableEntities } from "./connectors/useProjurisCreateEntitiesConnector";
 import { TarefaUpdateActions } from "./connectors/useProjurisTarefasConnector";
 
-type PhrasalObject = "tarefa" | "andamento" | "timesheet";
+type Noun = {
+  [key in CreatableEntities]: { withArticle: string; withoutArticle: string; gender: "masculine" | "feminine" };
+};
 
 export function useMessageGenerator() {
-  const nouns = {
-    tarefa: { withArticle: "a tarefa", withoutArticle: "tarefa" },
-    andamento: { withArticle: "o andamento", withoutArticle: "andamento" },
-    timesheet: { withArticle: "o registro de horas", withoutArticle: "registro de horas" },
+  const nouns: Noun = {
+    tarefa: { withArticle: "a tarefa", withoutArticle: "tarefa", gender: "feminine" },
+    newTarefa: { withArticle: "a tarefa", withoutArticle: "tarefa", gender: "feminine" },
+    andamento: { withArticle: "o andamento", withoutArticle: "andamento", gender: "masculine" },
+    timesheet: { withArticle: "o registro de horas", withoutArticle: "registro de horas", gender: "masculine" },
   };
 
   const verbs = {
@@ -30,22 +33,23 @@ export function useMessageGenerator() {
   type ResponseNotificationParams =
     | {
         action: TarefaUpdateActions;
-        entityGender: "feminine" | "masculine";
         entityName: string;
-        entityType: Extract<PhrasalObject, "tarefa">;
+        entityType: Extract<CreatableEntities, "tarefa">;
         mainResponse: Response;
         kanbanResponse: Response;
       }
     | {
-        action: AndamentoUpdateActions;
-        entityGender: "feminine" | "masculine";
-        entityType: Exclude<PhrasalObject, "tarefa">;
+        action: "criar";
+        entityType: Exclude<CreatableEntities, "tarefa">;
         mainResponse: Response;
       };
 
   const generateNotification = {
-    progress: (action: TarefaUpdateActions | AndamentoUpdateActions, entityType: PhrasalObject): Notification => {
-      return { type: "progress", text: `${capitalizeFirstLetter(verbs[action].gerund)} ${entityType}...` };
+    progress: (action: TarefaUpdateActions | "criar", entityType: CreatableEntities): Notification => {
+      return {
+        type: "progress",
+        text: `${capitalizeFirstLetter(verbs[action].gerund)} ${nouns[entityType].withoutArticle}...`,
+      };
     },
 
     errorKanbanEndpointNotFound: (caller: string): Notification => {
@@ -59,12 +63,13 @@ export function useMessageGenerator() {
       return { type: "error", text: `Não encontramos um endpoint para ${type} a tarefa - função ${caller}().` };
     },
 
-    response: (params: ResponseNotificationParams): Notification => {
-      const { action, entityGender, entityName, entityType, mainResponse, kanbanResponse } = {
+    response: async (params: ResponseNotificationParams): Promise<Notification> => {
+      const { action, entityName, entityType, mainResponse, kanbanResponse } = {
         entityName: undefined,
         kanbanResponse: undefined,
         ...params,
       };
+      const entityGender = nouns[entityType].gender;
 
       const responsesToCheck = [mainResponse];
       if (kanbanResponse) responsesToCheck.push(kanbanResponse);
@@ -82,8 +87,10 @@ export function useMessageGenerator() {
         } else {
           return {
             type: "error",
-            text: `Não foi possível ${verbs[action].infinitive} ${nouns[entityType].withArticle} por erro ${errorLocation}.\n
-            Erro: ${mainResponse.statusText}`,
+            text: `Não foi possível ${verbs[action].infinitive} ${
+              nouns[entityType].withArticle
+            } por erro ${errorLocation}.\n
+            Erro: ${await parseError(mainResponse)}`,
           };
         }
       } else {
@@ -100,27 +107,43 @@ export function useMessageGenerator() {
             text: `${capitalizeFirstLetter(nouns[entityType].withoutArticle)} ${entityName} ${
               verbs[action].participle[entityGender]
             } com sucesso, mas não foi possível ajustar o quadro kanban por erro ${errorLocation}.\n
-            Erro: ${kanbanResponse.statusText}`,
+            Erro: ${await parseError(kanbanResponse)}`,
           };
         } else if (!mainResponse.ok && kanbanResponse.ok) {
           return {
             type: "error",
-            text: `Kanban d${nouns[entityType].withArticle} "${entityName}" ajustado com sucesso, mas não foi possível ${verbs[action].infinitive} ${nouns[entityType].withArticle} por erro ${errorLocation}.\n
-            Erro: ${mainResponse.statusText}`,
+            text: `Kanban d${
+              nouns[entityType].withArticle
+            } "${entityName}" ajustado com sucesso, mas não foi possível ${verbs[action].infinitive} ${
+              nouns[entityType].withArticle
+            } por erro ${errorLocation}.\n
+            Erro: ${await parseError(mainResponse)}`,
           };
         } else {
           return {
             type: "error",
-            text: `Não foi possível ${verbs[action].infinitive} ${nouns[entityType].withArticle} nem ajustar o quadro kanban por erro ${errorLocation}.\n
-            Erro: ${mainResponse.statusText}\n${kanbanResponse.statusText}`,
+            text: `Não foi possível ${verbs[action].infinitive} ${
+              nouns[entityType].withArticle
+            } nem ajustar o quadro kanban por erro ${errorLocation}.\n
+            Erro: ${await parseError(mainResponse)}\n${await parseError(kanbanResponse)}`,
           };
         }
       }
     },
   };
 
+  type ProjurisValidationError = {
+    validacao: { chaveLocalErro: string; itemValidacao: { chaveErro: string }[] }[];
+  };
+
+  async function parseError(response: Response): Promise<string> {
+    const jsonResponse: ProjurisValidationError = await response.json();
+    const errors = jsonResponse.validacao.map(error => `${error.chaveLocalErro} - ${error.itemValidacao[0].chaveErro}`);
+    return errors.join("\n");
+  }
+
   function getErrorLocation(resps: Response[]): string {
-    if (resps.some(resp => !resp.ok)) return "não há erros";
+    if (!resps.some(resp => !resp.ok)) return "não há erros";
     if (resps.some(resp => `${resp.status}`.startsWith("5"))) return "no servidor";
     if (resps.some(resp => `${resp.status}`.startsWith("4"))) return "na solicitação";
     return "desconhecido";

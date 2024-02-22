@@ -1,13 +1,13 @@
 import { PropsWithChildren, createContext, useContext, useState } from "react";
 import { Notification, Prettify } from "../../../global";
 
-type TNotificationsContext = {
+type NotificationsContext = {
   msgs: Notification[];
   addNotification: (msg: Notification) => void;
   removeNotification: (msg: Notification) => void;
 };
 
-const NotificationsContext = createContext<Prettify<TNotificationsContext>>({
+const NotificationsContext = createContext<Prettify<NotificationsContext>>({
   msgs: [],
   addNotification: () => {},
   removeNotification: () => {},

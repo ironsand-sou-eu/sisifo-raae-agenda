@@ -8,7 +8,7 @@ export default function ErrorDiv({ error, ...rest }: ErrorDivProps): JSX.Element
   return (
     <>
       {error && (
-        <div className="validation-error" {...rest}>
+        <div className="validation-error-text" {...rest}>
           {error}
         </div>
       )}

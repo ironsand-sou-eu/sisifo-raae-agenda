@@ -314,7 +314,7 @@ div.prazos-card:not(:nth-child(2)) {
 
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea,
-.tarefa-detailed-card label > input,
+.tarefa-detailed-card label + input,
 .prazos-card,
 div.select-control,
 .datepicker-input {
@@ -347,8 +347,8 @@ div.select-control,
 
 .tarefa-detailed-card textarea:focus,
 .tarefa-detailed-card textarea:hover,
-.tarefa-detailed-card label > input:focus,
-.tarefa-detailed-card label > input:hover,
+.tarefa-detailed-card label + input:focus,
+.tarefa-detailed-card label + input:hover,
 div.select-control:has(:focus),
 div.select-control:hover,
 .datepicker-input:focus,
@@ -359,7 +359,7 @@ div.select-control:hover,
 
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea,
-.tarefa-detailed-card label > input {
+.tarefa-detailed-card label + input {
   padding: var(--small-padding);
   resize: vertical;
   width: -webkit-fill-available;
@@ -376,7 +376,7 @@ div.select-control:hover,
 }
 
 .sisifo-label {
-  display: block;
+  display: inline-block;
   padding-inline-end: 0.2rem;
   font-size: 0.9rem;
   text-align: end;
@@ -644,8 +644,13 @@ footer.skeleton-text {
   padding-block: var(--small-padding);
 }
 
-.validation-error {
-  text-align: right;
+.validation-error-text {
+  display: inline;
+  margin-inline-start: var(--small-gap);
+  color: var(--fill-color-red);
+}
+
+.validation-error-box {
   border-color: var(--fill-color-red);
   color: var(--fill-color-red);
 }

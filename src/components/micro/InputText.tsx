@@ -6,16 +6,16 @@ type InputTextProps = ComponentPropsWithoutRef<"input"> & {
   label?: string;
 };
 
-export default function InputText({ value, error, label, ...rest }: InputTextProps): JSX.Element {
+export default function InputText({ value, error, label, name, ...rest }: InputTextProps): JSX.Element {
   const style = error ? { borderColor: "var(--fill-color-red)" } : undefined;
 
   return (
     <div>
-      <label className="sisifo-label">
+      <label className="sisifo-label" htmlFor={name}>
         {label}
-        <ErrorDiv error={error} />
-        <input type="text" value={value ?? ""} {...{ ...rest, style }} />
       </label>
+      <ErrorDiv error={error} />
+      <input type="text" id={name} value={value ?? ""} {...{ ...rest, style, name }} />
     </div>
   );
 }

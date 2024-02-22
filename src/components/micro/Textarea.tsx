@@ -7,16 +7,16 @@ type TextareaProps = ComponentPropsWithoutRef<"textarea"> & {
   label?: string;
 };
 
-export default function Textarea({ content, error, label, ...rest }: TextareaProps): JSX.Element {
+export default function Textarea({ content, error, name, label, ...rest }: TextareaProps): JSX.Element {
   const style = error ? { borderColor: "var(--fill-color-red)" } : undefined;
 
   return (
     <div>
-      <label className="sisifo-label">
+      <label className="sisifo-label" htmlFor={name}>
         {label}
-        <ErrorDiv error={error} />
-        <textarea value={content ?? ""} {...{ ...rest, style }} />
       </label>
+      <ErrorDiv error={error} />
+      <textarea value={content ?? ""} id={name} {...{ ...rest, style, name }} />
     </div>
   );
 }

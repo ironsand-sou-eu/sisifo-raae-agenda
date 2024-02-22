@@ -73,8 +73,8 @@ export default function useProjurisConnector() {
     tarefaDetails: (codigoTarefaEvento: number, codigoProcesso: number) => {
       return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
     },
-    updateTarefa: (action: TarefaUpdateActions, codigoTarefaEvento?: number) => {
-      if (action === "salvar") return "/tarefa";
+    updateTarefa: (action: TarefaUpdateActions | "criar", codigoTarefaEvento?: number) => {
+      if (action === "salvar" || action === "criar") return "/tarefa";
       if (!codigoTarefaEvento) return "";
       return `/v2/tarefa/alterar-situacao/${codigoTarefaEvento}/situacao/${tarefaActions[action].code}`;
     },
