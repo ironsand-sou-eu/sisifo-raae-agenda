@@ -2,8 +2,7 @@ import { PropsWithChildren, createContext, useContext, useEffect, useState } fro
 import { Prettify, DisplayingAndamento, DisplayingTimesheet, PartialOrNullable } from "../../../global";
 import useProjurisValidator, { Validation } from "../useProjurisValidator";
 import useCreateEntitiesAdapter from "../adapters/useCreateEntitiesAdapter";
-import useProjurisAndamentosConnector from "../connectors/useProjurisAndamentosConnector";
-import useProjurisTimesheetConnector from "../connectors/useProjurisTimesheetConnector";
+import useProjurisCreateEntitiesConnector from "../connectors/useProjurisCreateEntitiesConnector";
 import { DisplayingNewTarefa } from "../../../global.zod";
 
 type VisibilityOptions = { visible: false } | { visible: true; codigoProcesso: number };
@@ -50,9 +49,12 @@ export function useCreateEntities() {
 
 export default function CreateEntitiesProvider({ children }: PropsWithChildren) {
   const { validateAndamento, validateNewTarefa, validateTimesheet } = useProjurisValidator();
-  const { adaptDisplayingAndamentoToWritingType, adaptDisplayingTimesheetToWritingType } = useCreateEntitiesAdapter();
-  const { dispatchBackendAndamentoCreation } = useProjurisAndamentosConnector();
-  const { dispatchBackendTimesheetCreation } = useProjurisTimesheetConnector();
+  const {
+    adaptDisplayingAndamentoToWritingType,
+    adaptDisplayingNewTarefaToWritingType,
+    adaptDisplayingTimesheetToWritingType,
+  } = useCreateEntitiesAdapter();
+  const { dispatchBackendEntityCreation } = useProjurisCreateEntitiesConnector();
   const [codigoProcesso, setCodigoProcesso] = useState(0);
   const [andamento, setAndamento] = useState<DisplayingAndamento>();
   const [andamentoValidation, setAndamentoValidation] = useState<Validation>();
@@ -113,20 +115,23 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
   function createAndamento() {
     if (!andamento || !codigoProcesso) return; //TODO: If there is no codigoProcesso, send notification
     const writingAndamento = adaptDisplayingAndamentoToWritingType(andamento, codigoProcesso);
-    dispatchBackendAndamentoCreation(writingAndamento, clearAndamento);
+    dispatchBackendEntityCreation(writingAndamento, { entityType: "andamento", onSuccessCb: clearAndamento });
   }
 
   function createTimesheet() {
     if (!timesheet) return;
     const writingTimesheet = adaptDisplayingTimesheetToWritingType(timesheet);
-    dispatchBackendTimesheetCreation(writingTimesheet, codigoProcesso, clearTimesheet);
+    dispatchBackendEntityCreation(writingTimesheet, {
+      entityType: "timesheet",
+      codigoProcesso,
+      onSuccessCb: clearTimesheet,
+    });
   }
 
   function createNewTarefa() {
     if (!newTarefa || !codigoProcesso) return; //TODO: If there is no codigoProcesso, send notification
-    console.log(newTarefa);
-    // const writingNewTarefa = adaptDisplayingAndamentoToWritingType(newTarefa, codigoProcesso);
-    // dispatchBackendAndamentoCreation(writingNewTarefa, clearAndamento);
+    const writingNewTarefa = adaptDisplayingNewTarefaToWritingType(newTarefa, codigoProcesso);
+    dispatchBackendEntityCreation(writingNewTarefa, { entityType: "newTarefa", onSuccessCb: clearNewTarefa });
   }
 
   function setAndamentoTimesheetPanelVisibility(options: VisibilityOptions) {
