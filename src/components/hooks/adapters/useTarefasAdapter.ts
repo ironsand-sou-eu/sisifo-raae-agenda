@@ -25,6 +25,7 @@ export default function useTarefasAdapter() {
       descricao,
       flagSituacaoConcluida,
       gruposResponsaveis,
+      identificadorModulo,
       modulo: { chave: codigoProcesso },
       nomeTarefaTipo,
       numeroProcesso,
@@ -33,10 +34,10 @@ export default function useTarefasAdapter() {
       situacao,
       usuarioResponsaveis,
     } = tarefaInfo;
-    const displayingParteAtiva = parteAtiva ? parteAtiva : "Não disponível";
-    const displayingPartePassiva = partePassiva ? partePassiva : "Não disponível";
-    const displayingNumeroProcesso = numeroProcesso ? numeroProcesso : "Sem número";
-    const displayingGruposResponsaveis = gruposResponsaveis ? gruposResponsaveis : "Sem núcleo";
+    const displayingParteAtiva = parteAtiva ?? "Não disponível";
+    const displayingPartePassiva = partePassiva ?? "Não disponível";
+    const displayingNumeroProcesso = numeroProcesso ?? identificadorModulo ?? "Sem número";
+    const displayingGruposResponsaveis = gruposResponsaveis ?? "Sem núcleo";
     const prazo = dataConclusaoPrevista ? new Date(dataConclusaoPrevista) : undefined;
 
     return {

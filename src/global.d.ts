@@ -68,6 +68,7 @@ export type FetchedTarefa = {
   corTarefaTipo: string;
   descricao: string;
   identificador: string;
+  identificadorModulo: string;
   modulo: SimpleDocument;
   chaveModulo: string;
   nomeTarefaTipo: string;
