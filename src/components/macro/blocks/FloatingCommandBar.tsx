@@ -4,7 +4,7 @@ import useTarefasAdapter from "../../hooks/adapters/useTarefasAdapter";
 import HeaderButton from "../../micro/HeaderButton";
 
 export default function FloatingCommandBar(): JSX.Element {
-  const { selectedTarefas, loadList } = useTarefasList();
+  const { selectedTarefas, loadListFromScratch } = useTarefasList();
   const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
   const { adaptTarefasListToUpdatingParams } = useTarefasAdapter();
 
@@ -13,13 +13,17 @@ export default function FloatingCommandBar(): JSX.Element {
       <HeaderButton
         type="cancel"
         onClick={() =>
-          dispatchBackendTarefaUpdate(adaptTarefasListToUpdatingParams(selectedTarefas, "cancelar", loadList))
+          dispatchBackendTarefaUpdate(
+            adaptTarefasListToUpdatingParams(selectedTarefas, "cancelar", loadListFromScratch)
+          )
         }
       />
       <HeaderButton
         type="conclude"
         onClick={() =>
-          dispatchBackendTarefaUpdate(adaptTarefasListToUpdatingParams(selectedTarefas, "concluir", loadList))
+          dispatchBackendTarefaUpdate(
+            adaptTarefasListToUpdatingParams(selectedTarefas, "concluir", loadListFromScratch)
+          )
         }
       />
     </section>

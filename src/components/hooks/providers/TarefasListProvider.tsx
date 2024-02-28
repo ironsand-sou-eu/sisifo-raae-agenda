@@ -18,7 +18,7 @@ type TarefasListContext = {
   displayingTarefas: DisplayingTarefa[];
   hasMore: boolean;
   isListLoading: boolean;
-  loadList?: () => void;
+  loadListFromScratch?: () => void;
   pageNumber: number;
   selectedTarefas: DisplayingTarefa[];
   setPageNumber: Dispatch<SetStateAction<number>>;
@@ -53,15 +53,19 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
   const { adaptTarefasListToDisplayingType } = useTarefasAdapter();
 
   useEffect(() => {
-    setPageNumber(0);
-    setTarefas([]);
-    loadList();
+    loadListFromScratch;
   }, [filters?.currentFilter, show?.filter]);
 
   useEffect(loadList, [pageNumber]);
 
   const displayingTarefas = useMemo(() => adaptTarefasListToDisplayingType(tarefas), [tarefas]);
   const selectedTarefas = useMemo(() => displayingTarefas?.filter(tarefa => tarefa.checked), [displayingTarefas]);
+
+  function loadListFromScratch() {
+    setPageNumber(0);
+    setTarefas([]);
+    loadList();
+  }
 
   function loadList() {
     if (show?.filter || !filters?.currentFilter) return;
@@ -89,7 +93,7 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
     displayingTarefas,
     hasMore,
     isListLoading,
-    loadList,
+    loadListFromScratch,
     pageNumber,
     selectedTarefas,
     setPageNumber,

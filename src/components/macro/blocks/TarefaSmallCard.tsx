@@ -12,8 +12,8 @@ type TarefaSmallCardProps = {
 
 export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails }: TarefaSmallCardProps): JSX.Element {
   const { adaptTarefasListToUpdatingParams } = useTarefasAdapter();
-  const { loadList } = useTarefasList();
-  const updateParams = adaptTarefasListToUpdatingParams(tarefaDisplayInfo, "cancelar", loadList)[0];
+  const { loadListFromScratch } = useTarefasList();
+  const updateParams = adaptTarefasListToUpdatingParams(tarefaDisplayInfo, "cancelar", loadListFromScratch)[0];
   const {
     checked,
     codigoTarefaEvento,
