@@ -98,7 +98,9 @@ export default function useTarefasAdapter() {
     } = tarefaDetails || { tarefaEventoWs: { tarefaEventoSituacaoWs: {} } };
     const codigoProcessoProjuris = tarefaDetails?.modulos[0].codigoRegistroVinculo;
     const prazoAdm = dataConclusaoPrevista ? new Date(dataConclusaoPrevista) : undefined;
-    const displayTitulo = titulo ?? tipoTarefa?.valor ?? "";
+    let displayTitulo = "";
+    if (tipoTarefa?.valor) displayTitulo = tipoTarefa.valor;
+    if (titulo && titulo !== "") displayTitulo = titulo;
 
     return {
       displayTitulo,
