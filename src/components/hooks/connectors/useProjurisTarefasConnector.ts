@@ -97,13 +97,13 @@ export default function useProjurisTarefasConnector() {
     if ((type === "salvar" && !tarefa) || (type !== "salvar" && !codigoTarefaEvento)) return;
     const progressMsg = generateNotification.progress(type, "tarefa");
     addNotification(progressMsg);
+
     const bodyObj =
-      type === "salvar" ? tarefa : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, kanbanFindingCode!);
-    const { mainResponse, kanbanResponse } = await makeRequestsForUpdatingTarefa(
-      type,
-      JSON.stringify(bodyObj),
-      codigoTarefaEvento
-    );
+      type === "salvar"
+        ? tarefa ?? null
+        : await fetchPayloadsForUpdatingKanban(type, codigoTarefaEvento!, kanbanFindingCode!);
+    const body = bodyObj ? JSON.stringify(bodyObj) : "";
+    const { mainResponse, kanbanResponse } = await makeRequestsForUpdatingTarefa(type, body, codigoTarefaEvento);
     removeNotification(progressMsg);
     if (reloadFunction) reloadFunction();
     const msg = await generateNotification.response({
@@ -126,6 +126,7 @@ export default function useProjurisTarefasConnector() {
       "codigoQuadroKanban" in param
         ? param.codigoQuadroKanban
         : await fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento, param.codigoProcesso);
+    if (!quadroKanban) return null;
     const colunasKanban: SimpleDocument[] = await loadSimpleOptions(endpoints.colunasKanban(quadroKanban), {}, false);
     const concludedObj = colunasKanban.find(
       coluna => coluna.valor.toLowerCase() === tarefaActions[type].name.toLowerCase()
@@ -141,33 +142,40 @@ export default function useProjurisTarefasConnector() {
     };
   }
 
-  async function fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento: number, codigoProcesso: number): Promise<number> {
+  async function fetchCodigoQuadroKanbanForTarefa(
+    codigoTarefaEvento: number,
+    codigoProcesso: number
+  ): Promise<number | null> {
     const tarefaDetails = await fetchTarefaDetails(codigoTarefaEvento, codigoProcesso);
-    return tarefaDetails.tarefaEventoWs.quadroKanban.chave;
+    return tarefaDetails.tarefaEventoWs.quadroKanban?.chave ?? null;
   }
 
   async function makeRequestsForUpdatingTarefa(type: TarefaUpdateActions, body: string, codigoTarefaEvento?: number) {
-    const endpointKanban = endpoints.alterarColunaKanbanTarefa(codigoTarefaEvento);
-    if (type !== "salvar" && !endpointKanban) {
-      const errorMsg = generateNotification.errorKanbanEndpointNotFound("makeRequestsForConcludingTarefa");
-      addNotification(errorMsg);
-      throw new Error(errorMsg.text);
-    }
     const endpointAction = endpoints.updateTarefa(type, codigoTarefaEvento);
     if (!endpointAction) {
       const errorMsg = generateNotification.errorUpdateEndpointNotFound(type, "makeRequestsForConcludingTarefa");
       addNotification(errorMsg);
       throw new Error(errorMsg.text);
     }
-    const kanbanResponse = endpointKanban
-      ? await makeProjurisRequest({ method: "PUT", endpoint: endpointKanban, body })
-      : new Response();
     const mainResponse = await makeProjurisRequest({
       method: "PUT",
       endpoint: endpointAction,
       body: type === "salvar" ? body : "",
     });
+    const kanbanResponse = await makeKanbanRequest(type, body, codigoTarefaEvento);
     return { mainResponse, kanbanResponse };
+  }
+
+  async function makeKanbanRequest(type: TarefaUpdateActions, body: string, codigoTarefaEvento?: number) {
+    if (type === "salvar" || !body) return null;
+
+    const endpointKanban = endpoints.alterarColunaKanbanTarefa(codigoTarefaEvento);
+    if (!endpointKanban) {
+      const errorMsg = generateNotification.errorKanbanEndpointNotFound("makeKanbanRequest");
+      addNotification(errorMsg);
+      throw new Error(errorMsg.text);
+    }
+    return await makeProjurisRequest({ method: "PUT", endpoint: endpointKanban, body });
   }
 
   return {

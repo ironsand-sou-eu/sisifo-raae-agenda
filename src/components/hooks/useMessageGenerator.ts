@@ -36,7 +36,7 @@ export function useMessageGenerator() {
         entityName: string;
         entityType: Extract<CreatableEntities, "tarefa">;
         mainResponse: Response;
-        kanbanResponse: Response;
+        kanbanResponse: Response | null;
       }
     | {
         action: "criar";
