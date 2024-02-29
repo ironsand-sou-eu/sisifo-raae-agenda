@@ -2,6 +2,7 @@ import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext,
 import { DisplayingTarefaDetails, FetchedTarefaDetails, Prettify, SimpleDocument } from "../../../global";
 import useTarefasAdapter from "../adapters/useTarefasAdapter";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../connectors/useProjurisTarefasConnector";
+import { useTarefasList } from "./TarefasListProvider";
 
 type KanbanValue = SimpleDocument & { situacao?: SimpleDocument };
 
@@ -50,6 +51,7 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
   const { fetchTarefaDetails, dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
   const { adaptTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType } = useTarefasAdapter();
   const { adaptTarefaDetailsToUpdatingParams } = useTarefasAdapter();
+  const { loadListFromScratch } = useTarefasList();
 
   useEffect(loadDetails, [tarefaLoadingDetails.codigoTarefaEvento, tarefaLoadingDetails.codigoProcesso]);
 
@@ -101,13 +103,18 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
     });
   }
 
+  function reloadDetailsAndList() {
+    loadDetails();
+    if (loadListFromScratch) loadListFromScratch();
+  }
+
   function saveTarefa() {
     if (!tarefaDetails) return;
     const writeAdaptedTarefaDetails = adaptTarefaDetailsToWritingType(tarefaDetails);
     dispatchBackendTarefaUpdate({
       type: "salvar",
       name: writeAdaptedTarefaDetails.titulo ?? "",
-      reloadFunction: loadDetails,
+      reloadFunction: reloadDetailsAndList,
       tarefa: writeAdaptedTarefaDetails,
     });
   }

@@ -46,7 +46,6 @@ export default function TarefaDetailedCard({
     updateTarefaDetails,
     saveTarefa,
     setTarefaLoadingDetails,
-    loadDetails,
     updatesOnColunaKanbanChange,
   } = useTarefaDetails();
 
@@ -83,13 +82,10 @@ export default function TarefaDetailedCard({
     <section className="card tarefa-card tarefa-detailed-card">
       <TarefaDetailedCardHeader
         {...{
-          displayTitulo,
           setPrefetchDetails,
           circleColor: tarefaColor,
-          codigoQuadroKanban: quadroKanban?.chave,
-          codigoTarefaEvento,
           codigoProcesso,
-          loadDetails,
+          displayTitulo,
           updateParams,
         }}
       />
