@@ -53,7 +53,7 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
   const { adaptTarefasListToDisplayingType } = useTarefasAdapter();
 
   useEffect(() => {
-    loadListFromScratch;
+    loadListFromScratch();
   }, [filters?.currentFilter, show?.filter]);
 
   useEffect(loadList, [pageNumber]);
