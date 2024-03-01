@@ -1,5 +1,5 @@
 import { ZodType } from "zod";
-import { DisplayingAndamento } from "../../global";
+import { DisplayingAndamento, PartialOrNullable } from "../../global";
 import {
   errorMap,
   displayingAndamento,
@@ -12,19 +12,19 @@ import {
 export type Validation = { ok: boolean; errors: Record<string, string> };
 
 export default function useProjurisValidator() {
-  function validateAndamento(andamento: Partial<DisplayingAndamento>) {
+  function validateAndamento(andamento: PartialOrNullable<DisplayingAndamento>) {
     return validateEntity<DisplayingAndamento>(andamento, displayingAndamento);
   }
 
-  function validateNewTarefa(newTarefa: Partial<DisplayingNewTarefa>) {
+  function validateNewTarefa(newTarefa: PartialOrNullable<DisplayingNewTarefa>) {
     return validateEntity<DisplayingNewTarefa>(newTarefa, displayingNewTarefa);
   }
 
-  function validateTimesheet(timesheet: Partial<DisplayingTimesheet>) {
+  function validateTimesheet(timesheet: PartialOrNullable<DisplayingTimesheet>) {
     return validateEntity<DisplayingTimesheet>(timesheet, displayingTimesheet);
   }
 
-  function validateEntity<T>(entity: Partial<T>, zodParser: ZodType<T>): Validation {
+  function validateEntity<T>(entity: PartialOrNullable<T>, zodParser: ZodType<T>): Validation {
     const parsed = zodParser.safeParse(entity, { errorMap });
     const errors: Record<string, string> = {};
     if (!parsed.success) {

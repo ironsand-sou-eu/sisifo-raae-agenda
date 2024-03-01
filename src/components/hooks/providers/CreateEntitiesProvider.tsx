@@ -3,7 +3,8 @@ import { Prettify, DisplayingAndamento, DisplayingTimesheet, PartialOrNullable }
 import useProjurisValidator, { Validation } from "../useProjurisValidator";
 import useCreateEntitiesAdapter from "../adapters/useCreateEntitiesAdapter";
 import useProjurisCreateEntitiesConnector from "../connectors/useProjurisCreateEntitiesConnector";
-import { DisplayingNewTarefa } from "../../../global.zod";
+import { DisplayingNewTarefa, SimpleDocument } from "../../../global.zod";
+import useProjurisConnector from "../connectors/useProjurisConnector";
 
 type VisibilityOptions = { visible: false } | { visible: true; codigoProcesso: number };
 
@@ -20,6 +21,7 @@ type CreateEntitiesContext = {
   updateAndamento: (keysToUpdate: PartialOrNullable<DisplayingAndamento>) => void;
   updateNewTarefa: (keysToUpdate: PartialOrNullable<DisplayingNewTarefa>) => void;
   updateTimesheet: (keysToUpdate: PartialOrNullable<DisplayingTimesheet>) => void;
+  pendingStatus?: SimpleDocument;
   createAndamentoTimesheet: () => void;
   createNewTarefa: () => void;
   showAndamentoTimesheetPanel: boolean;
@@ -55,7 +57,9 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
     adaptDisplayingTimesheetToWritingType,
   } = useCreateEntitiesAdapter();
   const { dispatchBackendEntityCreation } = useProjurisCreateEntitiesConnector();
+  const { loadSimpleOptions, endpoints } = useProjurisConnector();
   const [codigoProcesso, setCodigoProcesso] = useState(0);
+  const [pendingStatus, setPendingStatus] = useState<SimpleDocument>();
   const [andamento, setAndamento] = useState<DisplayingAndamento>();
   const [andamentoValidation, setAndamentoValidation] = useState<Validation>();
   const [newTarefa, setNewTarefa] = useState<DisplayingNewTarefa>();
@@ -64,6 +68,23 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
   const [timesheetValidation, setTimesheetValidation] = useState<Validation>();
   const [showAndamentoTimesheetPanel, setshowAndamentoTimesheetPanel] = useState(false);
   const [showNewTarefaPanel, setShowNewTarefaPanel] = useState(false);
+
+  useEffect(() => {
+    loadSimpleOptions(
+      endpoints.situacoesTarefa,
+      {
+        key: "valor",
+        operator: "insensitiveStrictEquality",
+        val: "pendente",
+      },
+      false
+    ).then(data => {
+      if (data.length > 0) {
+        setPendingStatus(data[0]);
+        setNewTarefa(createEmptyNewTarefa(data[0]));
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const andamentoValidation = andamento ? validateAndamento(andamento) : undefined;
@@ -93,7 +114,7 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
   }
 
   function clearNewTarefa(): void {
-    setNewTarefa(undefined);
+    setNewTarefa(pendingStatus ? createEmptyNewTarefa(pendingStatus) : undefined);
   }
 
   function updateTimesheet(keysToUpdate: PartialOrNullable<DisplayingTimesheet>): void {
@@ -134,6 +155,10 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
     dispatchBackendEntityCreation(writingNewTarefa, { entityType: "newTarefa", onSuccessCb: clearNewTarefa });
   }
 
+  function createEmptyNewTarefa(situacao: SimpleDocument) {
+    return { tarefaEventoSituacaoWs: situacao } as DisplayingNewTarefa;
+  }
+
   function setAndamentoTimesheetPanelVisibility(options: VisibilityOptions) {
     if (options.visible === true) setCodigoProcesso(options.codigoProcesso);
     setshowAndamentoTimesheetPanel(options.visible);
@@ -157,6 +182,7 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
     updateAndamento,
     updateNewTarefa,
     updateTimesheet,
+    pendingStatus,
     createAndamentoTimesheet,
     createNewTarefa,
     showAndamentoTimesheetPanel,
