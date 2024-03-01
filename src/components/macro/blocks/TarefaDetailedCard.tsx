@@ -13,6 +13,7 @@ import AnimatableFetchingSelect from "../../micro/AnimatableFetchingSelect";
 import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../../global";
 import { useTarefaDetails } from "../../hooks/providers/TarefaDetailsProvider";
 import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import InputText from "../../micro/InputText";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -57,6 +58,7 @@ export default function TarefaDetailedCard({
     dataLimite,
     descricaoTarefa,
     gruposResponsaveis,
+    local,
     usuariosResponsaveis,
     marcadorWs,
     colunaKanban,
@@ -97,10 +99,16 @@ export default function TarefaDetailedCard({
       />
       <ProcessoInfo {...{ parteAtiva, partePassiva, numeroProcesso, processoUrl }} />
       <Textarea
-        name="descricao"
         label="Descrição"
+        name="descricao"
         onChange={ev => updateTarefaDetails({ descricaoTarefa: ev.target.value })}
         content={descricaoTarefa}
+      />
+      <InputText
+        label="Local/Site"
+        name="local"
+        onChange={ev => updateTarefaDetails({ local: ev.target.value })}
+        value={local}
       />
       <FetchingSelect
         optionsEndpoint={endpoints.responsaveis}

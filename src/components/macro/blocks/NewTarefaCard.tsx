@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import { codigoUsuario } from "../../../hardcoded";
@@ -11,7 +12,6 @@ import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider"
 import DetailedCardHeader from "./DetailedCardHeader";
 import InputText from "../../micro/InputText";
 import HeaderButton from "../../micro/HeaderButton";
-import { useMemo } from "react";
 
 export default function NewTarefaCard() {
   const {
@@ -78,13 +78,6 @@ export default function NewTarefaCard() {
         onChange={ev => updateNewTarefa({ titulo: ev.target.value })}
         error={newTarefaValidation?.errors.titulo}
       />
-      <InputText
-        label="Local/Site"
-        name="local"
-        value={local}
-        onChange={ev => updateNewTarefa({ local: ev.target.value })}
-        error={newTarefaValidation?.errors.local}
-      />
       <PrazosCard
         {...{ dataConclusaoPrevista, dataLimite }}
         dataConclusao={null}
@@ -102,6 +95,13 @@ export default function NewTarefaCard() {
         content={descricaoTarefa}
         onChange={ev => updateNewTarefa({ descricaoTarefa: ev.target.value })}
         error={newTarefaValidation?.errors.descricaoTarefa}
+      />
+      <InputText
+        label="Local/Site"
+        name="local"
+        value={local}
+        onChange={ev => updateNewTarefa({ local: ev.target.value })}
+        error={newTarefaValidation?.errors.local}
       />
       <FetchingSelect
         optionsEndpoint={endpoints.responsaveis}

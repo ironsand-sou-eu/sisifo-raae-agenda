@@ -52,6 +52,7 @@ export type DisplayingTarefaDetails = {
   dataLimite: Date | null;
   displayTitulo: string;
   gruposResponsaveis: SimpleDocument[];
+  local: string;
   marcadorWs: Marcador[];
   prazoColorCssVariable: string;
   processoUrl: string;
@@ -104,30 +105,31 @@ export type FetchedTarefaDetails = {
   modulos: Modulo[];
   codigoTarefa: number;
   tarefaEventoWs: {
+    codigoTarefa: number;
     codigoTarefaEvento: number;
     codigoUsuarioCriador: number;
-    descricaoTarefa: string;
-    identificador: string;
+    colunaKanban: SimpleDocument;
+    dataBase: number | null;
     dataConclusao: number | null;
     dataConclusaoPrevista: number | null;
+    dataLimite: number | null;
+    descricaoTarefa: string;
+    gruposResponsaveis: SimpleDocument[];
     horaConclusao: number;
     horaLimite: number;
-    dataLimite: number | null;
-    dataBase: number | null;
-    usuariosResponsaveis: SimpleDocument[];
-    gruposResponsaveis: SimpleDocument[];
-    codigoTarefa: number;
-    tipoTarefa: SimpleDocument;
+    identificador: string;
+    kanban: boolean;
+    local: string;
     marcadorWs: Marcador[];
+    quadroKanban: SimpleDocument;
     tarefaEventoSituacaoWs: {
       codigoTarefaEventoSituacao?: number;
       situacao?: string;
       situacaoConcluida?: boolean;
     };
+    tipoTarefa: SimpleDocument;
     titulo: string;
-    kanban: boolean;
-    quadroKanban: SimpleDocument;
-    colunaKanban: SimpleDocument;
+    usuariosResponsaveis: SimpleDocument[];
   };
 };
 
@@ -152,6 +154,7 @@ export type WritingTarefaDetails = {
   gruposResponsaveis: SimpleDocument[];
   codigoTarefa: number;
   tipoTarefa: SimpleDocument;
+  local?: string;
   marcadorWs: Marcador[];
   tarefaEventoSituacaoWs: {
     codigoTarefaEventoSituacao: number;
