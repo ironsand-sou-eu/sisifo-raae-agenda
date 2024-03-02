@@ -47,7 +47,6 @@ export default function TarefaDetailedCard({
     updateTarefaDetails,
     saveTarefa,
     setTarefaLoadingDetails,
-    updatesOnColunaKanbanChange,
   } = useTarefaDetails();
 
   const {
@@ -152,7 +151,7 @@ export default function TarefaDetailedCard({
         optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
         hasMultiLevelSource={false}
         values={colunaKanban}
-        onChange={newValue => updatesOnColunaKanbanChange(newValue as SimpleDocument)}
+        onChange={newValue => updateTarefaDetails({ colunaKanban: newValue as SimpleDocument })}
         refType="colunaKanban"
         name="coluna-kanban"
         label="Coluna kanban"

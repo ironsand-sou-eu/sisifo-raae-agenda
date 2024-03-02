@@ -17,7 +17,6 @@ type TarefaDetailsContext = {
   isDetailLoading: boolean;
   updateParams?: TarefaUpdateParams;
   updateTarefaDetails: (keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>) => void;
-  updatesOnColunaKanbanChange: (colunaKanbanNewValue: KanbanValue) => Promise<void>;
   saveTarefa: () => void;
   setTarefaLoadingDetails: Dispatch<SetStateAction<TarefaLoadingDetails>>;
   loadDetails: () => void;
@@ -26,7 +25,6 @@ type TarefaDetailsContext = {
 const TarefaDetailsContext = createContext<Prettify<TarefaDetailsContext>>({
   isDetailLoading: false,
   updateTarefaDetails: () => {},
-  updatesOnColunaKanbanChange: async () => {},
   saveTarefa: () => {},
   setTarefaLoadingDetails: () => {},
   loadDetails: () => {},
@@ -82,25 +80,45 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
       .finally(() => setIsDetailLoading(false));
   }
 
-  async function updatesOnColunaKanbanChange(colunaKanbanNewValue: KanbanValue) {
-    const situacao = colunaKanbanNewValue.situacao;
-    const colunaKanban = { ...colunaKanbanNewValue };
+  function updateTarefaDetails(keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>): void {
+    const adaptedKeys = handleKeysToUpdate(keysToUpdate);
+    setTarefaDetails(prevValues => {
+      if (!prevValues) return;
+      const newTarefaEventoWs = { ...prevValues.tarefaEventoWs, ...adaptedKeys };
+      return { ...prevValues, tarefaEventoWs: newTarefaEventoWs };
+    });
+  }
+
+  function handleKeysToUpdate(
+    keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>
+  ): Partial<FetchedTarefaDetails["tarefaEventoWs"]> {
+    let result = structuredClone(keysToUpdate);
+    if (Object.keys(keysToUpdate).includes("colunaKanban"))
+      result = { ...result, ...adaptColunaKanbanBeforeUpdating(result.colunaKanban) };
+    if (Object.keys(result).includes("quadroKanban"))
+      result = { ...result, ...adaptQuadroKanbanBeforeUpdating(result.quadroKanban) };
+    return result;
+  }
+
+  function adaptColunaKanbanBeforeUpdating(
+    newColunaKanbanValue: KanbanValue | null
+  ): Partial<FetchedTarefaDetails["tarefaEventoWs"]> {
+    if (!newColunaKanbanValue) return { colunaKanban: null };
+    const situacao = newColunaKanbanValue.situacao;
+    const colunaKanban = { ...newColunaKanbanValue };
     delete colunaKanban.situacao;
-    updateTarefaDetails({
+    return {
       colunaKanban,
       tarefaEventoSituacaoWs: {
         codigoTarefaEventoSituacao: situacao?.chave,
         situacao: situacao?.valor,
       },
-    });
+    };
   }
 
-  function updateTarefaDetails(keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>): void {
-    setTarefaDetails(prevValues => {
-      if (!prevValues) return;
-      const newTarefaEventoWs = { ...prevValues.tarefaEventoWs, ...keysToUpdate };
-      return { ...prevValues, tarefaEventoWs: newTarefaEventoWs };
-    });
+  function adaptQuadroKanbanBeforeUpdating(newQuadroKanbanValue: SimpleDocument | null) {
+    if (!newQuadroKanbanValue) return { quadroKanban: newQuadroKanbanValue, colunaKanban: null };
+    return { quadroKanban: newQuadroKanbanValue };
   }
 
   function reloadDetailsAndList() {
@@ -126,7 +144,6 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
     loadDetails,
     saveTarefa,
     setTarefaLoadingDetails,
-    updatesOnColunaKanbanChange,
     updateTarefaDetails,
   };
 
