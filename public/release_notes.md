@@ -1,3 +1,24 @@
+===================== Versão 1.1.1 ====================
+1.1.001 - ISSUE - Resolvida a situação em que não se
+cancelava ou concluía tarefas sem kanban.
+
+1.1.002 - ISSUE - Resolvido o bug de não recarregar a
+lista após cancelar ou concluir tarefa.
+
+1.1.003 - FEATURE - Após salvar alterações numa tarefa,
+passou a recarregar a lista de tarefas, além dos deta-
+lhes da tarefa aberta.
+
+1.1.004 - FEATURE - Passou a exibir o local/site na
+visualização detalhada de tarefa.
+
+1.1.005 - FEATURE - Ao criar nova tarefa, o valor pa-
+drão da situação agora é "pendente".
+
+1.1.006 - FEATURE - Ao mudar o quadro kanban de uma
+nova tarefa, o valor padrão da coluna agora equivale ao
+valor da situação selecionada.
+
 ===================== Versão 1.1.0 ====================
 1.0.101 - FEATURE - Implementada a criação de timesheet
 e andamentos, bem como novas tarefas no mesmo processo.

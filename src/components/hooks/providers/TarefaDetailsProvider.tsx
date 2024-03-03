@@ -81,7 +81,7 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
   }
 
   function updateTarefaDetails(keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>): void {
-    const adaptedKeys = handleKeysToUpdate(keysToUpdate);
+    const adaptedKeys = handleKeysBeforeUpdate(keysToUpdate);
     setTarefaDetails(prevValues => {
       if (!prevValues) return;
       const newTarefaEventoWs = { ...prevValues.tarefaEventoWs, ...adaptedKeys };
@@ -89,18 +89,18 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
     });
   }
 
-  function handleKeysToUpdate(
+  function handleKeysBeforeUpdate(
     keysToUpdate: Partial<FetchedTarefaDetails["tarefaEventoWs"]>
   ): Partial<FetchedTarefaDetails["tarefaEventoWs"]> {
     let result = structuredClone(keysToUpdate);
     if (Object.keys(keysToUpdate).includes("colunaKanban"))
-      result = { ...result, ...adaptColunaKanbanBeforeUpdating(result.colunaKanban) };
+      result = { ...result, ...adaptBeforeUpdatingColunaKanban(result.colunaKanban) };
     if (Object.keys(result).includes("quadroKanban"))
-      result = { ...result, ...adaptQuadroKanbanBeforeUpdating(result.quadroKanban) };
+      result = { ...result, ...adaptBeforeUpdatingQuadroKanban(result.quadroKanban) };
     return result;
   }
 
-  function adaptColunaKanbanBeforeUpdating(
+  function adaptBeforeUpdatingColunaKanban(
     newColunaKanbanValue: KanbanValue | null
   ): Partial<FetchedTarefaDetails["tarefaEventoWs"]> {
     if (!newColunaKanbanValue) return { colunaKanban: null };
@@ -116,7 +116,7 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
     };
   }
 
-  function adaptQuadroKanbanBeforeUpdating(newQuadroKanbanValue: SimpleDocument | null) {
+  function adaptBeforeUpdatingQuadroKanban(newQuadroKanbanValue: SimpleDocument | null) {
     if (!newQuadroKanbanValue) return { quadroKanban: newQuadroKanbanValue, colunaKanban: null };
     return { quadroKanban: newQuadroKanbanValue };
   }

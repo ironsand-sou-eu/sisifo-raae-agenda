@@ -19,7 +19,7 @@ type CreateEntitiesContext = {
   clearNewTarefa: () => void;
   clearTimesheet: () => void;
   updateAndamento: (keysToUpdate: PartialOrNullable<DisplayingAndamento>) => void;
-  updateNewTarefa: (keysToUpdate: PartialOrNullable<DisplayingNewTarefa>) => void;
+  updateNewTarefa: (keysToUpdate: PartialOrNullable<DisplayingNewTarefa>) => Promise<void>;
   updateTimesheet: (keysToUpdate: PartialOrNullable<DisplayingTimesheet>) => void;
   pendingStatus?: SimpleDocument;
   createAndamentoTimesheet: () => void;
@@ -37,7 +37,7 @@ const CreateEntitiesContext = createContext<Prettify<CreateEntitiesContext>>({
   clearNewTarefa: () => {},
   clearTimesheet: () => {},
   updateAndamento: () => {},
-  updateNewTarefa: () => {},
+  updateNewTarefa: async () => {},
   updateTimesheet: () => {},
   createAndamentoTimesheet: () => {},
   createNewTarefa: () => {},
@@ -109,8 +109,36 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
     setAndamento(undefined);
   }
 
-  function updateNewTarefa(keysToUpdate: PartialOrNullable<DisplayingNewTarefa>): void {
-    setNewTarefa(prevValues => ({ ...prevValues, ...keysToUpdate } as DisplayingNewTarefa));
+  async function updateNewTarefa(keysToUpdate: PartialOrNullable<DisplayingNewTarefa>): Promise<void> {
+    const adaptedKeys = await handleKeysBeforeUpdate(keysToUpdate);
+    setNewTarefa(prevValues => {
+      return { ...prevValues, ...adaptedKeys } as DisplayingNewTarefa;
+    });
+  }
+
+  async function handleKeysBeforeUpdate(
+    keysToUpdate: PartialOrNullable<DisplayingNewTarefa>
+  ): Promise<PartialOrNullable<DisplayingNewTarefa>> {
+    let result = structuredClone(keysToUpdate);
+    if (Object.keys(keysToUpdate).includes("quadroKanban")) {
+      if (!keysToUpdate.quadroKanban) result = { ...result, quadroKanban: null, colunaKanban: null };
+      else if (!!newTarefa?.tarefaEventoSituacaoWs?.valor) result = await adaptBeforeUpdatingQuadroKanban(keysToUpdate);
+    }
+    return result;
+  }
+
+  async function adaptBeforeUpdatingQuadroKanban(keysToUpdate: PartialOrNullable<DisplayingNewTarefa>) {
+    const matchingColunasKanban = await loadSimpleOptions(
+      endpoints.colunasKanban(keysToUpdate.quadroKanban?.chave),
+      {
+        key: "valor",
+        operator: "insensitiveStrictEquality",
+        val: newTarefa?.tarefaEventoSituacaoWs.valor,
+      },
+      false
+    );
+    const colunaValue = matchingColunasKanban.length > 0 ? matchingColunasKanban[0] : null;
+    return { ...keysToUpdate, colunaKanban: colunaValue };
   }
 
   function clearNewTarefa(): void {
