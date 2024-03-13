@@ -1,101 +1,109 @@
-import {
-  Dispatch,
-  PropsWithChildren,
-  RefObject,
-  SetStateAction,
-  createContext,
-  useContext,
-  useRef,
-  useState,
-} from "react";
-import { Prettify } from "../../../global";
+import { CSSProperties, PropsWithChildren, createContext, useContext, useState } from "react";
 
-type AnimationsContext = {
-  show?: Show;
-  elementRef?: ElementRef;
-  toggleVisibility: (element: AnimatableObjects) => void;
-  setDisplayingAnimation: (element: AnimatableObjects) => void;
-  setHidingAnimation: (element: AnimatableObjects, dispatchedFunction: () => void) => void;
+export type AnimatableElement = {
+  id: string;
+  hidingTimeoutDelay?: number;
+} & (
+  | {
+      activeClass: string;
+      displayingClass: string;
+      hidingClass: string;
+      activeInlineStyle?: undefined;
+      displayingInlineStyle?: undefined;
+      hidingInlineStyle?: undefined;
+    }
+  | {
+      activeClass?: undefined;
+      displayingClass?: undefined;
+      hidingClass?: undefined;
+      activeInlineStyle: CSSProperties;
+      displayingInlineStyle: CSSProperties;
+      hidingInlineStyle: CSSProperties;
+    }
+);
+
+export type AnimationsContext = {
+  registerAnimatableElement: (element: AnimatableElement, showState?: boolean) => void;
+  unregisterAnimatableElement: (idToRemove: string) => void;
+  getAnimatableElement: (id: string) => AnimatableElement | undefined;
+  isVisible: (id: string) => boolean | undefined;
+  toggleVisibility: (id: string, enforceState?: "hide" | "show") => void;
 };
 
-type AnimatableObjects = "filter" | "colunaKanban" | "newTarefaColunaKanban";
-
-type ShowStates = {
-  [key in AnimatableObjects]: {
-    show: boolean;
-    setShow: Dispatch<SetStateAction<boolean>>;
-  };
-};
-
-type ElementRef = { [key in AnimatableObjects]: RefObject<HTMLDivElement> };
-
-type Show = { [key in AnimatableObjects]: boolean };
-
-const AnimationsContext = createContext<Prettify<AnimationsContext>>({
-  show: undefined,
-  elementRef: undefined,
-  toggleVisibility: () => {},
-  setDisplayingAnimation: () => {},
-  setHidingAnimation: () => {},
-});
+const AnimationsContext = createContext<AnimationsContext | undefined>(undefined);
 
 export function useAnimations() {
   return useContext(AnimationsContext);
 }
 
 export default function AnimationsProvider({ children }: PropsWithChildren) {
-  const elementRef: ElementRef = {
-    filter: useRef<HTMLDivElement>(null),
-    colunaKanban: useRef<HTMLDivElement>(null),
-    newTarefaColunaKanban: useRef<HTMLDivElement>(null),
-  };
+  const [elements, setElements] = useState(new Map<string, AnimatableElement>());
+  const [show, setShow] = useState(new Map<string, boolean>());
+  const fallbackTimeoutDelay = 450;
 
-  const emptyState = {
-    show: false,
-    setShow: () => {},
-  };
-
-  const showStates: ShowStates = {
-    filter: { ...emptyState },
-    colunaKanban: { ...emptyState },
-    newTarefaColunaKanban: { ...emptyState },
-  };
-  const show: Show = { filter: false, colunaKanban: false, newTarefaColunaKanban: false };
-  for (let prop in elementRef) {
-    ({ 0: showStates[prop as AnimatableObjects].show, 1: showStates[prop as AnimatableObjects].setShow } =
-      useState<boolean>(false));
-    show[prop as AnimatableObjects] = showStates[prop as AnimatableObjects].show;
+  function registerAnimatableElement(element: AnimatableElement, showState: boolean = true): void {
+    setShow(prevElements => new Map([...prevElements, [element.id, showState]]));
+    setElements(prevElements => new Map([...prevElements, [element.id, element]]));
   }
 
-  function toggleVisibility(element: AnimatableObjects): void {
-    if (!showStates[element].show) {
-      showStates[element].setShow(current => !current);
+  function unregisterAnimatableElement(idToRemove: string): void {
+    const showClone = new Map(show);
+    const elementsClone = new Map(elements);
+    showClone.delete(idToRemove);
+    elementsClone.delete(idToRemove);
+
+    setShow(showClone);
+    setElements(elementsClone);
+  }
+
+  function getAnimatableElement(id: string): AnimatableElement | undefined {
+    return elements.get(id);
+  }
+
+  function isVisible(id: string): boolean | undefined {
+    return show.get(id);
+  }
+
+  function toggleVisibility(id: string, enforceState?: "hide" | "show"): void {
+    const element = elements.get(id);
+    if (show.get(id) || enforceState === "hide") {
+      const hidingFunction = () => setShow(prevElements => new Map([...prevElements, [id, false]]));
+      if (element) setHidingAnimation(element, hidingFunction);
+    } else if (enforceState === "show") {
+      if (element) setDisplayingAnimation(element);
+      setShow(prevElements => new Map([...prevElements, [id, true]]));
     } else {
-      const dispatchedFunction = () => showStates[element].setShow(current => !current);
-      setHidingAnimation(element, dispatchedFunction);
+      setShow(prevElements => new Map([...prevElements, [id, true]]));
     }
   }
 
-  function setDisplayingAnimation(element: AnimatableObjects): void {
-    elementRef[element].current?.style.setProperty("animation", "drop-filter 500ms normal ease-in-out");
+  function setDisplayingAnimation(element: AnimatableElement) {
+    let newElement = { ...element };
+    if (element.displayingClass) newElement.activeClass = element.displayingClass;
+    if (element.displayingInlineStyle) newElement.activeInlineStyle = element.displayingInlineStyle;
+    setElements(prevElements => new Map([...prevElements, [element.id, newElement]]));
   }
 
-  function setHidingAnimation(element: AnimatableObjects, dispatchedFunction: () => void): Promise<void> {
+  function setHidingAnimation(element: AnimatableElement, dispatchedFunction: () => void): Promise<void> {
     return new Promise(resolve => {
-      elementRef[element].current?.style.setProperty("animation", "pickup-filter 500ms normal ease-in-out");
+      let newElement = { ...element };
+      if (element.hidingClass) newElement.activeClass = element.hidingClass;
+      if (element.hidingInlineStyle) newElement.activeInlineStyle = element.hidingInlineStyle;
+      setElements(prevElements => new Map([...prevElements, [element.id, newElement]]));
       setTimeout(() => {
         dispatchedFunction();
+        // unregisterAnimatableElement(element.id);
         resolve();
-      }, 450);
+      }, element.hidingTimeoutDelay ?? fallbackTimeoutDelay);
     });
   }
 
   const contextContent = {
-    show,
-    elementRef,
+    registerAnimatableElement,
+    unregisterAnimatableElement,
+    getAnimatableElement,
+    isVisible,
     toggleVisibility,
-    setDisplayingAnimation,
-    setHidingAnimation,
   };
 
   return <AnimationsContext.Provider value={contextContent}>{children}</AnimationsContext.Provider>;
