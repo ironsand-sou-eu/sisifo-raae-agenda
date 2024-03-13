@@ -3,7 +3,7 @@ import HeaderButton from "../../micro/HeaderButton";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../../hooks/connectors/useProjurisTarefasConnector";
 import DetailedCardHeader from "./DetailedCardHeader";
-import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 
 type TarefaDetailedCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -21,7 +21,7 @@ export default function TarefaDetailedCardHeader({
   updateParams,
 }: TarefaDetailedCardHeaderProps): JSX.Element {
   const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
-  const { setAndamentoTimesheetPanelVisibility } = useCreateEntities();
+  const { setAndamentoTimesheetPanelVisibility } = useCreateEntities() as CreateEntitiesContext;
   const cancelParams = { ...updateParams, type: "cancelar" } as TarefaUpdateParams;
   const concludeParams = { ...updateParams, type: "concluir" } as TarefaUpdateParams;
 

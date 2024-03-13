@@ -3,7 +3,7 @@ import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import TarefaSmallCardHeader from "./TarefaSmallCardHeader";
 import { DisplayingTarefa } from "../../../global";
 import useTarefasAdapter from "../../hooks/adapters/useTarefasAdapter";
-import { useTarefasList } from "../../hooks/providers/TarefasListProvider";
+import { TarefasListContext, useTarefasList } from "../../hooks/providers/TarefasListProvider";
 
 type TarefaSmallCardProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -12,7 +12,7 @@ type TarefaSmallCardProps = {
 
 export default function TarefaSmallCard({ tarefaDisplayInfo, setPrefetchDetails }: TarefaSmallCardProps): JSX.Element {
   const { adaptTarefasListToUpdatingParams } = useTarefasAdapter();
-  const { loadListFromScratch } = useTarefasList();
+  const { loadListFromScratch } = useTarefasList() as TarefasListContext;
   const updateParams = adaptTarefasListToUpdatingParams(tarefaDisplayInfo, "cancelar", loadListFromScratch)[0];
   const {
     checked,

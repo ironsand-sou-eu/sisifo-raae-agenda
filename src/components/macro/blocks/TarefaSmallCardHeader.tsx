@@ -1,9 +1,9 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import HeaderButton from "../../micro/HeaderButton";
-import { useTarefasList } from "../../hooks/providers/TarefasListProvider";
+import { TarefasListContext, useTarefasList } from "../../hooks/providers/TarefasListProvider";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../../hooks/connectors/useProjurisTarefasConnector";
-import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 
 type TarefaSmallCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -30,9 +30,9 @@ export default function TarefaSmallCardHeader({
   updateParams,
   setPrefetchDetails,
 }: TarefaSmallCardHeaderProps): JSX.Element {
-  const { toggleCheck } = useTarefasList();
+  const { toggleCheck } = useTarefasList() as TarefasListContext;
   const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
-  const { setAndamentoTimesheetPanelVisibility } = useCreateEntities();
+  const { setAndamentoTimesheetPanelVisibility } = useCreateEntities() as CreateEntitiesContext;
   function renderDetails(): void {
     setPrefetchDetails({ parteAtiva, partePassiva, numeroProcesso, codigoProcesso, codigoTarefaEvento, tarefaColor });
   }

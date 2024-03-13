@@ -2,10 +2,10 @@ import DatePicker from "react-datepicker";
 import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import envVars from "../../../envVars";
-import { useFilters } from "../../hooks/providers/FiltersProvider";
+import { FiltersContext, useFilters } from "../../hooks/providers/FiltersProvider";
 
 export default function HeaderFilterBody(): JSX.Element {
-  const { filters, changeCurrentFilter } = useFilters();
+  const { filters, changeCurrentFilter } = useFilters() as FiltersContext;
   const { quadroKanban, tipos, responsaveis, gruposTrabalho, situacao, dates, nextXDays } =
     filters?.currentFilter ?? {};
   const { endpoints } = useProjurisConnector();

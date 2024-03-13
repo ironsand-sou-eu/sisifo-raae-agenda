@@ -6,11 +6,12 @@ import MaskedNumberInput from "../../micro/MaskedNumberInput";
 import { maskNumbersString } from "../../../utils/utils";
 import Checkbox from "../../micro/Checkbox";
 import SingleDatePicker from "../../micro/SingleDatePicker";
-import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import HeaderButton from "../../micro/HeaderButton";
 
 export default function TimesheetCard() {
-  const { timesheet, timesheetValidation, clearTimesheet, updateTimesheet } = useCreateEntities();
+  const { timesheet, timesheetValidation, clearTimesheet, updateTimesheet } =
+    useCreateEntities() as CreateEntitiesContext;
   const { endpoints } = useProjurisConnector();
   const timesheetHoursAmountMask = "00:00";
   const { dataHoraApontamento, descricaoApontamento, faturar, tipoLancamento, responsavel, qtdHoras } = timesheet ?? {};

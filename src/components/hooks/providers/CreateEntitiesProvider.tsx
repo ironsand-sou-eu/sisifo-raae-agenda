@@ -1,5 +1,5 @@
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react";
-import { Prettify, DisplayingAndamento, DisplayingTimesheet, PartialOrNullable } from "../../../global";
+import { DisplayingAndamento, DisplayingTimesheet, PartialOrNullable } from "../../../global";
 import useProjurisValidator, { Validation } from "../useProjurisValidator";
 import useCreateEntitiesAdapter from "../adapters/useCreateEntitiesAdapter";
 import useProjurisCreateEntitiesConnector from "../connectors/useProjurisCreateEntitiesConnector";
@@ -8,7 +8,7 @@ import useProjurisConnector from "../connectors/useProjurisConnector";
 
 type VisibilityOptions = { visible: false } | { visible: true; codigoProcesso: number };
 
-type CreateEntitiesContext = {
+export type CreateEntitiesContext = {
   andamento?: DisplayingAndamento;
   newTarefa?: DisplayingNewTarefa;
   timesheet?: DisplayingTimesheet;
@@ -30,20 +30,7 @@ type CreateEntitiesContext = {
   setNewTarefaPanelVisibility: (options: VisibilityOptions) => void;
 };
 
-const CreateEntitiesContext = createContext<Prettify<CreateEntitiesContext>>({
-  showAndamentoTimesheetPanel: false,
-  showNewTarefaPanel: false,
-  clearAndamento: () => {},
-  clearNewTarefa: () => {},
-  clearTimesheet: () => {},
-  updateAndamento: () => {},
-  updateNewTarefa: async () => {},
-  updateTimesheet: () => {},
-  createAndamentoTimesheet: () => {},
-  createNewTarefa: () => {},
-  setAndamentoTimesheetPanelVisibility: () => {},
-  setNewTarefaPanelVisibility: () => {},
-});
+const CreateEntitiesContext = createContext<CreateEntitiesContext | undefined>(undefined);
 
 export function useCreateEntities() {
   return useContext(CreateEntitiesContext);

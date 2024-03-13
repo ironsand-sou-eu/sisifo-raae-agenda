@@ -1,7 +1,7 @@
 import HeaderButton from "../../micro/HeaderButton";
 import FixedSelect from "../../micro/FixedSelect";
 import { AnimationsContext, useAnimations } from "../../hooks/providers/AnimationsProvider";
-import { useFilters } from "../../hooks/providers/FiltersProvider";
+import { FiltersContext, useFilters } from "../../hooks/providers/FiltersProvider";
 
 type HeaderFilterHeaderProps = {
   animatableElementId: string;
@@ -10,7 +10,7 @@ type HeaderFilterHeaderProps = {
 export default function HeaderFilterHeader({ animatableElementId }: HeaderFilterHeaderProps): JSX.Element {
   // TODO: SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
   const { toggleVisibility, isVisible } = useAnimations() as AnimationsContext;
-  const { filters, applySelectedFilter, promptAddingFilter, promptDeletingFilter } = useFilters();
+  const { filters, applySelectedFilter, promptAddingFilter, promptDeletingFilter } = useFilters() as FiltersContext;
   const currentFilter = filters?.currentFilter ? [filters.currentFilter] : undefined;
 
   return (

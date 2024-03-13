@@ -33,7 +33,7 @@ const minimalTarefaFilter: FiltersStructure = {
   savedFilters: [],
 };
 
-type TFiltersContext = {
+export type FiltersContext = {
   filters: FiltersStructure | undefined;
   promptAddingFilter: MouseEventHandler<HTMLDivElement>;
   promptDeletingFilter: MouseEventHandler<HTMLDivElement>;
@@ -41,13 +41,7 @@ type TFiltersContext = {
   changeCurrentFilter: (newValue: any, action: keyof Filter) => void;
 };
 
-const FiltersContext = createContext<TFiltersContext>({
-  filters: undefined,
-  promptAddingFilter: () => {},
-  promptDeletingFilter: () => {},
-  applySelectedFilter: () => {},
-  changeCurrentFilter: () => {},
-});
+const FiltersContext = createContext<FiltersContext | undefined>(undefined);
 
 export function useFilters() {
   return useContext(FiltersContext);

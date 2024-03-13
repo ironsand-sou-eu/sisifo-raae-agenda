@@ -10,8 +10,8 @@ import Button from "../../micro/Button";
 import TarefaDetailedCardSkeleton from "../skeletons/TarefaDetailedCardSkeleton";
 import { AnimationsContext, useAnimations } from "../../hooks/providers/AnimationsProvider";
 import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../../global";
-import { useTarefaDetails } from "../../hooks/providers/TarefaDetailsProvider";
-import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import { TarefaDetailsContext, useTarefaDetails } from "../../hooks/providers/TarefaDetailsProvider";
+import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import InputText from "../../micro/InputText";
 import AnimationContainer from "../../micro/AnimationContainer";
 
@@ -38,7 +38,7 @@ export default function TarefaDetailedCard({
   setPrefetchDetails,
 }: TarefaDetailedCardProps) {
   const { toggleVisibility } = useAnimations() as AnimationsContext;
-  const { setNewTarefaPanelVisibility } = useCreateEntities();
+  const { setNewTarefaPanelVisibility } = useCreateEntities() as CreateEntitiesContext;
   const { endpoints } = useProjurisConnector();
   const {
     displayingTarefaDetails,
@@ -47,7 +47,7 @@ export default function TarefaDetailedCard({
     updateTarefaDetails,
     saveTarefa,
     setTarefaLoadingDetails,
-  } = useTarefaDetails();
+  } = useTarefaDetails() as TarefaDetailsContext;
 
   const {
     displayTitulo,

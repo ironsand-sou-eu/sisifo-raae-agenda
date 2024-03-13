@@ -1,8 +1,8 @@
 import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useEffect, useState } from "react";
-import { DisplayingTarefaDetails, FetchedTarefaDetails, Prettify, SimpleDocument } from "../../../global";
+import { DisplayingTarefaDetails, FetchedTarefaDetails, SimpleDocument } from "../../../global";
 import useTarefasAdapter from "../adapters/useTarefasAdapter";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../connectors/useProjurisTarefasConnector";
-import { useTarefasList } from "./TarefasListProvider";
+import { TarefasListContext, useTarefasList } from "./TarefasListProvider";
 
 type KanbanValue = SimpleDocument & { situacao?: SimpleDocument };
 
@@ -12,7 +12,7 @@ type TarefaLoadingDetails = {
   tarefaColor: string;
 };
 
-type TarefaDetailsContext = {
+export type TarefaDetailsContext = {
   displayingTarefaDetails?: DisplayingTarefaDetails;
   isDetailLoading: boolean;
   updateParams?: TarefaUpdateParams;
@@ -22,13 +22,7 @@ type TarefaDetailsContext = {
   loadDetails: () => void;
 };
 
-const TarefaDetailsContext = createContext<Prettify<TarefaDetailsContext>>({
-  isDetailLoading: false,
-  updateTarefaDetails: () => {},
-  saveTarefa: () => {},
-  setTarefaLoadingDetails: () => {},
-  loadDetails: () => {},
-});
+const TarefaDetailsContext = createContext<TarefaDetailsContext | undefined>(undefined);
 
 const emptyLoadingDetails: TarefaLoadingDetails = {
   codigoTarefaEvento: 0,
@@ -49,7 +43,7 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
   const { fetchTarefaDetails, dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
   const { adaptTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType } = useTarefasAdapter();
   const { adaptTarefaDetailsToUpdatingParams } = useTarefasAdapter();
-  const { loadListFromScratch } = useTarefasList();
+  const { loadListFromScratch } = useTarefasList() as TarefasListContext;
 
   useEffect(loadDetails, [tarefaLoadingDetails.codigoTarefaEvento, tarefaLoadingDetails.codigoProcesso]);
 

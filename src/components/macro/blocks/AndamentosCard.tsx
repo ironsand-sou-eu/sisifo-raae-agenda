@@ -4,10 +4,11 @@ import Textarea from "../../micro/Textarea";
 import { SimpleDocument } from "../../../global";
 import SingleDatePicker from "../../micro/SingleDatePicker";
 import HeaderButton from "../../micro/HeaderButton";
-import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 
 export default function AndamentosCard() {
-  const { andamento, andamentoValidation, clearAndamento, updateAndamento } = useCreateEntities();
+  const { andamento, andamentoValidation, clearAndamento, updateAndamento } =
+    useCreateEntities() as CreateEntitiesContext;
   const { endpoints } = useProjurisConnector();
 
   const { dataHoraAndamento, descricaoAndamento, responsaveis, tipoAndamento } = andamento ?? {};

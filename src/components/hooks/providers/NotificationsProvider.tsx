@@ -1,17 +1,13 @@
 import { PropsWithChildren, createContext, useContext, useState } from "react";
-import { Notification, Prettify } from "../../../global";
+import { Notification } from "../../../global";
 
-type NotificationsContext = {
+export type NotificationsContext = {
   msgs: Notification[];
   addNotification: (msg: Notification) => void;
   removeNotification: (msg: Notification) => void;
 };
 
-const NotificationsContext = createContext<Prettify<NotificationsContext>>({
-  msgs: [],
-  addNotification: () => {},
-  removeNotification: () => {},
-});
+const NotificationsContext = createContext<NotificationsContext | undefined>(undefined);
 
 export function useNotifications() {
   return useContext(NotificationsContext);

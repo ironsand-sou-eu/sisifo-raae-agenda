@@ -1,12 +1,12 @@
 import { WritingAndamento, WritingTimesheet, WritingNewTarefa } from "../../../global";
-import { useNotifications } from "../providers/NotificationsProvider";
+import { NotificationsContext, useNotifications } from "../providers/NotificationsProvider";
 import { useMessageGenerator } from "../useMessageGenerator";
 import useProjurisConnector from "./useProjurisConnector";
 
 export type CreatableEntities = "newTarefa" | "tarefa" | "andamento" | "timesheet";
 
 export default function useProjurisCreateEntitiesConnector() {
-  const { addNotification, removeNotification } = useNotifications();
+  const { addNotification, removeNotification } = useNotifications() as NotificationsContext;
   const { generateNotification } = useMessageGenerator();
   const { endpoints, makeProjurisRequest } = useProjurisConnector();
 

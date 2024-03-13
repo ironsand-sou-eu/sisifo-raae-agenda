@@ -1,6 +1,6 @@
 import { FetchedTarefaDetails, SimpleDocument, FetchedTarefa, WritingTarefaDetails } from "../../../global";
 import { Filter } from "../providers/FiltersProvider";
-import { useNotifications } from "../providers/NotificationsProvider";
+import { NotificationsContext, useNotifications } from "../providers/NotificationsProvider";
 import { useMessageGenerator } from "../useMessageGenerator";
 import useProjurisConnector from "./useProjurisConnector";
 
@@ -35,7 +35,7 @@ export const tarefaActions = {
 };
 
 export default function useProjurisTarefasConnector() {
-  const { addNotification, removeNotification } = useNotifications();
+  const { addNotification, removeNotification } = useNotifications() as NotificationsContext;
   const { generateNotification, generateStringMsg } = useMessageGenerator();
   const { endpoints, makeProjurisRequest, extractOptionsArray, loadSimpleOptions } = useProjurisConnector();
 

@@ -1,10 +1,10 @@
-import { useTarefasList } from "../../hooks/providers/TarefasListProvider";
+import { TarefasListContext, useTarefasList } from "../../hooks/providers/TarefasListProvider";
 import useProjurisTarefasConnector from "../../hooks/connectors/useProjurisTarefasConnector";
 import useTarefasAdapter from "../../hooks/adapters/useTarefasAdapter";
 import HeaderButton from "../../micro/HeaderButton";
 
 export default function FloatingCommandBar(): JSX.Element {
-  const { selectedTarefas, loadListFromScratch } = useTarefasList();
+  const { selectedTarefas, loadListFromScratch } = useTarefasList() as TarefasListContext;
   const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
   const { adaptTarefasListToUpdatingParams } = useTarefasAdapter();
 

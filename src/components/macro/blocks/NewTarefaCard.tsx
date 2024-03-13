@@ -6,7 +6,7 @@ import Textarea from "../../micro/Textarea";
 import PrazosCard from "../../micro/PrazosCard";
 import Button from "../../micro/Button";
 import { Marcador, SimpleDocument } from "../../../global";
-import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import DetailedCardHeader from "./DetailedCardHeader";
 import InputText from "../../micro/InputText";
 import HeaderButton from "../../micro/HeaderButton";
@@ -24,7 +24,7 @@ export default function NewTarefaCard() {
     createNewTarefa,
     updateNewTarefa,
     setNewTarefaPanelVisibility,
-  } = useCreateEntities();
+  } = useCreateEntities() as CreateEntitiesContext;
 
   const {
     tipoTarefa,

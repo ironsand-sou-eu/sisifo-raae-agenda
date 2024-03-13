@@ -2,14 +2,14 @@ import DetailedCardHeader from "./DetailedCardHeader";
 import AndamentosCard from "./AndamentosCard";
 import TimesheetCard from "./TimesheetCard";
 import Button from "../../micro/Button";
-import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import { useMemo } from "react";
 
 export type AndamentosTimesheetCardProps = {};
 
 export default function AndamentosTimesheetCard() {
-  const { createAndamentoTimesheet, setAndamentoTimesheetPanelVisibility } = useCreateEntities();
-  const { andamentoValidation, timesheetValidation } = useCreateEntities();
+  const { createAndamentoTimesheet, setAndamentoTimesheetPanelVisibility, andamentoValidation, timesheetValidation } =
+    useCreateEntities() as CreateEntitiesContext;
 
   const saveButtonDisabled = useMemo(() => {
     const andamentoReady = andamentoValidation && andamentoValidation.ok;
