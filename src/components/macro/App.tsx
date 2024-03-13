@@ -6,7 +6,7 @@ import TarefasListProvider from "../hooks/providers/TarefasListProvider";
 import StartPage from "./pages/StartPage";
 import useGoogleConnector from "../hooks/connectors/useGoogleConnector";
 import LoginScreen from "./pages/LoginPage";
-import "../../styles.css";
+import "../../assets/styles.css";
 import CreateEntitiesProvider from "../hooks/providers/CreateEntitiesProvider";
 import TarefaDetailsProvider from "../hooks/providers/TarefaDetailsProvider";
 
