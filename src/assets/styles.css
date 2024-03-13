@@ -507,7 +507,7 @@ div.select-control:hover,
 
 .filter-body {
   position: absolute;
-  z-index: 5;
+  z-index: 10;
   background-color: var(--filter-hsl-background-color);
   margin-block-start: var(--header-height);
   padding: var(--small-padding);
@@ -664,9 +664,27 @@ footer.skeleton-text {
   }
 }
 
+@keyframes drop {
+  0% {
+    transform: translateY(-70%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pickup {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-70%);
+  }
+}
+
 @keyframes drop-filter {
   0% {
-    transform: translateY(-100%);
+    transform: translateY(-2000%);
   }
   100% {
     transform: translateY(0);
@@ -678,6 +696,6 @@ footer.skeleton-text {
     transform: translateY(0);
   }
   100% {
-    transform: translateY(-100%);
+    transform: translateY(-2000%);
   }
 }
