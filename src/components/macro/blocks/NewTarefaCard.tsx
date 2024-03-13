@@ -1,19 +1,22 @@
-import { useMemo } from "react";
+import { useId, useMemo } from "react";
 import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import { codigoUsuario } from "../../../hardcoded";
 import Textarea from "../../micro/Textarea";
 import PrazosCard from "../../micro/PrazosCard";
 import Button from "../../micro/Button";
-import { useAnimations } from "../../hooks/providers/AnimationsProvider";
-import AnimatableFetchingSelect from "../../micro/AnimatableFetchingSelect";
 import { Marcador, SimpleDocument } from "../../../global";
 import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import DetailedCardHeader from "./DetailedCardHeader";
 import InputText from "../../micro/InputText";
 import HeaderButton from "../../micro/HeaderButton";
+import AnimationContainer from "../../micro/AnimationContainer";
+import { AnimationsContext, useAnimations } from "../../hooks/providers/AnimationsProvider";
 
 export default function NewTarefaCard() {
+  const { endpoints } = useProjurisConnector();
+  const colunaKanbanId = useId();
+  const { toggleVisibility } = useAnimations() as AnimationsContext;
   const {
     newTarefa,
     newTarefaValidation,
@@ -22,8 +25,6 @@ export default function NewTarefaCard() {
     updateNewTarefa,
     setNewTarefaPanelVisibility,
   } = useCreateEntities();
-  const { setHidingAnimation } = useAnimations();
-  const { endpoints } = useProjurisConnector();
 
   const {
     tipoTarefa,
@@ -41,11 +42,9 @@ export default function NewTarefaCard() {
   } = newTarefa ?? {};
 
   function handleQuadroKanbanChange(newValue: unknown) {
-    if (!newValue) {
-      setHidingAnimation("newTarefaColunaKanban", () => updateNewTarefa({ quadroKanban: newValue as SimpleDocument }));
-    } else {
-      updateNewTarefa({ quadroKanban: newValue as SimpleDocument });
-    }
+    if (!newValue) toggleVisibility(colunaKanbanId, "hide");
+    else toggleVisibility(colunaKanbanId, "show");
+    updateNewTarefa({ quadroKanban: newValue as SimpleDocument });
   }
 
   const saveButtonDisabled = useMemo(() => {
@@ -154,18 +153,24 @@ export default function NewTarefaCard() {
         label="Quadro kanban"
         isMulti={false}
       />
-      <AnimatableFetchingSelect
-        condition={!!quadroKanban}
-        optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
-        hasMultiLevelSource={false}
-        values={colunaKanban}
-        onChange={newValue => updateNewTarefa({ colunaKanban: newValue as SimpleDocument })}
-        error={newTarefaValidation?.errors.colunaKanban}
-        refType="newTarefaColunaKanban"
-        name="coluna-kanban"
-        label="Coluna kanban"
-        isMulti={false}
-      />
+      {quadroKanban && (
+        <AnimationContainer
+          id={colunaKanbanId}
+          displayingInlineStyle={{ animation: "drop 500ms normal ease-in-out" }}
+          hidingInlineStyle={{ animation: "pickup 500ms normal ease-in-out" }}
+        >
+          <FetchingSelect
+            optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
+            hasMultiLevelSource={false}
+            values={colunaKanban}
+            onChange={newValue => updateNewTarefa({ colunaKanban: newValue as SimpleDocument })}
+            error={newTarefaValidation?.errors.colunaKanban}
+            name="coluna-kanban"
+            label="Coluna kanban"
+            isMulti={false}
+          />
+        </AnimationContainer>
+      )}
       <div className="btn-container">
         <Button
           name="criar-nova-tarefa"

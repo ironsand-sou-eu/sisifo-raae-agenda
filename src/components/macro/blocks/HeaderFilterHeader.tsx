@@ -1,11 +1,15 @@
 import HeaderButton from "../../micro/HeaderButton";
 import FixedSelect from "../../micro/FixedSelect";
-import { useAnimations } from "../../hooks/providers/AnimationsProvider";
+import { AnimationsContext, useAnimations } from "../../hooks/providers/AnimationsProvider";
 import { useFilters } from "../../hooks/providers/FiltersProvider";
 
-export default function HeaderFilterHeader(): JSX.Element {
+type HeaderFilterHeaderProps = {
+  animatableElementId: string;
+};
+
+export default function HeaderFilterHeader({ animatableElementId }: HeaderFilterHeaderProps): JSX.Element {
   // TODO: SELECT SINGLE Categoria de registro (tarefa, andamento, timesheet)
-  const { toggleVisibility, show } = useAnimations();
+  const { toggleVisibility, isVisible } = useAnimations() as AnimationsContext;
   const { filters, applySelectedFilter, promptAddingFilter, promptDeletingFilter } = useFilters();
   const currentFilter = filters?.currentFilter ? [filters.currentFilter] : undefined;
 
@@ -26,8 +30,8 @@ export default function HeaderFilterHeader(): JSX.Element {
       </div>
       <HeaderButton
         type="filter"
-        title={(show?.filter ? "Ocultar filtros" : "Exibir filtros") + "... (Ctrl + q)"}
-        onClick={() => toggleVisibility("filter")}
+        title={(isVisible(animatableElementId) ? "Ocultar filtros" : "Exibir filtros") + "... (Ctrl + q)"}
+        onClick={() => toggleVisibility(animatableElementId)}
       />
     </header>
   );

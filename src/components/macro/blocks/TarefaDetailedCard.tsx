@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useId } from "react";
 import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
 import { codigoUsuario } from "../../../hardcoded";
@@ -8,12 +8,12 @@ import TarefaDetailedCardHeader from "./TarefaDetailedCardHeader";
 import PrazosCard from "../../micro/PrazosCard";
 import Button from "../../micro/Button";
 import TarefaDetailedCardSkeleton from "../skeletons/TarefaDetailedCardSkeleton";
-import { useAnimations } from "../../hooks/providers/AnimationsProvider";
-import AnimatableFetchingSelect from "../../micro/AnimatableFetchingSelect";
+import { AnimationsContext, useAnimations } from "../../hooks/providers/AnimationsProvider";
 import { DisplayingTarefaDetails, Marcador, SimpleDocument } from "../../../global";
 import { useTarefaDetails } from "../../hooks/providers/TarefaDetailsProvider";
 import { useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import InputText from "../../micro/InputText";
+import AnimationContainer from "../../micro/AnimationContainer";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -37,7 +37,7 @@ export default function TarefaDetailedCard({
   tarefaColor,
   setPrefetchDetails,
 }: TarefaDetailedCardProps) {
-  const { setHidingAnimation } = useAnimations();
+  const { toggleVisibility } = useAnimations() as AnimationsContext;
   const { setNewTarefaPanelVisibility } = useCreateEntities();
   const { endpoints } = useProjurisConnector();
   const {
@@ -65,16 +65,16 @@ export default function TarefaDetailedCard({
     prazoColorCssVariable,
   } = displayingTarefaDetails ?? ({} as DisplayingTarefaDetails);
 
+  const colunaKanbanId = useId();
+
   useEffect(() => {
     setTarefaLoadingDetails({ codigoTarefaEvento, codigoProcesso, tarefaColor });
   }, [codigoTarefaEvento, codigoProcesso, tarefaColor]);
 
   function handleQuadroKanbanChange(newValue: unknown) {
-    if (!newValue) {
-      setHidingAnimation("colunaKanban", () => updateTarefaDetails({ quadroKanban: newValue }));
-    } else {
-      updateTarefaDetails({ quadroKanban: newValue });
-    }
+    if (!newValue) toggleVisibility(colunaKanbanId, "hide");
+    else toggleVisibility(colunaKanbanId, "show");
+    updateTarefaDetails({ quadroKanban: newValue });
   }
 
   return isDetailLoading ? (
@@ -146,17 +146,22 @@ export default function TarefaDetailedCard({
         label="Quadro kanban"
         isMulti={false}
       />
-      <AnimatableFetchingSelect
-        condition={!!quadroKanban}
-        optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
-        hasMultiLevelSource={false}
-        values={colunaKanban}
-        onChange={newValue => updateTarefaDetails({ colunaKanban: newValue as SimpleDocument })}
-        refType="colunaKanban"
-        name="coluna-kanban"
-        label="Coluna kanban"
-        isMulti={false}
-      />
+      <AnimationContainer
+        id={colunaKanbanId}
+        displayingInlineStyle={{ animation: "drop 500ms normal ease-in-out" }}
+        hidingInlineStyle={{ animation: "pickup 500ms normal ease-in-out" }}
+      >
+        <FetchingSelect
+          optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
+          hasMultiLevelSource={false}
+          values={colunaKanban}
+          onChange={newValue => updateTarefaDetails({ colunaKanban: newValue as SimpleDocument })}
+          name="coluna-kanban"
+          label="Coluna kanban"
+          isMulti={false}
+        />
+      </AnimationContainer>
+
       <div className="btn-container">
         <Button
           name="criar-tarefa"
