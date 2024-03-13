@@ -26,7 +26,7 @@ export type AnimationsContext = {
   registerAnimatableElement: (element: AnimatableElement, showState?: boolean) => void;
   unregisterAnimatableElement: (idToRemove: string) => void;
   getAnimatableElement: (id: string) => AnimatableElement | undefined;
-  isVisible: (id: string) => boolean | undefined;
+  isVisible: (id: string) => boolean;
   toggleVisibility: (id: string, enforceState?: "hide" | "show") => void;
 };
 
@@ -60,8 +60,8 @@ export default function AnimationsProvider({ children }: PropsWithChildren) {
     return elements.get(id);
   }
 
-  function isVisible(id: string): boolean | undefined {
-    return show.get(id);
+  function isVisible(id: string): boolean {
+    return show.get(id) ?? false;
   }
 
   function toggleVisibility(id: string, enforceState?: "hide" | "show"): void {

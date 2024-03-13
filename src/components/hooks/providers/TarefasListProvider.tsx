@@ -8,13 +8,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import { Prettify, FetchedTarefa, DisplayingTarefa } from "../../../global";
-import { useFilters } from "./FiltersProvider";
-import { useAnimations } from "./AnimationsProvider";
+import { FetchedTarefa, DisplayingTarefa } from "../../../global";
+import { FiltersContext, useFilters } from "./FiltersProvider";
 import useTarefasAdapter from "../adapters/useTarefasAdapter";
 import useProjurisTarefasConnector from "../connectors/useProjurisTarefasConnector";
 
-type TarefasListContext = {
+export type TarefasListContext = {
   displayingTarefas: DisplayingTarefa[];
   hasMore: boolean;
   isListLoading: boolean;
@@ -24,18 +23,10 @@ type TarefasListContext = {
   setPageNumber: Dispatch<SetStateAction<number>>;
   setTarefas: Dispatch<SetStateAction<FetchedTarefa[]>>;
   toggleCheck: (codigoTarefaEvento: number) => void;
+  setPreventListLoading: Dispatch<SetStateAction<boolean>>;
 };
 
-const TarefasListContext = createContext<Prettify<TarefasListContext>>({
-  displayingTarefas: [],
-  hasMore: false,
-  isListLoading: false,
-  pageNumber: 0,
-  selectedTarefas: [],
-  setPageNumber: () => {},
-  setTarefas: () => {},
-  toggleCheck: () => {},
-});
+const TarefasListContext = createContext<TarefasListContext | undefined>(undefined);
 
 export function useTarefasList() {
   return useContext(TarefasListContext);
@@ -44,17 +35,17 @@ export function useTarefasList() {
 export default function TarefasListProvider({ children }: PropsWithChildren) {
   const [tarefas, setTarefas] = useState<FetchedTarefa[]>([]);
   const [isListLoading, setIsListLoading] = useState(false);
+  const [preventLoading, setPreventListLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
 
-  const { filters } = useFilters();
-  const { show } = useAnimations();
+  const { filters } = useFilters() as FiltersContext;
   const { fetchTarefasFromFilter } = useProjurisTarefasConnector();
   const { adaptTarefasListToDisplayingType } = useTarefasAdapter();
 
   useEffect(() => {
     loadListFromScratch();
-  }, [filters?.currentFilter, show?.filter]);
+  }, [filters?.currentFilter, preventLoading]);
 
   useEffect(loadList, [pageNumber]);
 
@@ -68,7 +59,7 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
   }
 
   function loadList() {
-    if (show?.filter || !filters?.currentFilter) return;
+    if (preventLoading || !filters?.currentFilter) return;
     setIsListLoading(true);
     fetchTarefasFromFilter(filters.currentFilter, pageNumber)
       .then(newTarefas => {
@@ -99,6 +90,7 @@ export default function TarefasListProvider({ children }: PropsWithChildren) {
     setPageNumber,
     setTarefas,
     toggleCheck,
+    setPreventListLoading,
   };
 
   return <TarefasListContext.Provider value={contextContent}>{children}</TarefasListContext.Provider>;
