@@ -54,7 +54,7 @@ export default function HeaderButton({
   return (
     <div
       role="button"
-      className={`tarefa-card-button ${className}`}
+      className={`tarefa-card-button ${className ?? ""}`.trim()}
       title={title ?? standards[type].title}
       aria-disabled={disabled}
       onClick={disabled ? () => {} : onClick}
