@@ -31,14 +31,12 @@ export default function AnimationContainer({
   }, []);
 
   const element = getAnimatableElement(id);
-  // const classes = element?.activeClass;
 
   return (
     <>
       {isVisible(id) && (
         <div className={element?.activeClass} style={element?.activeInlineStyle}>
           {children}
-          &nbsp;
         </div>
       )}
     </>

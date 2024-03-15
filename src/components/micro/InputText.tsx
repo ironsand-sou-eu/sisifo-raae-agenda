@@ -1,21 +1,57 @@
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, useEffect, useId } from "react";
 import ErrorDiv from "./ErrorDiv";
+import { AnimationsContext, useAnimations } from "../hooks/providers/AnimationsProvider";
+import AnimationContainer from "./AnimationContainer";
 
 type InputTextProps = ComponentPropsWithoutRef<"input"> & {
   error?: string;
   label?: string;
+  startRetracted?: boolean;
 };
 
-export default function InputText({ value, error, label, name, ...rest }: InputTextProps): JSX.Element {
+export default function InputText({
+  value,
+  error,
+  name,
+  label,
+  className,
+  startRetracted = false,
+  ...rest
+}: InputTextProps): JSX.Element {
   const style = error ? { borderColor: "var(--fill-color-red)" } : undefined;
+  const id = useId();
+  const { isVisible, toggleVisibility } = useAnimations() as AnimationsContext;
+  let isRetracted = !isVisible(id);
+
+  useEffect(() => {
+    isRetracted = startRetracted;
+  }, []);
 
   return (
     <div>
-      <label className="sisifo-label" htmlFor={name}>
-        {label}
+      <label
+        className="sisifo-label"
+        htmlFor={name}
+        onClick={() => toggleVisibility(id, isRetracted ? "show" : "hide")}
+      >
+        {`${label} `}
+        <span className={`rotable${isRetracted ? " rotated" : ""}`}>▼</span>
       </label>
+
       <ErrorDiv error={error} />
-      <input type="text" id={name} value={value ?? ""} {...{ ...rest, style, name }} />
+      <AnimationContainer
+        id={id}
+        displayingInlineStyle={{ animation: "drop 500ms normal ease-in-out", transformOrigin: "top" }}
+        hidingInlineStyle={{ animation: "pickup 500ms normal ease-in-out", transformOrigin: "top" }}
+      >
+        <input
+          type="text"
+          className={`control-input ${className ?? ""}`.trim()}
+          id={name}
+          value={value ?? ""}
+          {...{ ...rest, style, name }}
+        />
+      </AnimationContainer>
     </div>
   );
 }

@@ -314,7 +314,7 @@ div.prazos-card:not(:nth-child(2)) {
 
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea,
-.tarefa-detailed-card label + input,
+.tarefa-detailed-card .control-input,
 .prazos-card,
 div.select-control,
 .datepicker-input {
@@ -347,8 +347,8 @@ div.select-control,
 
 .tarefa-detailed-card textarea:focus,
 .tarefa-detailed-card textarea:hover,
-.tarefa-detailed-card label + input:focus,
-.tarefa-detailed-card label + input:hover,
+.tarefa-detailed-card .control-input:focus,
+.tarefa-detailed-card .control-input:hover,
 div.select-control:has(:focus),
 div.select-control:hover,
 .datepicker-input:focus,
@@ -359,7 +359,7 @@ div.select-control:hover,
 
 .tarefa-detailed-card .processo-info,
 .tarefa-detailed-card textarea,
-.tarefa-detailed-card label + input {
+.tarefa-detailed-card .control-input {
   padding: var(--small-padding);
   resize: vertical;
   width: -webkit-fill-available;
@@ -655,6 +655,16 @@ footer.skeleton-text {
   color: var(--fill-color-red);
 }
 
+.rotable {
+  display: inline-block;
+  transition: transform 450ms linear;
+}
+
+.rotated {
+  transform: rotate(90deg);
+  transition-duration: 100ms;
+}
+
 @keyframes skeleton {
   0% {
     background-color: hsl(200, 20%, 70%);
@@ -666,19 +676,19 @@ footer.skeleton-text {
 
 @keyframes drop {
   0% {
-    transform: translateY(-70%);
+    transform: scaleY(0);
   }
   100% {
-    transform: translateY(0);
+    transform: scaleY(1);
   }
 }
 
 @keyframes pickup {
   0% {
-    transform: translateY(0);
+    transform: scaleY(1);
   }
   100% {
-    transform: translateY(-70%);
+    transform: scaleY(0);
   }
 }
 
