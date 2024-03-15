@@ -1,4 +1,4 @@
-===================== Versão 1.1.1 ====================
+===================== Versão 1.2.0 ====================
 1.1.001 - ISSUE - Resolvida a situação em que não se
 cancelava ou concluía tarefas sem kanban.
 
@@ -18,6 +18,12 @@ drão da situação agora é "pendente".
 1.1.006 - FEATURE - Ao mudar o quadro kanban de uma
 nova tarefa, o valor padrão da coluna agora equivale ao
 valor da situação selecionada.
+
+1.1.007 - FEATURE - Ajustados os campos de texto para
+permitir retrair ou estender.
+
+1.1.008 - FEATURE - Campo "título alternativo" agora
+aparece retraído como padrão.
 
 ===================== Versão 1.1.0 ====================
 1.0.101 - FEATURE - Implementada a criação de timesheet

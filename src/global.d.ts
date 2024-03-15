@@ -58,6 +58,7 @@ export type DisplayingTarefaDetails = {
   processoUrl: string;
   quadroKanban: SimpleDocument;
   tarefaColor: string;
+  titulo: string;
   usuariosResponsaveis: SimpleDocument[];
 };
 

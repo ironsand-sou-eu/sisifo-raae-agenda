@@ -105,6 +105,7 @@ export default function useTarefasAdapter() {
 
     return {
       displayTitulo,
+      titulo: titulo ?? "",
       tarefaColor: tarefaColor ?? "#fff9",
       codigoProcessoProjuris,
       processoUrl: codigoProcessoProjuris

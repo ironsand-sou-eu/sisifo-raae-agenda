@@ -63,6 +63,7 @@ export default function TarefaDetailedCard({
     colunaKanban,
     quadroKanban,
     prazoColorCssVariable,
+    titulo,
   } = displayingTarefaDetails ?? ({} as DisplayingTarefaDetails);
 
   const colunaKanbanId = useId();
@@ -93,7 +94,7 @@ export default function TarefaDetailedCard({
       <InputText
         label="Título alternativo"
         name="titulo"
-        value={displayTitulo}
+        value={titulo}
         onChange={ev => updateTarefaDetails({ titulo: ev.target.value })}
         startRetracted={true}
       />
