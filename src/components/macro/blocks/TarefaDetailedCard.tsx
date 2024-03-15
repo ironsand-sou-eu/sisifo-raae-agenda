@@ -90,6 +90,14 @@ export default function TarefaDetailedCard({
           updateParams,
         }}
       />
+      <InputText
+        label="Título alternativo"
+        name="titulo"
+        value={displayTitulo}
+        onChange={ev => updateTarefaDetails({ titulo: ev.target.value })}
+        startRetracted={true}
+      />
+
       <PrazosCard
         {...{ dataConclusao, dataConclusaoPrevista, dataLimite }}
         dateAsNumber={true}

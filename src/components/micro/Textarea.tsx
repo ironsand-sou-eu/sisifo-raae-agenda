@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useEffect, useId } from "react";
+import { ComponentPropsWithoutRef, useId } from "react";
 import ErrorDiv from "./ErrorDiv";
 import AnimationContainer from "./AnimationContainer";
 import { AnimationsContext, useAnimations } from "../hooks/providers/AnimationsProvider";
@@ -23,10 +23,6 @@ export default function Textarea({
   const { isVisible, toggleVisibility } = useAnimations() as AnimationsContext;
   let isRetracted = !isVisible(id);
 
-  useEffect(() => {
-    isRetracted = startRetracted;
-  }, []);
-
   return (
     <div>
       <label
@@ -42,6 +38,7 @@ export default function Textarea({
         id={id}
         displayingInlineStyle={{ animation: "drop 500ms normal ease-in-out", transformOrigin: "top" }}
         hidingInlineStyle={{ animation: "pickup 500ms normal ease-in-out", transformOrigin: "top" }}
+        startRetracted={startRetracted}
       >
         <textarea value={content ?? ""} id={name} {...{ ...rest, style, name }} />
       </AnimationContainer>

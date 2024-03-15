@@ -4,21 +4,21 @@ import { AnimatableElement, AnimationsContext, useAnimations } from "../hooks/pr
 type AnimationContainerProps = PropsWithChildren<Omit<AnimatableElement, "ref" | "activeClass" | "activeInlineStyle">>;
 
 export default function AnimationContainer({
-  id,
+  children,
   displayingClass,
-  hidingClass,
   displayingInlineStyle,
+  hidingClass,
   hidingInlineStyle,
   hidingTimeoutDelay,
-  children,
+  id,
+  startRetracted,
 }: AnimationContainerProps) {
   const { registerAnimatableElement, isVisible, getAnimatableElement } = useAnimations() as AnimationsContext;
-
-  const activeClass = displayingClass;
-  const activeInlineStyle = displayingInlineStyle;
+  const activeClass = startRetracted ? hidingClass : displayingClass;
+  const activeInlineStyle = startRetracted ? hidingInlineStyle : displayingInlineStyle;
 
   useLayoutEffect(() => {
-    registerAnimatableElement({
+    const animatableElement = {
       id,
       activeClass,
       displayingClass,
@@ -26,8 +26,9 @@ export default function AnimationContainer({
       activeInlineStyle,
       displayingInlineStyle,
       hidingInlineStyle,
-      hidingTimeoutMs: hidingTimeoutDelay ?? 0,
-    } as AnimatableElement);
+      hidingTimeoutDelay: hidingTimeoutDelay ?? 0,
+    } as AnimatableElement;
+    registerAnimatableElement(animatableElement, !startRetracted);
   }, []);
 
   const element = getAnimatableElement(id);

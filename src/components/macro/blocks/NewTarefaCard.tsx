@@ -76,6 +76,7 @@ export default function NewTarefaCard() {
         value={titulo}
         onChange={ev => updateNewTarefa({ titulo: ev.target.value })}
         error={newTarefaValidation?.errors.titulo}
+        startRetracted={true}
       />
       <PrazosCard
         {...{ dataConclusaoPrevista, dataLimite }}

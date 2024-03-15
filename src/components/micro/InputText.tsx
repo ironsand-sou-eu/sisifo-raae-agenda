@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useEffect, useId } from "react";
+import { ComponentPropsWithoutRef, useId } from "react";
 import ErrorDiv from "./ErrorDiv";
 import { AnimationsContext, useAnimations } from "../hooks/providers/AnimationsProvider";
 import AnimationContainer from "./AnimationContainer";
@@ -21,11 +21,7 @@ export default function InputText({
   const style = error ? { borderColor: "var(--fill-color-red)" } : undefined;
   const id = useId();
   const { isVisible, toggleVisibility } = useAnimations() as AnimationsContext;
-  let isRetracted = !isVisible(id);
-
-  useEffect(() => {
-    isRetracted = startRetracted;
-  }, []);
+  const isRetracted = !isVisible(id);
 
   return (
     <div>
@@ -43,6 +39,7 @@ export default function InputText({
         id={id}
         displayingInlineStyle={{ animation: "drop 500ms normal ease-in-out", transformOrigin: "top" }}
         hidingInlineStyle={{ animation: "pickup 500ms normal ease-in-out", transformOrigin: "top" }}
+        startRetracted={startRetracted}
       >
         <input
           type="text"

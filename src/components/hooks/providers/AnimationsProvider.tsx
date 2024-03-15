@@ -3,6 +3,7 @@ import { CSSProperties, PropsWithChildren, createContext, useContext, useState }
 export type AnimatableElement = {
   id: string;
   hidingTimeoutDelay?: number;
+  startRetracted?: boolean;
 } & (
   | {
       activeClass: string;
