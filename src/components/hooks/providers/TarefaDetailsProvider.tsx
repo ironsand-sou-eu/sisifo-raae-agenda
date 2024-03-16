@@ -1,5 +1,5 @@
 import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useEffect, useState } from "react";
-import { DisplayingTarefaDetails, FetchedTarefaDetails, SimpleDocument } from "../../../global";
+import { DisplayingTarefaDetails, FetchedProcessoDetails, FetchedTarefaDetails, SimpleDocument } from "../../../global";
 import useTarefasAdapter from "../adapters/useTarefasAdapter";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../connectors/useProjurisTarefasConnector";
 import { TarefasListContext, useTarefasList } from "./TarefasListProvider";
@@ -36,11 +36,12 @@ export function useTarefaDetails() {
 
 export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
   const [tarefaDetails, setTarefaDetails] = useState<FetchedTarefaDetails>();
+  const [processoDetails, setProcessoDetails] = useState<FetchedProcessoDetails>();
   const [displayingTarefaDetails, setDisplayingTarefaDetails] = useState<DisplayingTarefaDetails>();
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [tarefaLoadingDetails, setTarefaLoadingDetails] = useState(emptyLoadingDetails);
 
-  const { fetchTarefaDetails, dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
+  const { fetchTarefaDetails, fetchProcessoDetails, dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
   const { adaptTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType } = useTarefasAdapter();
   const { adaptTarefaDetailsToUpdatingParams } = useTarefasAdapter();
   const { loadListFromScratch } = useTarefasList() as TarefasListContext;
@@ -50,7 +51,7 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     if (!tarefaDetails) return;
     setDisplayingTarefaDetails(() =>
-      adaptTarefaDetailsToDisplayingType(tarefaDetails, tarefaLoadingDetails.tarefaColor)
+      adaptTarefaDetailsToDisplayingType(tarefaDetails, processoDetails, tarefaLoadingDetails.tarefaColor)
     );
   }, [tarefaDetails]);
 
@@ -69,6 +70,11 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
     fetchTarefaDetails(tarefaLoadingDetails.codigoTarefaEvento, tarefaLoadingDetails.codigoProcesso)
       .then(details => {
         setTarefaDetails(details);
+      })
+      .catch(e => console.error(e));
+    fetchProcessoDetails(tarefaLoadingDetails.codigoProcesso)
+      .then(details => {
+        setProcessoDetails(details);
       })
       .catch(e => console.error(e))
       .finally(() => setIsDetailLoading(false));

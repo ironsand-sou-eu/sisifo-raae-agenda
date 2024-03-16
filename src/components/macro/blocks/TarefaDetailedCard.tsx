@@ -55,6 +55,7 @@ export default function TarefaDetailedCard({
     dataConclusao,
     dataConclusaoPrevista,
     dataLimite,
+    descricaoProcesso,
     descricaoTarefa,
     gruposResponsaveis,
     local,
@@ -111,6 +112,13 @@ export default function TarefaDetailedCard({
         name="descricao"
         onChange={ev => updateTarefaDetails({ descricaoTarefa: ev.target.value })}
         content={descricaoTarefa}
+      />
+      <Textarea
+        label="Descrição do processo"
+        name="descricaoProcesso"
+        content={descricaoProcesso}
+        disabled
+        startRetracted={true}
       />
       <InputText
         label="Local/Site"

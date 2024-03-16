@@ -4,6 +4,7 @@ import {
   FetchedTarefaDetails,
   FetchedTarefa,
   WritingTarefaDetails,
+  FetchedProcessoDetails,
 } from "../../../global";
 import { projurisSiteBase } from "../../../hardcoded";
 import useProjurisConnector from "../connectors/useProjurisConnector";
@@ -78,6 +79,7 @@ export default function useTarefasAdapter() {
 
   function adaptTarefaDetailsToDisplayingType(
     tarefaDetails?: FetchedTarefaDetails,
+    processoDetails?: FetchedProcessoDetails,
     tarefaColor?: string
   ): DisplayingTarefaDetails {
     const {
@@ -97,11 +99,18 @@ export default function useTarefasAdapter() {
         quadroKanban,
       },
     } = tarefaDetails || { tarefaEventoWs: { tarefaEventoSituacaoWs: {} } };
+    const { identificador, responsaveis, pastaCliente, descricao: fetchedDescricaoProcesso } = processoDetails || {};
     const codigoProcessoProjuris = tarefaDetails?.modulos[0].codigoRegistroVinculo;
     const prazoAdm = dataConclusaoPrevista ? new Date(dataConclusaoPrevista) : undefined;
     let displayTitulo = "";
     if (tipoTarefa?.valor) displayTitulo = tipoTarefa.valor;
     if (titulo && titulo !== "") displayTitulo = titulo;
+    const pastaClienteDisplay = pastaCliente ? `Pasta do cliente: ${pastaCliente}\n` : "";
+    const responsaveisDisplay = responsaveis
+      ? `Responsáveis do processo: ${responsaveis.map(resp => resp.valor).join(", ")}\n`
+      : "";
+    const descricaoProcessoDisplay = fetchedDescricaoProcesso?.replace(/<\/?[^>]+(>|$)/g, "") ?? "";
+    const descricaoProcesso = `${identificador}\n${pastaClienteDisplay}${responsaveisDisplay}\n${descricaoProcessoDisplay}`;
 
     return {
       displayTitulo,
@@ -111,6 +120,7 @@ export default function useTarefasAdapter() {
       processoUrl: codigoProcessoProjuris
         ? projurisSiteBase + endpoints.processoVisaoCompleta(codigoProcessoProjuris)
         : "",
+      descricaoProcesso,
       descricaoTarefa,
       usuariosResponsaveis: usuariosResponsaveis ?? [],
       gruposResponsaveis: gruposResponsaveis ?? [],

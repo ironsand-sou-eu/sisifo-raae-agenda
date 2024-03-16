@@ -58,6 +58,10 @@ export default function useProjurisConnector() {
       if (!codigoTipoAndamento) return "";
       return `/andamento-tipo/${codigoTipoAndamento}`;
     },
+    consultarProcesso: (codigoProcesso: number) => {
+      if (!codigoProcesso) return "";
+      return `/processo/${codigoProcesso}`;
+    },
     criarTimesheet: (codigoProcesso: number) => {
       if (!codigoProcesso) return "";
       return `/processo/${codigoProcesso}/apontamento-horas`;

@@ -1,4 +1,10 @@
-import { FetchedTarefaDetails, SimpleDocument, FetchedTarefa, WritingTarefaDetails } from "../../../global";
+import {
+  FetchedTarefaDetails,
+  SimpleDocument,
+  FetchedTarefa,
+  WritingTarefaDetails,
+  FetchedProcessoDetails,
+} from "../../../global";
 import { Filter } from "../providers/FiltersProvider";
 import { NotificationsContext, useNotifications } from "../providers/NotificationsProvider";
 import { useMessageGenerator } from "../useMessageGenerator";
@@ -41,6 +47,12 @@ export default function useProjurisTarefasConnector() {
 
   async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<FetchedTarefaDetails> {
     const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
+    const response = await makeProjurisRequest({ endpoint, method: "GET" });
+    return await response.json();
+  }
+
+  async function fetchProcessoDetails(codigoProcesso: number): Promise<FetchedProcessoDetails> {
+    const endpoint = endpoints.consultarProcesso(codigoProcesso);
     const response = await makeProjurisRequest({ endpoint, method: "GET" });
     return await response.json();
   }
@@ -180,6 +192,7 @@ export default function useProjurisTarefasConnector() {
 
   return {
     fetchTarefaDetails,
+    fetchProcessoDetails,
     fetchTarefasFromFilter,
     dispatchBackendTarefaUpdate,
   };

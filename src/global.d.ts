@@ -46,6 +46,7 @@ export type DisplayingTarefa = {
 export type DisplayingTarefaDetails = {
   codigoProcessoProjuris?: number;
   colunaKanban: SimpleDocument;
+  descricaoProcesso?: string;
   descricaoTarefa?: string;
   dataConclusao: Date | null;
   dataConclusaoPrevista: Date | null;
@@ -132,6 +133,14 @@ export type FetchedTarefaDetails = {
     titulo: string;
     usuariosResponsaveis: SimpleDocument[];
   };
+};
+
+export type FetchedProcessoDetails = {
+  codigoProcesso: number;
+  identificador: string;
+  responsaveis: SimpleDocument[];
+  pastaCliente: string;
+  descricao: string;
 };
 
 export type WritingAndamento = {

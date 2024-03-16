@@ -25,6 +25,10 @@ permitir retrair ou estender.
 1.1.008 - FEATURE - Campo "título alternativo" agora
 aparece retraído como padrão.
 
+1.1.009 - FEATURE - Na visualização detalhada de tare-
+fa, passamos a exibir a descrição do processo (somen-
+te para leitura).
+
 ===================== Versão 1.1.0 ====================
 1.0.101 - FEATURE - Implementada a criação de timesheet
 e andamentos, bem como novas tarefas no mesmo processo.
