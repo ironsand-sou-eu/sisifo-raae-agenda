@@ -29,6 +29,10 @@ aparece retraído como padrão.
 fa, passamos a exibir a descrição do processo (somen-
 te para leitura).
 
+1.1.010 - FEATURE - Ao realizar um lançamento de horas,
+registra o ID da tarefa e o tipo de tarefa como campos
+dinâmicos.
+
 ===================== Versão 1.1.0 ====================
 1.0.101 - FEATURE - Implementada a criação de timesheet
 e andamentos, bem como novas tarefas no mesmo processo.
