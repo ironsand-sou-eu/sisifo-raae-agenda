@@ -20,7 +20,7 @@ export default function AndamentosCard() {
         <HeaderButton type="delete" onClick={clearAndamento} className="small-button" title="Limpar andamento" />
       </header>
       <FetchingSelect
-        optionsEndpoint={endpoints.tiposAndamento}
+        optionsEndpoint={endpoints.andamento.consultarTipos}
         hasMultiLevelSource={false}
         values={tipoAndamento}
         onChange={newValue => updateAndamento({ tipoAndamento: newValue as SimpleDocument })}

@@ -33,54 +33,60 @@ type DocumentWithParent = SimpleDocument & { parent?: string };
 export default function useProjurisConnector() {
   const { getProjurisAuthTokenWithinExpiration } = useProjurisAuthConnector();
   const endpoints = {
-    // buscarProcessoPorNumero: "/processo/consulta?filtro-geral=",
-    // camposDinamicos: "/campo-dinamico/3/13",
-    criarAndamento: "/andamento",
     gruposTrabalho: "/grupo/",
     marcadores: "/marcador/consulta/",
     responsaveis: "/usuario/",
-    situacoesTarefa: "/tipo?chave-tipo=tarefa-evento-situacao(chaveModulo:null)",
-    tiposAndamento: "/andamento-tipo/",
-    tiposLancamentoTimesheet: "/tipo?chave-tipo=apontamento-hora-tipo",
-    tiposTarefa: "/tipo?chave-tipo=tarefa-tipo",
-    alterarColunaKanbanTarefa: (codigoTarefaEvento?: number) => {
-      if (!codigoTarefaEvento) return "";
-      return `/v2/tarefa/${codigoTarefaEvento}/alterar-coluna-kanban`;
+    andamento: {
+      criar: "/andamento",
+      consultarTipos: "/andamento-tipo/",
+      consultarTipoPorCodigo: (codigoTipoAndamento: number) => {
+        if (!codigoTipoAndamento) return "";
+        return `/andamento-tipo/${codigoTipoAndamento}`;
+      },
     },
-    colunasKanban: (codigoQuadroKanban?: number) => {
-      if (!codigoQuadroKanban) return "";
-      return `/kanban/tarefa/${codigoQuadroKanban}`;
+    kanban: {
+      consultarColunasDeUmQuadro: (codigoQuadroKanban?: number) => {
+        if (!codigoQuadroKanban) return "";
+        return `/kanban/tarefa/${codigoQuadroKanban}`;
+      },
+      consultarQuadros: "/tipo?chave-tipo=kanbanTarefa",
     },
-    consultarTarefaComPaginacao: (pageNumber: number, registersAmount: number, order: "ASC" | "DESC") => {
-      return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=${pageNumber}&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
+    processo: {
+      consultarDetalhes: (codigoProcesso: number) => {
+        if (!codigoProcesso) return "";
+        return `/processo/${codigoProcesso}`;
+      },
+      urlVisaoCompleta: (codigoProcesso: number) => {
+        if (!codigoProcesso) return "";
+        return `casos/processo/visao-completa/${codigoProcesso}`;
+      },
     },
-    consultarTipoAndamentoPorCodigo: (codigoTipoAndamento: number) => {
-      if (!codigoTipoAndamento) return "";
-      return `/andamento-tipo/${codigoTipoAndamento}`;
+    tarefa: {
+      alterarColunaKanban: (codigoTarefaEvento?: number) => {
+        if (!codigoTarefaEvento) return "";
+        return `/v2/tarefa/${codigoTarefaEvento}/alterar-coluna-kanban`;
+      },
+      consultarListaComPaginacao: (pageNumber: number, registersAmount: number, order: "ASC" | "DESC") => {
+        return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=${pageNumber}&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
+      },
+      consultarDetalhes: (codigoTarefaEvento: number, codigoProcesso: number) => {
+        return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
+      },
+      consultarSituacoes: "/tipo?chave-tipo=tarefa-evento-situacao(chaveModulo:null)",
+      consultarTipos: "/tipo?chave-tipo=tarefa-tipo",
+      update: (action: TarefaUpdateActions | "criar", codigoTarefaEvento?: number) => {
+        if (action === "salvar" || action === "criar") return "/tarefa";
+        if (!codigoTarefaEvento) return "";
+        return `/v2/tarefa/alterar-situacao/${codigoTarefaEvento}/situacao/${tarefaActions[action].code}`;
+      },
     },
-    consultarProcesso: (codigoProcesso: number) => {
-      if (!codigoProcesso) return "";
-      return `/processo/${codigoProcesso}`;
-    },
-    criarTimesheet: (codigoProcesso: number) => {
-      if (!codigoProcesso) return "";
-      return `/processo/${codigoProcesso}/apontamento-horas`;
-    },
-    processoVisaoCompleta: (codigoProcesso: number) => {
-      if (!codigoProcesso) return "";
-      return `casos/processo/visao-completa/${codigoProcesso}`;
-    },
-    quadrosKanban: (codigoUsuario?: number) => {
-      if (!codigoUsuario) return "";
-      return `/tipo?chave-tipo=kanbanTarefa(codigoUsuario:${codigoUsuario})`;
-    },
-    tarefaDetails: (codigoTarefaEvento: number, codigoProcesso: number) => {
-      return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
-    },
-    updateTarefa: (action: TarefaUpdateActions | "criar", codigoTarefaEvento?: number) => {
-      if (action === "salvar" || action === "criar") return "/tarefa";
-      if (!codigoTarefaEvento) return "";
-      return `/v2/tarefa/alterar-situacao/${codigoTarefaEvento}/situacao/${tarefaActions[action].code}`;
+    timesheet: {
+      criar: (codigoProcesso: number) => {
+        if (!codigoProcesso) return "";
+        return `/processo/${codigoProcesso}/apontamento-horas`;
+      },
+      consultarTiposLancamento: "/tipo?chave-tipo=apontamento-hora-tipo",
+      consultarCamposDinamicos: "/campo-dinamico/3/21",
     },
   };
 

@@ -50,5 +50,3 @@ export default function PrazosCard({
     </div>
   );
 }
-
-// TODO: codigoUsuarioCriador: 89323

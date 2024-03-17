@@ -46,19 +46,19 @@ export default function useProjurisTarefasConnector() {
   const { endpoints, makeProjurisRequest, extractOptionsArray, loadSimpleOptions } = useProjurisConnector();
 
   async function fetchTarefaDetails(codigoTarefaEvento: number, codigoProcesso: number): Promise<FetchedTarefaDetails> {
-    const endpoint = endpoints.tarefaDetails(codigoTarefaEvento, codigoProcesso);
+    const endpoint = endpoints.tarefa.consultarDetalhes(codigoTarefaEvento, codigoProcesso);
     const response = await makeProjurisRequest({ endpoint, method: "GET" });
     return await response.json();
   }
 
   async function fetchProcessoDetails(codigoProcesso: number): Promise<FetchedProcessoDetails> {
-    const endpoint = endpoints.consultarProcesso(codigoProcesso);
+    const endpoint = endpoints.processo.consultarDetalhes(codigoProcesso);
     const response = await makeProjurisRequest({ endpoint, method: "GET" });
     return await response.json();
   }
 
   async function fetchTarefasFromFilter(filter: Filter, pageNumber: number): Promise<FetchedTarefa[]> {
-    const endpoint = endpoints.consultarTarefaComPaginacao(pageNumber, 20, "ASC");
+    const endpoint = endpoints.tarefa.consultarListaComPaginacao(pageNumber, 20, "ASC");
     const body = createQueryBody(filter);
     const response = await makeProjurisRequest({ endpoint, method: "POST", body });
     return (await extractOptionsArray(response)) ?? [];
@@ -139,7 +139,11 @@ export default function useProjurisTarefasConnector() {
         ? param.codigoQuadroKanban
         : await fetchCodigoQuadroKanbanForTarefa(codigoTarefaEvento, param.codigoProcesso);
     if (!quadroKanban) return null;
-    const colunasKanban: SimpleDocument[] = await loadSimpleOptions(endpoints.colunasKanban(quadroKanban), {}, false);
+    const colunasKanban: SimpleDocument[] = await loadSimpleOptions(
+      endpoints.kanban.consultarColunasDeUmQuadro(quadroKanban),
+      {},
+      false
+    );
     const concludedObj = colunasKanban.find(
       coluna => coluna.valor.toLowerCase() === tarefaActions[type].name.toLowerCase()
     );
@@ -163,7 +167,7 @@ export default function useProjurisTarefasConnector() {
   }
 
   async function makeRequestsForUpdatingTarefa(type: TarefaUpdateActions, body: string, codigoTarefaEvento?: number) {
-    const endpointAction = endpoints.updateTarefa(type, codigoTarefaEvento);
+    const endpointAction = endpoints.tarefa.update(type, codigoTarefaEvento);
     if (!endpointAction) {
       const errorMsg = generateNotification.errorUpdateEndpointNotFound(type, "makeRequestsForConcludingTarefa");
       addNotification(errorMsg);
@@ -181,7 +185,7 @@ export default function useProjurisTarefasConnector() {
   async function makeKanbanRequest(type: TarefaUpdateActions, body: string, codigoTarefaEvento?: number) {
     if (type === "salvar" || !body) return null;
 
-    const endpointKanban = endpoints.alterarColunaKanbanTarefa(codigoTarefaEvento);
+    const endpointKanban = endpoints.tarefa.alterarColunaKanban(codigoTarefaEvento);
     if (!endpointKanban) {
       const errorMsg = generateNotification.errorKanbanEndpointNotFound("makeKanbanRequest");
       addNotification(errorMsg);

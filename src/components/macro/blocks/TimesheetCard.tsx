@@ -23,7 +23,7 @@ export default function TimesheetCard() {
         <HeaderButton type="delete" onClick={clearTimesheet} className="small-button" title="Limpar timesheet" />
       </header>
       <FetchingSelect
-        optionsEndpoint={endpoints.tiposLancamentoTimesheet}
+        optionsEndpoint={endpoints.timesheet.consultarTiposLancamento}
         hasMultiLevelSource={false}
         values={tipoLancamento}
         onChange={newValue => updateTimesheet({ tipoLancamento: newValue as SimpleDocument })}

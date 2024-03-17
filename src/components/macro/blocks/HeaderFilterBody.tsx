@@ -1,7 +1,6 @@
 import DatePicker from "react-datepicker";
 import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
-import envVars from "../../../envVars";
 import { FiltersContext, useFilters } from "../../hooks/providers/FiltersProvider";
 
 export default function HeaderFilterBody(): JSX.Element {
@@ -47,7 +46,7 @@ export default function HeaderFilterBody(): JSX.Element {
           </div>
         </div>
         <FetchingSelect
-          optionsEndpoint={endpoints.situacoesTarefa}
+          optionsEndpoint={endpoints.tarefa.consultarSituacoes}
           hasMultiLevelSource={false}
           values={situacao}
           onChange={newValues => changeCurrentFilter(newValues, "situacao")}
@@ -56,7 +55,7 @@ export default function HeaderFilterBody(): JSX.Element {
           isMulti={false}
         />
         <FetchingSelect
-          optionsEndpoint={endpoints.quadrosKanban(envVars.CODIGO_USUARIO)}
+          optionsEndpoint={endpoints.kanban.consultarQuadros}
           hasMultiLevelSource={false}
           values={quadroKanban}
           onChange={newValues => changeCurrentFilter(newValues, "quadroKanban")}
@@ -65,7 +64,7 @@ export default function HeaderFilterBody(): JSX.Element {
           isMulti={false}
         />
         <FetchingSelect
-          optionsEndpoint={endpoints.tiposTarefa}
+          optionsEndpoint={endpoints.tarefa.consultarTipos}
           hasMultiLevelSource={false}
           values={tipos}
           onChange={newValues => changeCurrentFilter(newValues, "tipos")}

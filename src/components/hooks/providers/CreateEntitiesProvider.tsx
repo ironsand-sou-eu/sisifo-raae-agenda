@@ -58,7 +58,7 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
 
   useEffect(() => {
     loadSimpleOptions(
-      endpoints.situacoesTarefa,
+      endpoints.tarefa.consultarSituacoes,
       {
         key: "valor",
         operator: "insensitiveStrictEquality",

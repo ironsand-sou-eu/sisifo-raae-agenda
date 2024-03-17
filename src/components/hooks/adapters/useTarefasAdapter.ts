@@ -55,7 +55,7 @@ export default function useTarefasAdapter() {
       situacao: situacao ?? "Não encontrada",
       usuarioResponsaveis,
       prazo: prazo ? prazo.toLocaleDateString("pt-BR") : "Não encontrado",
-      processoUrl: codigoProcesso ? projurisSiteBase + endpoints.processoVisaoCompleta(codigoProcesso) : "",
+      processoUrl: codigoProcesso ? projurisSiteBase + endpoints.processo.urlVisaoCompleta(codigoProcesso) : "",
       prazoColorCssVariable: getPrazoColorCssVariable(prazo, flagSituacaoConcluida),
     };
   }
@@ -118,7 +118,7 @@ export default function useTarefasAdapter() {
       tarefaColor: tarefaColor ?? "#fff9",
       codigoProcessoProjuris,
       processoUrl: codigoProcessoProjuris
-        ? projurisSiteBase + endpoints.processoVisaoCompleta(codigoProcessoProjuris)
+        ? projurisSiteBase + endpoints.processo.urlVisaoCompleta(codigoProcessoProjuris)
         : "",
       descricaoProcesso,
       descricaoTarefa,

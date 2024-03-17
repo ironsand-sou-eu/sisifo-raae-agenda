@@ -40,9 +40,9 @@ export default function useProjurisCreateEntitiesConnector() {
     const codigoProcesso = "codigoProcesso" in params ? params.codigoProcesso : undefined;
 
     const creationEnpointsByEntityType = {
-      newTarefa: endpoints.updateTarefa("criar"),
-      andamento: endpoints.criarAndamento,
-      timesheet: codigoProcesso ? endpoints.criarTimesheet(codigoProcesso) : "",
+      newTarefa: endpoints.tarefa.update("criar"),
+      andamento: endpoints.andamento.criar,
+      timesheet: codigoProcesso ? endpoints.timesheet.criar(codigoProcesso) : "",
     };
     const progressMsg = generateNotification.progress("criar", entityType);
     addNotification(progressMsg);

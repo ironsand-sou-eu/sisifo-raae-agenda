@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useId } from "react";
 import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
-import { codigoUsuario } from "../../../hardcoded";
 import Textarea from "../../micro/Textarea";
 import ProcessoInfo from "../../micro/ProcessoInfoCard";
 import TarefaDetailedCardHeader from "./TarefaDetailedCardHeader";
@@ -155,7 +154,7 @@ export default function TarefaDetailedCard({
         isMulti={true}
       />
       <FetchingSelect
-        optionsEndpoint={endpoints.quadrosKanban(codigoUsuario)}
+        optionsEndpoint={endpoints.kanban.consultarQuadros}
         hasMultiLevelSource={false}
         values={quadroKanban}
         onChange={handleQuadroKanbanChange}
@@ -169,7 +168,7 @@ export default function TarefaDetailedCard({
         hidingInlineStyle={{ animation: "pickup 500ms normal ease-in-out" }}
       >
         <FetchingSelect
-          optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
+          optionsEndpoint={endpoints.kanban.consultarColunasDeUmQuadro(quadroKanban?.chave)}
           hasMultiLevelSource={false}
           values={colunaKanban}
           onChange={newValue => updateTarefaDetails({ colunaKanban: newValue as SimpleDocument })}

@@ -1,7 +1,6 @@
 import { useId, useMemo } from "react";
 import useProjurisConnector from "../../hooks/connectors/useProjurisConnector";
 import FetchingSelect from "../../micro/FetchingSelect";
-import { codigoUsuario } from "../../../hardcoded";
 import Textarea from "../../micro/Textarea";
 import PrazosCard from "../../micro/PrazosCard";
 import Button from "../../micro/Button";
@@ -61,7 +60,7 @@ export default function NewTarefaCard() {
         rightDiv={<HeaderButton type="delete" onClick={clearNewTarefa} className="small-button" title="Limpar" />}
       />
       <FetchingSelect
-        optionsEndpoint={endpoints.tiposTarefa}
+        optionsEndpoint={endpoints.tarefa.consultarTipos}
         hasMultiLevelSource={false}
         values={tipoTarefa}
         onChange={newValue => updateNewTarefa({ tipoTarefa: newValue as SimpleDocument })}
@@ -135,7 +134,7 @@ export default function NewTarefaCard() {
         isMulti={true}
       />
       <FetchingSelect
-        optionsEndpoint={endpoints.situacoesTarefa}
+        optionsEndpoint={endpoints.tarefa.consultarSituacoes}
         hasMultiLevelSource={false}
         values={tarefaEventoSituacaoWs}
         onChange={newValue => updateNewTarefa({ tarefaEventoSituacaoWs: newValue as SimpleDocument })}
@@ -145,7 +144,7 @@ export default function NewTarefaCard() {
         isMulti={false}
       />
       <FetchingSelect
-        optionsEndpoint={endpoints.quadrosKanban(codigoUsuario)}
+        optionsEndpoint={endpoints.kanban.consultarQuadros}
         hasMultiLevelSource={false}
         values={quadroKanban}
         onChange={handleQuadroKanbanChange}
@@ -161,7 +160,7 @@ export default function NewTarefaCard() {
           hidingInlineStyle={{ animation: "pickup 500ms normal ease-in-out" }}
         >
           <FetchingSelect
-            optionsEndpoint={endpoints.colunasKanban(quadroKanban?.chave)}
+            optionsEndpoint={endpoints.kanban.consultarColunasDeUmQuadro(quadroKanban?.chave)}
             hasMultiLevelSource={false}
             values={colunaKanban}
             onChange={newValue => updateNewTarefa({ colunaKanban: newValue as SimpleDocument })}
