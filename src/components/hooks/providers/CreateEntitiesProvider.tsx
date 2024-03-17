@@ -6,7 +6,8 @@ import useProjurisCreateEntitiesConnector from "../connectors/useProjurisCreateE
 import { DisplayingNewTarefa, SimpleDocument } from "../../../global.zod";
 import useProjurisConnector from "../connectors/useProjurisConnector";
 
-type VisibilityOptions = { visible: false } | { visible: true; codigoProcesso: number };
+type ParentDetails = { codigoProcesso: number; idTarefa: string; tipoTarefa: string };
+type VisibilityOptions = { visible: false } | { visible: true; parentDetails: ParentDetails };
 
 export type CreateEntitiesContext = {
   andamento?: DisplayingAndamento;
@@ -45,7 +46,7 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
   } = useCreateEntitiesAdapter();
   const { dispatchBackendEntityCreation } = useProjurisCreateEntitiesConnector();
   const { loadSimpleOptions, endpoints } = useProjurisConnector();
-  const [codigoProcesso, setCodigoProcesso] = useState(0);
+  const [parentDetails, setParentDetails] = useState<ParentDetails>();
   const [pendingStatus, setPendingStatus] = useState<SimpleDocument>();
   const [andamento, setAndamento] = useState<DisplayingAndamento>();
   const [andamentoValidation, setAndamentoValidation] = useState<Validation>();
@@ -98,9 +99,7 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
 
   async function updateNewTarefa(keysToUpdate: PartialOrNullable<DisplayingNewTarefa>): Promise<void> {
     const adaptedKeys = await handleKeysBeforeUpdate(keysToUpdate);
-    setNewTarefa(prevValues => {
-      return { ...prevValues, ...adaptedKeys } as DisplayingNewTarefa;
-    });
+    setNewTarefa(prevValues => ({ ...prevValues, ...adaptedKeys } as DisplayingNewTarefa));
   }
 
   async function handleKeysBeforeUpdate(
@@ -116,7 +115,7 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
 
   async function adaptBeforeUpdatingQuadroKanban(keysToUpdate: PartialOrNullable<DisplayingNewTarefa>) {
     const matchingColunasKanban = await loadSimpleOptions(
-      endpoints.colunasKanban(keysToUpdate.quadroKanban?.chave),
+      endpoints.kanban.consultarColunasDeUmQuadro(keysToUpdate.quadroKanban?.chave),
       {
         key: "valor",
         operator: "insensitiveStrictEquality",
@@ -149,24 +148,28 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
   }
 
   function createAndamento() {
-    if (!andamento || !codigoProcesso) return; //TODO: If there is no codigoProcesso, send notification
-    const writingAndamento = adaptDisplayingAndamentoToWritingType(andamento, codigoProcesso);
+    if (!andamento || !parentDetails?.codigoProcesso) return; //TODO: If there is no codigoProcesso, send notification
+    const writingAndamento = adaptDisplayingAndamentoToWritingType(andamento, parentDetails.codigoProcesso);
     dispatchBackendEntityCreation(writingAndamento, { entityType: "andamento", onSuccessCb: clearAndamento });
   }
 
   function createTimesheet() {
     if (!timesheet) return;
-    const writingTimesheet = adaptDisplayingTimesheetToWritingType(timesheet);
+    const writingTimesheet = adaptDisplayingTimesheetToWritingType(
+      timesheet,
+      parentDetails?.idTarefa,
+      parentDetails?.tipoTarefa
+    );
     dispatchBackendEntityCreation(writingTimesheet, {
       entityType: "timesheet",
-      codigoProcesso,
+      codigoProcesso: parentDetails?.codigoProcesso,
       onSuccessCb: clearTimesheet,
     });
   }
 
   function createNewTarefa() {
-    if (!newTarefa || !codigoProcesso) return; //TODO: If there is no codigoProcesso, send notification
-    const writingNewTarefa = adaptDisplayingNewTarefaToWritingType(newTarefa, codigoProcesso);
+    if (!newTarefa || !parentDetails?.codigoProcesso) return; //TODO: If there is no codigoProcesso, send notification
+    const writingNewTarefa = adaptDisplayingNewTarefaToWritingType(newTarefa, parentDetails.codigoProcesso);
     dispatchBackendEntityCreation(writingNewTarefa, { entityType: "newTarefa", onSuccessCb: clearNewTarefa });
   }
 
@@ -175,12 +178,12 @@ export default function CreateEntitiesProvider({ children }: PropsWithChildren) 
   }
 
   function setAndamentoTimesheetPanelVisibility(options: VisibilityOptions) {
-    if (options.visible === true) setCodigoProcesso(options.codigoProcesso);
+    if (options.visible === true) setParentDetails(prevPd => ({ ...prevPd, ...options.parentDetails }));
     setshowAndamentoTimesheetPanel(options.visible);
   }
 
   function setNewTarefaPanelVisibility(options: VisibilityOptions) {
-    if (options.visible === true) setCodigoProcesso(options.codigoProcesso);
+    if (options.visible === true) setParentDetails(prevPd => ({ ...prevPd, ...options.parentDetails }));
     setShowNewTarefaPanel(options.visible);
   }
 

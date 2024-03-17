@@ -13,6 +13,7 @@ type TarefaLoadingDetails = {
 };
 
 export type TarefaDetailsContext = {
+  tarefaDetails?: FetchedTarefaDetails;
   displayingTarefaDetails?: DisplayingTarefaDetails;
   isDetailLoading: boolean;
   updateParams?: TarefaUpdateParams;
@@ -138,6 +139,7 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
   }
 
   const contextContent = {
+    tarefaDetails,
     displayingTarefaDetails,
     isDetailLoading,
     updateParams,

@@ -1,5 +1,11 @@
 import { WritingAndamento, WritingNewTarefa, WritingTimesheet } from "../../../global";
 import { DisplayingAndamento, DisplayingNewTarefa, DisplayingTimesheet } from "../../../global.zod";
+import {
+  timesheetCodigoCampoDinamicoIdTarefa,
+  timesheetCodigoCampoDinamicoTipoTarefa,
+  timesheetNomeCampoDinamicoIDTarefa,
+  timesheetNomeCampoDinamicoTipoTarefa,
+} from "../../../hardcoded";
 
 export default function useCreateEntitiesAdapter() {
   function adaptDisplayingAndamentoToWritingType(
@@ -73,7 +79,11 @@ export default function useCreateEntitiesAdapter() {
     return writingNewTarefa;
   }
 
-  function adaptDisplayingTimesheetToWritingType(displayingTimesheet: DisplayingTimesheet): WritingTimesheet {
+  function adaptDisplayingTimesheetToWritingType(
+    displayingTimesheet: DisplayingTimesheet,
+    idTarefa?: string,
+    tipoTarefa?: string
+  ): WritingTimesheet {
     const { dataHoraApontamento, faturar, qtdHoras, responsavel, tipoLancamento, descricaoApontamento } =
       displayingTimesheet;
     const writingTimesheet: WritingTimesheet = {
@@ -90,6 +100,22 @@ export default function useCreateEntitiesAdapter() {
           dataApontamento: dataHoraApontamento.toISOString(),
           horasApontamento: qtdHoras.trim(),
           descricaoApontamento: descricaoApontamento ?? "",
+        },
+      ],
+      campoDinamicoDadoWs: [
+        {
+          codigoCampoDinamico: timesheetCodigoCampoDinamicoIdTarefa,
+          campoDinamicoTipo: "TEXTO_CURTO",
+          codigoCampoDinamicoDado: null,
+          nomeCampoDinamico: timesheetNomeCampoDinamicoIDTarefa,
+          valorCampoTexto: idTarefa ?? "",
+        },
+        {
+          codigoCampoDinamico: timesheetCodigoCampoDinamicoTipoTarefa,
+          campoDinamicoTipo: "TEXTO_CURTO",
+          codigoCampoDinamicoDado: null,
+          nomeCampoDinamico: timesheetNomeCampoDinamicoTipoTarefa,
+          valorCampoTexto: tipoTarefa ?? "",
         },
       ],
     };

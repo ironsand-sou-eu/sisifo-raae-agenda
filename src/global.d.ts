@@ -20,6 +20,25 @@ type Modulo = {
   vinculoPrincipal: boolean;
 };
 
+type FetchedTipoDeCampoDinamicoWs = {
+  codigo: number;
+  campoDinamicoTipo: "TEXTO_CURTO";
+  nome: string;
+  textoAjuda: string;
+  visivel: boolean;
+  obrigatorio: boolean;
+  listaMultipla: null;
+  aba: SimpleDocument;
+};
+
+type WritingCampoDinamicoWs = {
+  codigoCampoDinamico: number;
+  campoDinamicoTipo: "TEXTO_CURTO";
+  nomeCampoDinamico: string;
+  valorCampoTexto: string;
+  codigoCampoDinamicoDado: null;
+};
+
 export type Notification = {
   text: string;
   type: "success" | "error" | "progress";
@@ -218,4 +237,5 @@ export type WritingTimesheet = {
     horasApontamento: string;
     descricaoApontamento: string;
   }[];
+  campoDinamicoDadoWs: WritingCampoDinamicoWs[];
 };

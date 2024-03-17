@@ -4,6 +4,7 @@ import { TarefaPrefetchDetails } from "./TarefaDetailedCard";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../../hooks/connectors/useProjurisTarefasConnector";
 import DetailedCardHeader from "./DetailedCardHeader";
 import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
+import { TarefaDetailsContext, useTarefaDetails } from "../../hooks/providers/TarefaDetailsProvider";
 
 type TarefaDetailedCardHeaderProps = {
   setPrefetchDetails: Dispatch<SetStateAction<TarefaPrefetchDetails | undefined>>;
@@ -21,6 +22,7 @@ export default function TarefaDetailedCardHeader({
   updateParams,
 }: TarefaDetailedCardHeaderProps): JSX.Element {
   const { dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
+  const { tarefaDetails } = useTarefaDetails() as TarefaDetailsContext;
   const { setAndamentoTimesheetPanelVisibility } = useCreateEntities() as CreateEntitiesContext;
   const cancelParams = { ...updateParams, type: "cancelar" } as TarefaUpdateParams;
   const concludeParams = { ...updateParams, type: "concluir" } as TarefaUpdateParams;
@@ -36,7 +38,15 @@ export default function TarefaDetailedCardHeader({
       <HeaderButton
         type="timesheet"
         onClick={() => {
-          if (codigoProcesso) setAndamentoTimesheetPanelVisibility({ visible: true, codigoProcesso });
+          if (codigoProcesso)
+            setAndamentoTimesheetPanelVisibility({
+              visible: true,
+              parentDetails: {
+                codigoProcesso,
+                idTarefa: tarefaDetails?.tarefaEventoWs.identificador ?? "",
+                tipoTarefa: tarefaDetails?.tarefaEventoWs.tipoTarefa.valor ?? "",
+              },
+            });
         }}
       />
       <HeaderButton type="conclude" onClick={() => handleClick(concludeParams)} />

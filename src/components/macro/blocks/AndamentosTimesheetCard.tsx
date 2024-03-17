@@ -5,8 +5,6 @@ import Button from "../../micro/Button";
 import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import { useMemo } from "react";
 
-export type AndamentosTimesheetCardProps = {};
-
 export default function AndamentosTimesheetCard() {
   const { createAndamentoTimesheet, setAndamentoTimesheetPanelVisibility, andamentoValidation, timesheetValidation } =
     useCreateEntities() as CreateEntitiesContext;
