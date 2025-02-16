@@ -6,7 +6,7 @@ import useProjurisCreateEntitiesConnector from "../connectors/useProjurisCreateE
 import { DisplayingNewTarefa, SimpleDocument } from "../../../global.zod";
 import useProjurisConnector from "../connectors/useProjurisConnector";
 
-type ParentDetails = { codigoProcesso: number; idTarefa: string; tipoTarefa: string };
+type ParentDetails = { codigoProcesso: number; idTarefa?: string; tipoTarefa?: string };
 type VisibilityOptions = { visible: false } | { visible: true; parentDetails: ParentDetails };
 
 export type CreateEntitiesContext = {

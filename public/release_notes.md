@@ -1,3 +1,7 @@
+===================== Versão 1.2.1 ====================
+1.1.001 - ISSUE - Resolvido o problema que impedi o
+login.
+
 ===================== Versão 1.2.0 ====================
 1.1.001 - ISSUE - Resolvida a situação em que não se
 cancelava ou concluía tarefas sem kanban.

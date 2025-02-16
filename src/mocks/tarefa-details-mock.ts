@@ -14,6 +14,7 @@ const tarefaDetailsMock: FetchedTarefaDetails = {
     codigoUsuarioCriador: 89323,
     descricaoTarefa: "Minuta -  Petição Inicial - Prazo interno para ajuizamento da ação",
     identificador: "TAR.0017231",
+    local: "",
     dataConclusao: null,
     dataConclusaoPrevista: 1698116400000,
     horaConclusao: 1701812640217,

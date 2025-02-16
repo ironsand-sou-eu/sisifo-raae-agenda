@@ -4,7 +4,7 @@ import HeaderFilterHeader from "../../../components/macro/blocks/HeaderFilterHea
 
 describe("HeaderFilterHeader", () => {
   it("should render a paragraph containing the three deadlines in pt-BR locale string", () => {
-    render(<HeaderFilterHeader />);
+    render(<HeaderFilterHeader animatableElementId="" />);
 
     const prazoAdmString = new Date(122264547645).toLocaleDateString("pt-BR");
     const prazoFatalString = new Date(122264547645).toLocaleDateString("pt-BR");
