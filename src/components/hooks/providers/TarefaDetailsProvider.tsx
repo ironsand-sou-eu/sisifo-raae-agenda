@@ -1,5 +1,11 @@
 import { Dispatch, PropsWithChildren, SetStateAction, createContext, useContext, useEffect, useState } from "react";
-import { DisplayingTarefaDetails, FetchedProcessoDetails, FetchedTarefaDetails, SimpleDocument } from "../../../global";
+import {
+  Comentario,
+  DisplayingTarefaDetails,
+  FetchedProcessoDetails,
+  FetchedTarefaDetails,
+  SimpleDocument,
+} from "../../../global";
 import useTarefasAdapter from "../adapters/useTarefasAdapter";
 import useProjurisTarefasConnector, { TarefaUpdateParams } from "../connectors/useProjurisTarefasConnector";
 import { TarefasListContext, useTarefasList } from "./TarefasListProvider";
@@ -14,6 +20,7 @@ type TarefaLoadingDetails = {
 
 export type TarefaDetailsContext = {
   tarefaDetails?: FetchedTarefaDetails;
+  comentarios?: Comentario[];
   displayingTarefaDetails?: DisplayingTarefaDetails;
   isDetailLoading: boolean;
   updateParams?: TarefaUpdateParams;
@@ -37,12 +44,14 @@ export function useTarefaDetails() {
 
 export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
   const [tarefaDetails, setTarefaDetails] = useState<FetchedTarefaDetails>();
+  const [comentarios, setComentarios] = useState<Comentario[]>([]);
   const [processoDetails, setProcessoDetails] = useState<FetchedProcessoDetails>();
   const [displayingTarefaDetails, setDisplayingTarefaDetails] = useState<DisplayingTarefaDetails>();
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [tarefaLoadingDetails, setTarefaLoadingDetails] = useState(emptyLoadingDetails);
 
-  const { fetchTarefaDetails, fetchProcessoDetails, dispatchBackendTarefaUpdate } = useProjurisTarefasConnector();
+  const { fetchComentarios, fetchProcessoDetails, fetchTarefaDetails, dispatchBackendTarefaUpdate } =
+    useProjurisTarefasConnector();
   const { adaptTarefaDetailsToDisplayingType, adaptTarefaDetailsToWritingType } = useTarefasAdapter();
   const { adaptTarefaDetailsToUpdatingParams } = useTarefasAdapter();
   const { loadListFromScratch } = useTarefasList() as TarefasListContext;
@@ -69,15 +78,13 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
     if (!tarefaLoadingDetails.codigoTarefaEvento || !tarefaLoadingDetails.codigoProcesso) return;
     setIsDetailLoading(true);
     fetchTarefaDetails(tarefaLoadingDetails.codigoTarefaEvento, tarefaLoadingDetails.codigoProcesso)
-      .then(details => {
-        setTarefaDetails(details);
-      })
+      .then(details => setTarefaDetails(details))
       .catch(e => console.error(e));
     fetchProcessoDetails(tarefaLoadingDetails.codigoProcesso)
-      .then(details => {
-        setProcessoDetails(details);
-      })
-      .catch(e => console.error(e))
+      .then(details => setProcessoDetails(details))
+      .catch(e => console.error(e));
+    fetchComentarios(tarefaLoadingDetails.codigoTarefaEvento)
+      .then(comments => setComentarios(comments))
       .finally(() => setIsDetailLoading(false));
   }
 
@@ -140,6 +147,7 @@ export default function TarefaDetailsProvider({ children }: PropsWithChildren) {
 
   const contextContent = {
     tarefaDetails,
+    comentarios,
     displayingTarefaDetails,
     isDetailLoading,
     updateParams,

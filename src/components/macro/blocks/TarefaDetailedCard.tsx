@@ -13,6 +13,7 @@ import { TarefaDetailsContext, useTarefaDetails } from "../../hooks/providers/Ta
 import { CreateEntitiesContext, useCreateEntities } from "../../hooks/providers/CreateEntitiesProvider";
 import InputText from "../../micro/InputText";
 import AnimationContainer from "../../micro/AnimationContainer";
+// import ComentariosList from "./ComentariosList";
 
 export type TarefaPrefetchDetails = {
   codigoTarefaEvento: number;
@@ -41,6 +42,7 @@ export default function TarefaDetailedCard({
   const { endpoints } = useProjurisConnector();
   const {
     displayingTarefaDetails,
+    // comentarios,
     isDetailLoading,
     updateParams,
     updateTarefaDetails,
@@ -177,6 +179,7 @@ export default function TarefaDetailedCard({
           isMulti={false}
         />
       </AnimationContainer>
+      {/* <ComentariosList comentarios={comentarios ?? []} /> */}
 
       <div className="btn-container">
         <Button
@@ -184,7 +187,7 @@ export default function TarefaDetailedCard({
           caption="Nova tarefa neste processo..."
           className="btn create-btn"
           onClick={() => {
-            if (codigoProcesso) setNewTarefaPanelVisibility({ visible: true, codigoProcesso });
+            if (codigoProcesso) setNewTarefaPanelVisibility({ visible: true, parentDetails: { codigoProcesso } });
           }}
         />
         <Button name="salvar-tarefa" caption="Salvar alterações" className="btn save-btn" onClick={saveTarefa} />

@@ -44,6 +44,12 @@ export type Notification = {
   type: "success" | "error" | "progress";
 };
 
+type PessoaAutoComplete = {
+  codigoPessoa: number;
+  codigoUsuario: number;
+  nomePessoa: string;
+};
+
 export type DisplayingTarefa = {
   checked?: boolean;
   codigoProcesso: number;
@@ -80,6 +86,24 @@ export type DisplayingTarefaDetails = {
   tarefaColor: string;
   titulo: string;
   usuariosResponsaveis: SimpleDocument[];
+};
+
+export type Comentario = {
+  codigoComentario: number;
+  descricaoComentario: string;
+  dataInclusao: number;
+  pessoaConsultaAutoCompleteSimplesWs: PessoaAutoComplete;
+  pessoaConsultaAutoCompleteDtoWs: {
+    pessoaConsultaAutoCompleteSimplesWs: PessoaAutoComplete[];
+  };
+  dataModificado: number;
+  codigoComentarioPai: number;
+  comentarioWs: FetchedComentarios[];
+};
+
+export type FetchedComentarios = {
+  totalRegistros: number;
+  comentarioWs: Comentario[];
 };
 
 export type FetchedTarefa = {
@@ -170,6 +194,11 @@ export type WritingAndamento = {
   codigoTipoAndamento: number;
   responsaveis: SimpleDocument[];
   privado: boolean;
+};
+
+export type WritingComentario = {
+  descricaoComentario: string;
+  codigoComentarioPai: number;
 };
 
 export type WritingTarefaDetails = {

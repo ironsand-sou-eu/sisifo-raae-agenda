@@ -69,6 +69,9 @@ export default function useProjurisConnector() {
       consultarListaComPaginacao: (pageNumber: number, registersAmount: number, order: "ASC" | "DESC") => {
         return `/tarefa/consulta-com-paginacao?quan-registros=${registersAmount}&pagina=${pageNumber}&ordenacao-tipo=${order}&ordenacao-chave=ORDENACAO_DATA_PREVISTA`;
       },
+      consultarComentarios: (codigoTarefaEvento: number) => {
+        return `https://service.projurisadv.com.br/adv-service/v2/tarefa-evento/${codigoTarefaEvento}/comentario/consulta`;
+      },
       consultarDetalhes: (codigoTarefaEvento: number, codigoProcesso: number) => {
         return `/processo/${codigoProcesso}/tarefa/${codigoTarefaEvento}`;
       },
